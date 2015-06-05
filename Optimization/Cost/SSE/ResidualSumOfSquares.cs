@@ -15,7 +15,7 @@ namespace widemeadows.Optimization.Cost.SSE
         /// The hypothesis to optimize
         /// </summary>
         [NotNull]
-        private readonly IHypothesis<double> _hypothesis;
+        private readonly IDerivableHypothesis<double> _hypothesis;
 
         /// <summary>
         /// The training set
@@ -34,10 +34,11 @@ namespace widemeadows.Optimization.Cost.SSE
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResidualSumOfSquaresCostFunction"/> class.
+        /// Initializes a new instance of the <see cref="ResidualSumOfSquaresCostFunction" /> class.
         /// </summary>
+        /// <param name="hypothesis">The hypothesis.</param>
         /// <param name="trainingSet">The training set.</param>
-        public ResidualSumOfSquaresCostFunction([NotNull] IHypothesis<double> hypothesis, [NotNull] IReadOnlyCollection<DataPoint<double>> trainingSet)
+        public ResidualSumOfSquaresCostFunction([NotNull] IDerivableHypothesis<double> hypothesis, [NotNull] IReadOnlyCollection<DataPoint<double>> trainingSet)
         {
             _hypothesis = hypothesis;
             _trainingSet = trainingSet;
@@ -53,6 +54,7 @@ namespace widemeadows.Optimization.Cost.SSE
             var hypothesis = _hypothesis;
             var trainingSet = _trainingSet;
             var rss = 0.0D;
+            var gradient = Vector<double>.Build.Dense(coefficients.Count, Vector<double>.Zero);
 
             foreach (var dataPoint in trainingSet)
             {
@@ -63,15 +65,22 @@ namespace widemeadows.Optimization.Cost.SSE
                 var outputs = hypothesis.Evaluate(inputs, coefficients);
 
                 // calculate the sum of the squared differences
-                rss += (outputs - expectedOutputs).Map(v => v*v).Sum();
+                var error = (outputs - expectedOutputs);
+                rss += error.Map(v => v*v).Sum();
+
+                // calculate the derivate of the hypothesis
+                var derivatives = hypothesis.Derivative(inputs, coefficients, outputs);
+
+                // calculate the gradient
+                gradient += error.PointwiseMultiply(derivatives);
             }
 
             // scale by the number of training examples
             rss /= trainingSet.Count;
+            gradient /= trainingSet.Count;
 
             // done.
-            throw new NotImplementedException("Cost gradient not implemented");
-            return new ResidualSumOfSquaresCost(cost: rss, costGradient: null);
+            return new ResidualSumOfSquaresCost(cost: rss, costGradient: gradient);
         }
     }
 }
