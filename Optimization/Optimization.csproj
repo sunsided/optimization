@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="Cost\IDerivableCostFunction.cs" />
     <Compile Include="Cost\ICostFunction.cs" />
-    <Compile Include="Cost\SSE\ResidualSumOfSquares.cs" />
+    <Compile Include="Cost\SSE\ResidualSumOfSquaresCostFunction.cs" />
     <Compile Include="Cost\SSE\ResidualSumOfSquaresCost.cs" />
     <Compile Include="DataPoint.cs" />
     <Compile Include="GradientDescent\ResilientErrorGradientDescent.cs" />
