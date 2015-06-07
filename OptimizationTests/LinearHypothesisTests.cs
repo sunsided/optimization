@@ -27,7 +27,8 @@ namespace widemeadows.Optimization.Tests
             var derivative = h.Derivative(inputs, theta, outputs);
             derivative.Count.Should().Be(2, "because two coefficients are evaluated");
             // ReSharper disable once CompareOfFloatsByEqualityOperator
-            derivative.Should().OnlyContain(d => d == 1D, "because the function is linear");
+            derivative[0].Should().Be(1D, "because the offset is independent of the inmput");
+            derivative[1].Should().Be(value, "because the coefficient's derivative is the input");
         }
 
         /// <summary>
@@ -54,7 +55,8 @@ namespace widemeadows.Optimization.Tests
             var derivative = h.Derivative(inputs, theta, outputs);
             derivative.Count.Should().Be(2, "because two coefficients are evaluated");
             // ReSharper disable once CompareOfFloatsByEqualityOperator
-            derivative.Should().OnlyContain(d => d == 1D, "because the function is linear");
+            derivative[0].Should().Be(1D, "because the offset is independent of the inmput");
+            derivative[1].Should().Be(value, "because the coefficient's derivative is the input");
         }
     }
 }

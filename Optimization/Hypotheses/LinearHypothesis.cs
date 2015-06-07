@@ -64,8 +64,11 @@ namespace widemeadows.Optimization.Hypotheses
         public Vector<double> Derivative(Vector<double> inputs, Vector<double> coefficients, Vector<double> outputs)
         {
             // TODO: Implement MIMO version of this function
-
-            return Vector<double>.Build.Dense(coefficients.Count, 1.0D);
+            return coefficients.MapIndexed((i, v) => 
+                i == 0 
+                ? 1 
+                : inputs[i-1]
+                );
         }
     }
 }
