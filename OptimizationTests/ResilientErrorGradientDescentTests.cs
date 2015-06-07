@@ -14,9 +14,11 @@ namespace widemeadows.Optimization.Tests
         [Test]
         public void ResidualSumOfSquares()
         {
+            /*
             var hypothesis
 
             var costFunction = new ResidualSumOfSquaresCostFunction();
+            */
         }
     }
 }

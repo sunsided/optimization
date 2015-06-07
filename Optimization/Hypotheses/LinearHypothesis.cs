@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace widemeadows.Optimization.Tests
+namespace widemeadows.Optimization.Hypotheses
 {
     /// <summary>
     /// Class LinearHypothesis. This class cannot be inherited.
@@ -42,10 +42,15 @@ namespace widemeadows.Optimization.Tests
             Debug.Assert(inputs.Count == _ninputs, "inputs.Count == _ninputs");
             Debug.Assert(inputs.Count == coefficients.Count - 1, "inputs.Count == coefficients.Count - 1");
 
+            // TODO: Implement MIMO version of this function
+
             // coefficients[0] is the offset
+            var offset = coefficients[0];
+
             // coefficients[1..end] are the weights
-            var weightedInputs = inputs.MapIndexed((index, value) => value*coefficients[index+1]);
-            var result = weightedInputs.Sum() + coefficients[0];
+            var weights = coefficients.SubVector(1, _ninputs);
+
+            var result = inputs * weights + offset;
             return Vector<double>.Build.Dense(1, result);
         }
 
@@ -58,6 +63,8 @@ namespace widemeadows.Optimization.Tests
         /// <returns>Vector&lt;System.Double&gt;.</returns>
         public Vector<double> Derivative(Vector<double> inputs, Vector<double> coefficients, Vector<double> outputs)
         {
+            // TODO: Implement MIMO version of this function
+
             return Vector<double>.Build.Dense(coefficients.Count, 1.0D);
         }
     }
