@@ -22,7 +22,12 @@ namespace widemeadows.Optimization.Tests
 
             var outputs = h.Evaluate(inputs, theta);
             outputs.Count.Should().Be(1, "because one output is expected");
-            outputs.Single().Should().BeApproximately(value, 1E-5D, "because the funciton is linear");
+            outputs.Single().Should().BeApproximately(value, 1E-5D, "because the function is linear");
+
+            var derivative = h.Derivative(inputs, theta, outputs);
+            derivative.Count.Should().Be(2, "because two coefficients are evaluated");
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            derivative.Should().OnlyContain(d => d == 1D, "because the function is linear");
         }
 
         /// <summary>
@@ -44,7 +49,12 @@ namespace widemeadows.Optimization.Tests
 
             var output = outputs.Single();
             var expectedresult = value * scale + offset;
-            output.Should().BeApproximately(expectedresult, 1E-5D, "because the funciton is linear");
+            output.Should().BeApproximately(expectedresult, 1E-5D, "because the function is linear");
+
+            var derivative = h.Derivative(inputs, theta, outputs);
+            derivative.Count.Should().Be(2, "because two coefficients are evaluated");
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            derivative.Should().OnlyContain(d => d == 1D, "because the function is linear");
         }
     }
 }
