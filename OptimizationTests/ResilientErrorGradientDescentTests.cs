@@ -17,11 +17,11 @@ namespace widemeadows.Optimization.Tests
             // obtain the test data
             var trainingSet = new List<DataPoint<double>>
             {
-                new DataPoint<double>(-1, -2),
-                new DataPoint<double>(0, 0),
-                new DataPoint<double>(1, 2),
-                new DataPoint<double>(2, 4),
-                new DataPoint<double>(3, 6)
+                new DataPoint<double>(-1, -1.5),
+                new DataPoint<double>(0, 0.5),
+                new DataPoint<double>(1, 2.5),
+                new DataPoint<double>(2, 4.5),
+                new DataPoint<double>(3, 6.5)
             };
 
             // assume a hypothesis
@@ -36,13 +36,13 @@ namespace widemeadows.Optimization.Tests
             // optimize!
             var gd = new ResilientErrorGradientDescent
             {
-                GradientChangeThreshold = 0D
+                GradientChangeThreshold = 0.0D
             };
             var result = gd.Minimize(problem);
 
             // assert!
             var coefficients = result.Coefficients;
-            coefficients[0].Should().BeApproximately(0, 1E-6D, "because that's the underlying system's intercept");
+            coefficients[0].Should().BeApproximately(0.5, 1E-6D, "because that's the underlying system's intercept");
             coefficients[1].Should().BeApproximately(2, 1E-6D, "because that's the underlying system's slope");
         }
     }
