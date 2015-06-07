@@ -70,7 +70,7 @@ namespace widemeadows.Optimization.Cost.SSE
                 var derivatives = hypothesis.Derivative(inputs, coefficients, outputs);
 
                 // calculate the gradient
-                gradient += error.PointwiseMultiply(derivatives);
+                gradient += error.OuterProduct(derivatives).Row(0);
             }
 
             // scale by the number of training examples
