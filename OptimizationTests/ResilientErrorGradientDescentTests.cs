@@ -33,10 +33,8 @@ namespace widemeadows.Optimization.Tests
             // define the optimization problem
             var problem = new OptimizationProblem<double, ICostGradient<double>>(hypothesis, costFunction);
 
-            // define the gradient descent algorithm
-            var gd = new ResilientErrorGradientDescent();
-
             // optimize!
+            var gd = new ResilientErrorGradientDescent();
             var result = gd.Minimize(problem);
 
             // assert!

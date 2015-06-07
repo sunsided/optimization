@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
 
@@ -30,6 +31,12 @@ namespace widemeadows.Optimization.GradientDescent
         private readonly double _stepDecreaseFactor = 0.5D;
 
         /// <summary>
+        /// The gradient change threshold. If the gradient change
+        /// is less than the given threshold, iteration stops immediately.
+        /// </summary>
+        private readonly double _gradientChangeThreshold = 1E-20D;
+
+        /// <summary>
         /// Minimizes the specified problem.
         /// </summary>
         /// <param name="problem">The problem.</param>
@@ -39,6 +46,7 @@ namespace widemeadows.Optimization.GradientDescent
             var increaseFactor = _stepIncreaseFactor;
             var decreaseFactor = _stepDecreaseFactor;
             var initialStepSize = _initialStepSize;
+            var threshold = _gradientChangeThreshold;
             
             // obtain the initial cost
             var costFunction = problem.CostFunction;
@@ -66,6 +74,11 @@ namespace widemeadows.Optimization.GradientDescent
                 // determine the change in cost
                 cost = costResult.Cost;
                 var costChange = cost - previousCost;
+                if (Math.Abs(costChange) <= threshold)
+                {
+                    Debug.WriteLine("Stopping REGD at iteration {0}/{1} because costChange |{2}| <= {3}", i, maxIterations, costChange, threshold);
+                    break;
+                }
                 
                 // determine changes in gradient direction
                 var gradient = costResult.CostGradient;
