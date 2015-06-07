@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
@@ -55,6 +56,26 @@ namespace widemeadows.Optimization
         {
             _inputs = inputs;
             _outputs = outputs;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataPoint{TData}"/> struct.
+        /// </summary>
+        /// <param name="inputs">The inputs.</param>
+        /// <param name="outputs">The outputs.</param>
+        public DataPoint([NotNull] IEnumerable<TData> inputs, [NotNull] IEnumerable<TData> outputs)
+            : this(Vector<TData>.Build.DenseOfEnumerable(inputs), Vector<TData>.Build.DenseOfEnumerable(outputs))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataPoint{TData}" /> struct.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="output">The output.</param>
+        public DataPoint(TData input, TData output)
+            : this(Vector<TData>.Build.Dense(1, input), Vector<TData>.Build.Dense(1, output))
+        {
         }
     }
 }
