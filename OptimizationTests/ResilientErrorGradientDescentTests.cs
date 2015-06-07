@@ -34,7 +34,10 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, ICostGradient<double>>(hypothesis, costFunction);
 
             // optimize!
-            var gd = new ResilientErrorGradientDescent();
+            var gd = new ResilientErrorGradientDescent
+            {
+                GradientChangeThreshold = 0D
+            };
             var result = gd.Minimize(problem);
 
             // assert!

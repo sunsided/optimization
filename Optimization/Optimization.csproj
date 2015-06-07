@@ -53,6 +53,7 @@
     <Compile Include="Cost\SSE\ResidualSumOfSquaresCostFunction.cs" />
     <Compile Include="Cost\SSE\ResidualSumOfSquaresCost.cs" />
     <Compile Include="DataPoint.cs" />
+    <Compile Include="GradientDescent\IGradientDescent.cs" />
     <Compile Include="GradientDescent\ResilientErrorGradientDescent.cs" />
     <Compile Include="Cost\ICostGradient.cs" />
     <Compile Include="Cost\ICost.cs" />

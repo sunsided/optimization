@@ -8,33 +8,115 @@ namespace widemeadows.Optimization.GradientDescent
     /// <summary>
     /// Resilient Error Gradient Descent.
     /// </summary>
-    public class ResilientErrorGradientDescent : IMinimization<double, ICostGradient<double>>
+    public class ResilientErrorGradientDescent : IMinimization<double, ICostGradient<double>>, IGradientDescent
     {
         /// <summary>
         /// The maximum number of iterations
         /// </summary>
-        private readonly int _maxIterations = 400;
+        private int _maxIterations = 400;
 
         /// <summary>
         /// The initial step width
         /// </summary>
-        private readonly double _initialStepSize = 0.1D;
+        private double _initialStepSize = 0.1D;
 
         /// <summary>
         /// The step increase factor
         /// </summary>
-        private readonly double _stepIncreaseFactor = 1.2D;
+        private double _stepIncreaseFactor = 1.2D;
 
         /// <summary>
         /// The step decrease factor
         /// </summary>
-        private readonly double _stepDecreaseFactor = 0.5D;
+        private double _stepDecreaseFactor = 0.5D;
 
         /// <summary>
         /// The gradient change threshold. If the gradient change
         /// is less than the given threshold, iteration stops immediately.
         /// </summary>
-        private readonly double _gradientChangeThreshold = 1E-20D;
+        private double _gradientChangeThreshold = 1E-20D;
+
+        /// <summary>
+        /// Gets or sets the maximum number of iterations.
+        /// </summary>
+        /// <value>The maximum iterations.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">The value must be positive</exception>
+        public int MaxIterations
+        {
+            get { return _maxIterations; }
+            set
+            {
+                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "The value must be positive");
+                _maxIterations = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the initial coefficient change step size.
+        /// </summary>
+        /// <value>The initial size of the step.</value>
+        public double InitialStepSize
+        {
+            get { return _initialStepSize; }
+            set
+            {
+                if (double.IsNaN(value) || double.IsInfinity(value)) throw new NotFiniteNumberException("The value must be finite", value);
+                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "The value must be positive");
+                _initialStepSize = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the step increase factor.
+        /// </summary>
+        /// <value>The step increase factor.</value>
+        /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">The value must be greater than one</exception>
+        public double StepIncreaseFactor
+        {
+            get { return _stepIncreaseFactor; }
+            set
+            {
+                if (double.IsNaN(value) || double.IsInfinity(value)) throw new NotFiniteNumberException("The value must be finite", value);
+                if (value <= 1) throw new ArgumentOutOfRangeException("value", value, "The value must be greater than 1");
+                _stepIncreaseFactor = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the step decrease factor.
+        /// </summary>
+        /// <value>The step decrease factor.</value>
+        /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">The value must be in range ]0..1[</exception>
+        public double StepDecreaseFactor
+        {
+            get { return _stepDecreaseFactor; }
+            set
+            {
+                if (double.IsNaN(value) || double.IsInfinity(value)) throw new NotFiniteNumberException("The value must be finite", value);
+                if (value <= 0 || value >= 1) throw new ArgumentOutOfRangeException("value", value, "The value must be in range ]0..1[");
+                _stepDecreaseFactor = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the gradient change threshold. If the gradient change
+        /// is less than the given threshold, iteration stops immediately.
+        /// </summary>
+        /// <value>The gradient change threshold.</value>
+        /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">The value must be nonnegative</exception>
+        public double GradientChangeThreshold
+        {
+            get { return _gradientChangeThreshold; }
+            set
+            {
+                if (double.IsNaN(value) || double.IsInfinity(value)) throw new NotFiniteNumberException("The value must be finite", value);
+                if (value < 0) throw new ArgumentOutOfRangeException("value", value, "The value must be nonnegative");
+                _gradientChangeThreshold = value;
+            }
+        }
 
         /// <summary>
         /// Minimizes the specified problem.
