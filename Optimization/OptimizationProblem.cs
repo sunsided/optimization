@@ -12,6 +12,12 @@ namespace widemeadows.Optimization
         where TCost : ICost<TData>
     {
         /// <summary>
+        /// Gets the hypothesis.
+        /// </summary>
+        /// <value>The hypothesis.</value>
+        public IHypothesis<TData> Hypothesis { get; private set; }
+
+        /// <summary>
         /// Gets the cost function.
         /// </summary>
         /// <value>The cost function.</value>
@@ -19,11 +25,13 @@ namespace widemeadows.Optimization
         public ICostFunction<TData, TCost> CostFunction { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OptimizationProblem{TData, TCost}"/> class.
+        /// Initializes a new instance of the <see cref="OptimizationProblem{TData, TCost}" /> class.
         /// </summary>
+        /// <param name="hypothesis">The hypothesis.</param>
         /// <param name="costFunction">The cost function.</param>
-        public OptimizationProblem([NotNull] ICostFunction<TData, TCost> costFunction)
+        public OptimizationProblem([NotNull] IHypothesis<TData> hypothesis, [NotNull] ICostFunction<TData, TCost> costFunction)
         {
+            Hypothesis = hypothesis;
             CostFunction = costFunction;
         }
     }

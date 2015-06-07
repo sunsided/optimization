@@ -30,7 +30,7 @@ namespace widemeadows.Optimization.Tests
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, ICostGradient<double>>(costFunction);
+            var problem = new OptimizationProblem<double, ICostGradient<double>>(hypothesis, costFunction);
 
             // define the gradient descent algorithm
             var gd = new ResilientErrorGradientDescent();

@@ -12,6 +12,13 @@ namespace widemeadows.Optimization
         where TCost : ICost<TData>
     {
         /// <summary>
+        /// Gets the hypothesis.
+        /// </summary>
+        /// <value>The hypothesis.</value>
+        [NotNull]
+        IHypothesis<TData> Hypothesis { get; }
+
+        /// <summary>
         /// Gets the cost function.
         /// </summary>
         /// <value>The cost function.</value>
