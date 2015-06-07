@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FluentAssertions;
 using NUnit.Framework;
 using widemeadows.Optimization.Cost;
 using widemeadows.Optimization.Cost.SSE;
@@ -37,6 +38,11 @@ namespace widemeadows.Optimization.Tests
 
             // optimize!
             var result = gd.Minimize(problem);
+
+            // assert!
+            var coefficients = result.Coefficients;
+            coefficients[0].Should().BeApproximately(0, 1E-6D, "because that's the underlying system's intercept");
+            coefficients[1].Should().BeApproximately(2, 1E-6D, "because that's the underlying system's slope");
         }
     }
 }
