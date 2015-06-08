@@ -77,5 +77,25 @@ namespace widemeadows.Optimization
             : this(Vector<TData>.Build.Dense(1, input), Vector<TData>.Build.Dense(1, output))
         {
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataPoint{TData}" /> struct.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="output">The output.</param>
+        public DataPoint(IEnumerable<TData> input, TData output)
+            : this(Vector<TData>.Build.DenseOfEnumerable(input), Vector<TData>.Build.Dense(1, output))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataPoint{TData}" /> struct.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="output">The output.</param>
+        public DataPoint(TData input, IEnumerable<TData> output)
+            : this(Vector<TData>.Build.Dense(1, input), Vector<TData>.Build.DenseOfEnumerable(output))
+        {
+        }
     }
 }

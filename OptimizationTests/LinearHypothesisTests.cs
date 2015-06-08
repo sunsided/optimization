@@ -3,6 +3,7 @@ using FluentAssertions;
 using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 using widemeadows.Optimization.Hypotheses;
+using widemeadows.Optimization.Tests.Hypotheses;
 
 namespace widemeadows.Optimization.Tests
 {
@@ -29,6 +30,27 @@ namespace widemeadows.Optimization.Tests
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             derivative[0].Should().Be(1D, "because the offset is independent of the inmput");
             derivative[1].Should().Be(value, "because the coefficient's derivative is the input");
+        }
+
+        /// <summary>
+        /// Asserts that the linear hypothesis is indeed a line equation
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="scale">The scale.</param>
+        /// <param name="offset">The offset.</param>
+        [Test]
+        public void MultiOutputHypothesisWorks([Random(5)] double value, [Random(5)] double scale, [Random(5)] double offset)
+        {
+            var h = new DualLinearHypothesis(1);
+            var theta = Vector<double>.Build.Dense(new[] { offset, scale });
+            var inputs = Vector<double>.Build.Dense(1, value);
+
+            var outputs = h.Evaluate(inputs, theta);
+
+            outputs.Count.Should().Be(2, "because two outputs are expected");
+
+            outputs.First().Should().BeApproximately(value * scale + offset, 1E-5D, "because the function is linear");
+            outputs.Last().Should().BeApproximately(value * scale + 2*offset, 1E-5D, "because the function is linear");
         }
 
         /// <summary>
