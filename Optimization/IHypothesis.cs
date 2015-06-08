@@ -16,7 +16,7 @@ namespace widemeadows.Optimization
         /// </summary>
         /// <param name="inputs">The inputs.</param>
         /// <param name="coefficients">The coefficients.</param>
-        /// <returns>Vector&lt;TData&gt;.</returns>
+        /// <returns>The estimated outputs.</returns>
         [NotNull] 
         Vector<TData> Evaluate([NotNull] Vector<TData> inputs, [NotNull] Vector<TData> coefficients);
     }
