@@ -6,7 +6,7 @@ namespace widemeadows.Optimization.Hypotheses
     /// <summary>
     /// Class LinearHypothesis. This class cannot be inherited.
     /// </summary>
-    public sealed class LinearHypothesis : IDerivableHypothesis<double>
+    public sealed class LinearHypothesis : IDifferentiableHypothesis<double>
     {
         /// <summary>
         /// The number of inputs

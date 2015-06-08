@@ -13,7 +13,7 @@ namespace widemeadows.Optimization.Cost
         /// The hypothesis to optimize
         /// </summary>
         [NotNull]
-        private readonly IDerivableHypothesis<double> _hypothesis;
+        private readonly IDifferentiableHypothesis<double> _hypothesis;
 
         /// <summary>
         /// The training set
@@ -36,7 +36,7 @@ namespace widemeadows.Optimization.Cost
         /// </summary>
         /// <param name="hypothesis">The hypothesis.</param>
         /// <param name="trainingSet">The training set.</param>
-        public ResidualSumOfSquaresCostFunction([NotNull] IDerivableHypothesis<double> hypothesis, [NotNull] IReadOnlyCollection<DataPoint<double>> trainingSet)
+        public ResidualSumOfSquaresCostFunction([NotNull] IDifferentiableHypothesis<double> hypothesis, [NotNull] IReadOnlyCollection<DataPoint<double>> trainingSet)
         {
             _hypothesis = hypothesis;
             _trainingSet = trainingSet;

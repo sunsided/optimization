@@ -5,10 +5,10 @@ using MathNet.Numerics.LinearAlgebra;
 namespace widemeadows.Optimization
 {
     /// <summary>
-    /// Interface IDerivableHypothesis
+    /// Interface IDifferentiableHypothesis
     /// </summary>
     /// <typeparam name="TData">The type of the data.</typeparam>
-    public interface IDerivableHypothesis<TData> : IHypothesis<TData> 
+    public interface IDifferentiableHypothesis<TData> : IHypothesis<TData> 
         where TData : struct, IEquatable<TData>, IFormattable
     {
         /// <summary>
