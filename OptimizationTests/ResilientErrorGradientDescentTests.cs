@@ -2,7 +2,6 @@
 using FluentAssertions;
 using NUnit.Framework;
 using widemeadows.Optimization.Cost;
-using widemeadows.Optimization.Cost.SSE;
 using widemeadows.Optimization.GradientDescent;
 using widemeadows.Optimization.Hypotheses;
 using widemeadows.Optimization.Tests.Hypotheses;

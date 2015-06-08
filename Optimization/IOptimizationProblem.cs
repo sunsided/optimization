@@ -7,7 +7,7 @@ namespace widemeadows.Optimization
     /// <summary>
     /// Interface IOptimizationProblem
     /// </summary>
-    public interface IOptimizationProblem<TData, out TCost>
+    public interface IOptimizationProblem<TData, out TCost> : IInitialCoefficients<TData> 
         where TData : struct, IEquatable<TData>, IFormattable
         where TCost : ICost<TData>
     {

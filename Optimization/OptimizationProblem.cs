@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
 
 namespace widemeadows.Optimization
@@ -33,6 +34,15 @@ namespace widemeadows.Optimization
         {
             Hypothesis = hypothesis;
             CostFunction = costFunction;
+        }
+
+        /// <summary>
+        /// Gets the initial coefficients.
+        /// </summary>
+        /// <returns>Vector&lt;TData&gt;.</returns>
+        public Vector<TData> GetInitialCoefficients()
+        {
+            return Hypothesis.GetInitialCoefficients();
         }
     }
 }

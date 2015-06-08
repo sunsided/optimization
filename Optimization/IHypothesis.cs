@@ -7,17 +7,10 @@ namespace widemeadows.Optimization
     /// <summary>
     /// Interface IHypothesis
     /// </summary>
-    /// <typeparam name="TData">The type of the t data.</typeparam>
-    public interface IHypothesis<TData> 
+    /// <typeparam name="TData">The type of the data.</typeparam>
+    public interface IHypothesis<TData> : IInitialCoefficients<TData> 
         where TData : struct, IEquatable<TData>, IFormattable
     {
-        /// <summary>
-        /// Gets an initial guess for the coefficients.
-        /// </summary>
-        /// <returns>Vector&lt;TData&gt;.</returns>
-        [NotNull]
-        Vector<TData> GetInitialCoefficients();
-
         /// <summary>
         /// Evaluates the hypothesis given the <paramref name="inputs"/> and the <paramref name="coefficients"/>.
         /// </summary>

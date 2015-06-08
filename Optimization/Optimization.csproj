@@ -48,18 +48,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cost\CostResult.cs" />
     <Compile Include="Cost\IDerivableCostFunction.cs" />
     <Compile Include="Cost\ICostFunction.cs" />
-    <Compile Include="Cost\SSE\ResidualSumOfSquaresCostFunction.cs" />
-    <Compile Include="Cost\SSE\ResidualSumOfSquaresCost.cs" />
+    <Compile Include="Cost\ResidualSumOfSquaresCostFunction.cs" />
+    <Compile Include="Cost\DifferentiableCostResult.cs" />
     <Compile Include="DataPoint.cs" />
     <Compile Include="GradientDescent\IGradientDescent.cs" />
     <Compile Include="GradientDescent\ResilientErrorGradientDescent.cs" />
     <Compile Include="Cost\ICostGradient.cs" />
     <Compile Include="Cost\ICost.cs" />
     <Compile Include="Hypotheses\LinearHypothesis.cs" />
-    <Compile Include="IDerivableHypothesis.cs" />
+    <Compile Include="IDifferentiableHypothesis.cs" />
     <Compile Include="IHypothesis.cs" />
+    <Compile Include="IInitialCoefficients.cs" />
     <Compile Include="IMinimzation.cs" />
     <Compile Include="IOptimizationProblem.cs" />
     <Compile Include="OptimizationProblem.cs" />

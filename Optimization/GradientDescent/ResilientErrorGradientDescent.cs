@@ -136,8 +136,7 @@ namespace widemeadows.Optimization.GradientDescent
             var previousCost = double.MaxValue;
 
             // obtain the initial coefficients
-            var hypothesis = problem.Hypothesis;
-            var coefficients = hypothesis.GetInitialCoefficients();
+            var coefficients = problem.GetInitialCoefficients();
             var coefficientCount = coefficients.Count;
 
             // we need to store that last iteration's gradients

@@ -42,8 +42,6 @@ namespace widemeadows.Optimization.Tests.Hypotheses
             Debug.Assert(inputs.Count == _ninputs, "inputs.Count == _ninputs");
             Debug.Assert(inputs.Count == coefficients.Count - 1, "inputs.Count == coefficients.Count - 1");
 
-            // TODO: Implement MIMO version of this function
-
             // coefficients[0] is the offset
             var offset = coefficients[0];
 

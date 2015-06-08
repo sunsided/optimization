@@ -2,12 +2,12 @@
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace widemeadows.Optimization.Cost.SSE
+namespace widemeadows.Optimization.Cost
 {
     /// <summary>
     /// Class ResidualSumOfSquaresCostFunction.
     /// </summary>
-    public class ResidualSumOfSquaresCostFunction : IDerivableCostFunction<double, ResidualSumOfSquaresCost>
+    public class ResidualSumOfSquaresCostFunction : IDerivableCostFunction<double, DifferentiableCostResult<double>>
     {
         /// <summary>
         /// The hypothesis to optimize
@@ -47,7 +47,7 @@ namespace widemeadows.Optimization.Cost.SSE
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>ResidualSumOfSquaresCost.</returns>
-        public ResidualSumOfSquaresCost CalculateCost(Vector<double> coefficients)
+        public DifferentiableCostResult<double> CalculateCost(Vector<double> coefficients)
         {
             var hypothesis = _hypothesis;
             var trainingSet = _trainingSet;
@@ -78,7 +78,7 @@ namespace widemeadows.Optimization.Cost.SSE
             gradient /= trainingSet.Count;
 
             // done.
-            return new ResidualSumOfSquaresCost(cost: rss, costGradient: gradient);
+            return new DifferentiableCostResult<double>(cost: rss, costGradient: gradient);
         }
     }
 }
