@@ -31,11 +31,34 @@ namespace widemeadows.Optimization.GradientDescent
             // and use this variable as a counter.
             var iterationsUntilRestart = n;
 
+            // TODO: add comment and better name
+            var d = residuals;
+
+            // TODO: add comment and better name
+            var deltaNew = residuals*residuals;
+            var delta0 = deltaNew;
+
             // loop for the maximum iteration count
             var maxIterations = MaxIterations;
             for (var i = 0; i < maxIterations; ++i)
             {
+                var j = 0;
+                var deltaD = d*d;
+                var jmax = 100; // TODO: well ...
+                var alpha = 1; // TODO: umh ...
+                var epsilon = 1E-10D; // TODO: yeah ...!
 
+                // perform a line search
+                // TODO: probably ...
+                do
+                {
+                    alpha = 0; // TODO: second derivative required here!
+                    theta += alpha*d;
+                    ++j;
+                } while (j < jmax && (alpha*alpha)*deltaD > (epsilon*epsilon));
+
+                // obtain the new residuals
+                residuals = -costResult.CostGradient; // TODO: needs to be calculated above
             }
 
             throw new NotImplementedException("Conjugate-Gradient Descent not implemented");
