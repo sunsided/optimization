@@ -8,13 +8,8 @@ namespace widemeadows.Optimization.GradientDescent
     /// <summary>
     /// Resilient Error Gradient Descent.
     /// </summary>
-    public class ResilientErrorGradientDescent : IMinimization<double, ICostGradient<double>>, IGradientDescent
+    public sealed class ResilientErrorGradientDescent : GradientDescentBase<double, ICostGradient<double>>
     {
-        /// <summary>
-        /// The maximum number of iterations
-        /// </summary>
-        private int _maxIterations = 400;
-
         /// <summary>
         /// The initial step width
         /// </summary>
@@ -31,30 +26,11 @@ namespace widemeadows.Optimization.GradientDescent
         private double _stepDecreaseFactor = 0.5D;
 
         /// <summary>
-        /// The cost change threshold. If the cost change
-        /// is less than the given threshold, iteration stops immediately.
-        /// </summary>
-        private double _costChangeThreshold = 1E-20D;
-
-        /// <summary>
-        /// Gets or sets the maximum number of iterations.
-        /// </summary>
-        /// <value>The maximum iterations.</value>
-        /// <exception cref="System.ArgumentOutOfRangeException">The value must be positive</exception>
-        public int MaxIterations
-        {
-            get { return _maxIterations; }
-            set
-            {
-                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "The value must be positive");
-                _maxIterations = value;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the initial coefficient change step size.
         /// </summary>
         /// <value>The initial size of the step.</value>
+        /// <exception cref="NotFiniteNumberException">The value must be finite</exception>
+        /// <exception cref="ArgumentOutOfRangeException">The value must be positive</exception>
         public double InitialStepSize
         {
             get { return _initialStepSize; }
@@ -101,34 +77,17 @@ namespace widemeadows.Optimization.GradientDescent
         }
 
         /// <summary>
-        /// Gets or sets the cost change threshold. If the cost change
-        /// is less than the given threshold, iteration stops immediately.
-        /// </summary>
-        /// <value>The cost change threshold.</value>
-        /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">The value must be nonnegative</exception>
-        public double CostChangeThreshold
-        {
-            get { return _costChangeThreshold; }
-            set
-            {
-                if (double.IsNaN(value) || double.IsInfinity(value)) throw new NotFiniteNumberException("The value must be finite", value);
-                if (value < 0) throw new ArgumentOutOfRangeException("value", value, "The value must be nonnegative");
-                _costChangeThreshold = value;
-            }
-        }
-
-        /// <summary>
         /// Minimizes the specified problem.
         /// </summary>
         /// <param name="problem">The problem.</param>
-        public IOptimizationResult<double> Minimize(IOptimizationProblem<double, ICostGradient<double>> problem)
+        public override IOptimizationResult<double> Minimize(IOptimizationProblem<double, ICostGradient<double>> problem)
         {
-            var maxIterations = _maxIterations;
+            var maxIterations = MaxIterations;
             var increaseFactor = _stepIncreaseFactor;
             var decreaseFactor = _stepDecreaseFactor;
             var initialStepSize = _initialStepSize;
-            var threshold = _costChangeThreshold;
+            // ReSharper disable once ExceptionNotDocumented
+            var threshold = CostChangeThreshold;
 
             // obtain the initial cost
             var costFunction = problem.CostFunction;

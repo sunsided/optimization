@@ -10,7 +10,7 @@ namespace widemeadows.Optimization
     /// <typeparam name="TData">The type of the data.</typeparam>
     /// <typeparam name="TCost">The type of the cost.</typeparam>
     public interface IMinimization<TData, in TCost>
-        where TData : struct, IEquatable<TData>, IFormattable, IComparable<TData> 
+        where TData : struct, IEquatable<TData>, IFormattable, IComparable<TData>
         where TCost : ICost<TData>
     {
         /// <summary>
