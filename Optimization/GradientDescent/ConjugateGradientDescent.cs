@@ -59,6 +59,9 @@ namespace widemeadows.Optimization.GradientDescent
 
                 // obtain the new residuals
                 residuals = -costResult.CostGradient; // TODO: needs to be calculated above
+
+
+                // TODO: The cost function and its gradients must be available from different calls
             }
 
             throw new NotImplementedException("Conjugate-Gradient Descent not implemented");
