@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
+using widemeadows.Optimization.Hypotheses;
 
 namespace widemeadows.Optimization.Tests.Hypotheses
 {

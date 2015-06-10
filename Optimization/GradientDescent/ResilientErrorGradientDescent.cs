@@ -109,7 +109,7 @@ namespace widemeadows.Optimization.GradientDescent
             for (var i = 0; i < maxIterations; ++i)
             {
                 // obtain the cost and its gradient
-                var costResult = costFunction.CalculateCost(coefficients);
+                var costResult = costFunction.CalculateCostAndGradient(coefficients);
 
                 // determine the change in cost
                 cost = costResult.Cost;

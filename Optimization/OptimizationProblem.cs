@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
+using widemeadows.Optimization.Hypotheses;
 
 namespace widemeadows.Optimization
 {

@@ -61,8 +61,8 @@
     <Compile Include="Cost\ICostGradient.cs" />
     <Compile Include="Cost\ICost.cs" />
     <Compile Include="Hypotheses\LinearHypothesis.cs" />
-    <Compile Include="IDifferentiableHypothesis.cs" />
-    <Compile Include="IHypothesis.cs" />
+    <Compile Include="Hypotheses\IDifferentiableHypothesis.cs" />
+    <Compile Include="Hypotheses\IHypothesis.cs" />
     <Compile Include="IInitialCoefficients.cs" />
     <Compile Include="IMinimzation.cs" />
     <Compile Include="IOptimizationProblem.cs" />

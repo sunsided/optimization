@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using widemeadows.Optimization.Cost;
+using widemeadows.Optimization.Hypotheses;
 
 namespace widemeadows.Optimization
 {

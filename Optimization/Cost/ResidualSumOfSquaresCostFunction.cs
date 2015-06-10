@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
+using widemeadows.Optimization.Hypotheses;
 
 namespace widemeadows.Optimization.Cost
 {
@@ -47,7 +48,7 @@ namespace widemeadows.Optimization.Cost
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>ResidualSumOfSquaresCost.</returns>
-        public DifferentiableCostResult<double> CalculateCost(Vector<double> coefficients)
+        public DifferentiableCostResult<double> CalculateCostAndGradient(Vector<double> coefficients)
         {
             var hypothesis = _hypothesis;
             var trainingSet = _trainingSet;
@@ -79,6 +80,42 @@ namespace widemeadows.Optimization.Cost
 
             // done.
             return new DifferentiableCostResult<double>(cost: rss, costGradient: gradient);
+        }
+
+        /// <summary>
+        /// Calculates the derivative.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
+        public Vector<double> CalculateDerivative(Vector<double> coefficients)
+        {
+            var hypothesis = _hypothesis;
+            var trainingSet = _trainingSet;
+            var gradient = Vector<double>.Build.Dense(coefficients.Count, Vector<double>.Zero);
+
+            foreach (var dataPoint in trainingSet)
+            {
+                var inputs = dataPoint.Inputs;
+                var expectedOutputs = dataPoint.Outputs;
+
+                // evaluate the hypothesis
+                var outputs = hypothesis.Evaluate(inputs, coefficients);
+
+                // calculate the sum of the squared differences
+                var error = (outputs - expectedOutputs);
+
+                // calculate the derivate of the hypothesis
+                var derivatives = hypothesis.Derivative(inputs, coefficients, outputs);
+
+                // calculate the gradient
+                gradient += error.OuterProduct(derivatives).Row(0);
+            }
+
+            // scale by the number of training examples
+            gradient /= trainingSet.Count;
+
+            // done.
+            return gradient;
         }
     }
 }

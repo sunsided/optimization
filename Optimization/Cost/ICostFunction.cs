@@ -19,6 +19,22 @@ namespace widemeadows.Optimization.Cost
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>TCost.</returns>
         [NotNull]
-        TCost CalculateCost([NotNull] Vector<TData> coefficients);
+        TCost CalculateCostAndGradient([NotNull] Vector<TData> coefficients);
+
+        /// <summary>
+        /// Calculates the first derivative, i.e. the gradient, at the given <paramref name="locations"/>
+        /// </summary>
+        /// <param name="locations">The locations at which to evaluate the gradient.</param>
+        /// <returns>The gradient.</returns>
+        [NotNull]
+        Vector<TData> CalculateDerivative([NotNull] Vector<TData> locations);
+
+        /// <summary>
+        /// Calculates the second derivative, i.e. the gradient's gradient, at the given <paramref name="locations"/>
+        /// </summary>
+        /// <param name="locations">The locations at which to evaluate the second derivative.</param>
+        /// <returns>The second derivative.</returns>
+        [NotNull]
+        Vector<TData> CalculateSecondDerivative([NotNull] Vector<TData> locations);
     }
 }
