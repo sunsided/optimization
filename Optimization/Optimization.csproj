@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cost\CostResult.cs" />
-    <Compile Include="Cost\IDerivableCostFunction.cs" />
+    <Compile Include="Cost\IDifferentiableCostFunction.cs" />
     <Compile Include="Cost\ICostFunction.cs" />
     <Compile Include="Cost\ResidualSumOfSquaresCostFunction.cs" />
     <Compile Include="Cost\DifferentiableCostResult.cs" />
