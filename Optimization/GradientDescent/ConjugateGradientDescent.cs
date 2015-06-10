@@ -1,8 +1,7 @@
 ﻿using System;
 using widemeadows.Optimization.Cost;
-using widemeadows.Optimization.GradientDescent;
 
-namespace widemeadows.Optimization.Tests.Hypotheses
+namespace widemeadows.Optimization.GradientDescent
 {
     /// <summary>
     /// Conjugate-Gradient Descent
@@ -16,6 +15,28 @@ namespace widemeadows.Optimization.Tests.Hypotheses
         /// <returns>IOptimizationResult&lt;TData&gt;.</returns>
         public override IOptimizationResult<double> Minimize(IOptimizationProblem<double, ICostGradient<double>> problem)
         {
+            // fetch a starting point and obtain the problem size
+            var theta = problem.GetInitialCoefficients();
+            var n = theta.Count;
+
+            // in order to obtain the initial residuals, we'll calculate the cost once
+            var costFunction = problem.CostFunction;
+            var costResult = costFunction.CalculateCost(theta);
+
+            // now we determine the initial residuals, which are defined to
+            // be the opposite gradient direction
+            var residuals = -costResult.CostGradient;
+
+            // we want to restart CG at least every n steps,
+            // and use this variable as a counter.
+            var iterationsUntilRestart = n;
+
+            // loop for the maximum iteration count
+            var maxIterations = MaxIterations;
+            for (var i = 0; i < maxIterations; ++i)
+            {
+
+            }
 
             throw new NotImplementedException("Conjugate-Gradient Descent not implemented");
         }
