@@ -36,7 +36,7 @@ namespace widemeadows.Optimization.Tests
             // optimize!
             var gd = new ResilientErrorGradientDescent
             {
-                GradientChangeThreshold = 0.0D
+                CostChangeThreshold = 0.0D
             };
             var result = gd.Minimize(problem);
 
@@ -71,7 +71,7 @@ namespace widemeadows.Optimization.Tests
             // optimize!
             var gd = new ResilientErrorGradientDescent
             {
-                GradientChangeThreshold = 0.0D
+                CostChangeThreshold = 0.0D
             };
             var result = gd.Minimize(problem);
 

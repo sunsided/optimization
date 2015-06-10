@@ -13,12 +13,12 @@
         int MaxIterations { get; set; }
 
         /// <summary>
-        /// Gets or sets the gradient change threshold. If the gradient change
+        /// Gets or sets the cost change threshold. If the cost change
         /// is less than the given threshold, iteration stops immediately.
         /// </summary>
-        /// <value>The gradient change threshold.</value>
+        /// <value>The cost change threshold.</value>
         /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">The value must be nonnegative</exception>
-        double GradientChangeThreshold { get; set; }
+        double CostChangeThreshold { get; set; }
     }
 }

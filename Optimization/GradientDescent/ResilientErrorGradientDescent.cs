@@ -31,10 +31,10 @@ namespace widemeadows.Optimization.GradientDescent
         private double _stepDecreaseFactor = 0.5D;
 
         /// <summary>
-        /// The gradient change threshold. If the gradient change
+        /// The cost change threshold. If the cost change
         /// is less than the given threshold, iteration stops immediately.
         /// </summary>
-        private double _gradientChangeThreshold = 1E-20D;
+        private double _costChangeThreshold = 1E-20D;
 
         /// <summary>
         /// Gets or sets the maximum number of iterations.
@@ -101,20 +101,20 @@ namespace widemeadows.Optimization.GradientDescent
         }
 
         /// <summary>
-        /// Gets or sets the gradient change threshold. If the gradient change
+        /// Gets or sets the cost change threshold. If the cost change
         /// is less than the given threshold, iteration stops immediately.
         /// </summary>
-        /// <value>The gradient change threshold.</value>
+        /// <value>The cost change threshold.</value>
         /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">The value must be nonnegative</exception>
-        public double GradientChangeThreshold
+        public double CostChangeThreshold
         {
-            get { return _gradientChangeThreshold; }
+            get { return _costChangeThreshold; }
             set
             {
                 if (double.IsNaN(value) || double.IsInfinity(value)) throw new NotFiniteNumberException("The value must be finite", value);
                 if (value < 0) throw new ArgumentOutOfRangeException("value", value, "The value must be nonnegative");
-                _gradientChangeThreshold = value;
+                _costChangeThreshold = value;
             }
         }
 
@@ -128,8 +128,8 @@ namespace widemeadows.Optimization.GradientDescent
             var increaseFactor = _stepIncreaseFactor;
             var decreaseFactor = _stepDecreaseFactor;
             var initialStepSize = _initialStepSize;
-            var threshold = _gradientChangeThreshold;
-            
+            var threshold = _costChangeThreshold;
+
             // obtain the initial cost
             var costFunction = problem.CostFunction;
             var cost = 0D;
@@ -160,7 +160,7 @@ namespace widemeadows.Optimization.GradientDescent
                     Debug.WriteLine("Stopping REGD at iteration {0}/{1} because costChange |{2}| <= {3}", i, maxIterations, costChange, threshold);
                     break;
                 }
-                
+
                 // determine changes in gradient direction
                 var gradient = costResult.CostGradient;
                 var gradientDirectionIndicator = gradient.PointwiseMultiply(previousGradient);
