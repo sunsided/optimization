@@ -7,7 +7,7 @@ namespace widemeadows.Optimization.Cost
     /// <summary>
     /// Class ResidualSumOfSquaresCostFunction.
     /// </summary>
-    public class ResidualSumOfSquaresCostFunction : IDerivableCostFunction<double, DifferentiableCostResult<double>>
+    public class ResidualSumOfSquaresCostFunction : IDifferentiableCostFunction<double, DifferentiableCostResult<double>>
     {
         /// <summary>
         /// The hypothesis to optimize
