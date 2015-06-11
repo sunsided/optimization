@@ -18,8 +18,16 @@ namespace widemeadows.Optimization.Cost
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>TCost.</returns>
-        [NotNull]
+        [NotNull, Obsolete]
         TCost CalculateCostAndGradient([NotNull] Vector<TData> coefficients);
+
+        /// <summary>
+        /// Calculates the cost.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <returns>TCost.</returns>
+        [NotNull, Obsolete]
+        double CalculateCost([NotNull] Vector<TData> coefficients);
 
         /// <summary>
         /// Calculates the first derivative, i.e. the gradient, at the given <paramref name="locations"/>
@@ -27,7 +35,7 @@ namespace widemeadows.Optimization.Cost
         /// <param name="locations">The locations at which to evaluate the gradient.</param>
         /// <returns>The gradient.</returns>
         [NotNull]
-        Vector<TData> CalculateDerivative([NotNull] Vector<TData> locations);
+        Vector<TData> CalculateGradient([NotNull] Vector<TData> locations);
 
         /// <summary>
         /// Calculates the second derivative, i.e. the gradient's gradient, at the given <paramref name="locations"/>
@@ -35,6 +43,6 @@ namespace widemeadows.Optimization.Cost
         /// <param name="locations">The locations at which to evaluate the second derivative.</param>
         /// <returns>The second derivative.</returns>
         [NotNull]
-        Vector<TData> CalculateSecondDerivative([NotNull] Vector<TData> locations);
+        Vector<TData> CalculateLaplacian([NotNull] Vector<TData> locations);
     }
 }
