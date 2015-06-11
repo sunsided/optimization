@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace widemeadows.Optimization
+namespace widemeadows.Optimization.Hypotheses
 {
     /// <summary>
     /// Interface IHypothesis
@@ -14,10 +14,10 @@ namespace widemeadows.Optimization
         /// <summary>
         /// Evaluates the hypothesis given the <paramref name="inputs"/> and the <paramref name="coefficients"/>.
         /// </summary>
-        /// <param name="inputs">The inputs.</param>
         /// <param name="coefficients">The coefficients.</param>
+        /// <param name="inputs">The inputs.</param>
         /// <returns>The estimated outputs.</returns>
-        [NotNull] 
-        Vector<TData> Evaluate([NotNull] Vector<TData> inputs, [NotNull] Vector<TData> coefficients);
+        [NotNull]
+        Vector<TData> Evaluate([NotNull] Vector<TData> coefficients, [NotNull] Vector<TData> inputs);
     }
 }

@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
+using widemeadows.Optimization.Hypotheses;
 
 namespace widemeadows.Optimization.Cost
 {
     /// <summary>
     /// Class ResidualSumOfSquaresCostFunction.
     /// </summary>
-    public class ResidualSumOfSquaresCostFunction : IDifferentiableCostFunction<double, DifferentiableCostResult<double>>
+    public class ResidualSumOfSquaresCostFunction : ITwiceDifferentiableCostFunction<double>
     {
         /// <summary>
         /// The hypothesis to optimize
@@ -47,12 +50,33 @@ namespace widemeadows.Optimization.Cost
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>ResidualSumOfSquaresCost.</returns>
-        public DifferentiableCostResult<double> CalculateCost(Vector<double> coefficients)
+        public double CalculateCost(Vector<double> coefficients)
         {
             var hypothesis = _hypothesis;
             var trainingSet = _trainingSet;
-            var rss = 0.0D;
-            var gradient = Vector<double>.Build.Dense(coefficients.Count, Vector<double>.Zero);
+            var sumOfSquaredErrors = (
+                from dataPoint in trainingSet
+                let inputs = dataPoint.Inputs
+                let expectedOutputs = dataPoint.Outputs
+                let outputs = hypothesis.Evaluate(coefficients, inputs)
+                select (outputs - expectedOutputs) into error
+                select error.Map(v => v*v).Sum()
+                ).Sum();
+
+            // scale by the number of training examples
+            return sumOfSquaredErrors / trainingSet.Count;
+        }
+
+        /// <summary>
+        /// Calculates the derivative.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
+        public Vector<double> CalculateGradient(Vector<double> coefficients)
+        {
+            var hypothesis = _hypothesis;
+            var trainingSet = _trainingSet;
+            var totalGradient = Vector<double>.Build.Dense(coefficients.Count, Vector<double>.Zero);
 
             foreach (var dataPoint in trainingSet)
             {
@@ -60,25 +84,66 @@ namespace widemeadows.Optimization.Cost
                 var expectedOutputs = dataPoint.Outputs;
 
                 // evaluate the hypothesis
-                var outputs = hypothesis.Evaluate(inputs, coefficients);
+                var outputs = hypothesis.Evaluate(coefficients, inputs);
 
                 // calculate the sum of the squared differences
                 var error = (outputs - expectedOutputs);
-                rss += error.Map(v => v*v).Sum();
 
                 // calculate the derivate of the hypothesis
-                var derivatives = hypothesis.Derivative(inputs, coefficients, outputs);
+                var derivatives = hypothesis.Gradient(coefficients, inputs, outputs);
 
                 // calculate the gradient
-                gradient += error.OuterProduct(derivatives).Row(0);
+                totalGradient += error.OuterProduct(derivatives).Row(0);
             }
 
             // scale by the number of training examples
-            rss /= trainingSet.Count;
-            gradient /= trainingSet.Count;
+            totalGradient /= trainingSet.Count;
 
             // done.
-            return new DifferentiableCostResult<double>(cost: rss, costGradient: gradient);
+            return totalGradient;
+        }
+
+        /// <summary>
+        /// Calculates the derivative.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
+        public Vector<double> CalculateLaplacian(Vector<double> coefficients)
+        {
+            var hypothesis = _hypothesis;
+            var trainingSet = _trainingSet;
+            var totalGradient = Vector<double>.Build.Dense(coefficients.Count, Vector<double>.Zero);
+            var totalLaplacian = Vector<double>.Build.Dense(coefficients.Count, Vector<double>.Zero);
+
+            foreach (var dataPoint in trainingSet)
+            {
+                var inputs = dataPoint.Inputs;
+                var expectedOutputs = dataPoint.Outputs;
+
+                // evaluate the hypothesis
+                var outputs = hypothesis.Evaluate(coefficients, inputs);
+
+                // calculate the sum of the squared differences
+                var error = (outputs - expectedOutputs);
+
+                // calculate the derivate of the hypothesis
+                var derivatives = hypothesis.Gradient(coefficients, inputs, outputs);
+
+                // calculate the  second derivate of the hypothesis
+                var secondDerivatives = hypothesis.Gradient(coefficients, inputs, outputs);
+
+                // calculate the gradient
+                totalGradient += error.OuterProduct(derivatives).Row(0);
+            }
+
+            // scale by the number of training examples
+            var gradient = totalGradient / trainingSet.Count;
+            var laplacian = totalLaplacian / trainingSet.Count;
+
+            throw new NotImplementedException("Laplacian of Residual Sum of Squares cost function not implemented");
+
+            // done.
+            return laplacian;
         }
     }
 }

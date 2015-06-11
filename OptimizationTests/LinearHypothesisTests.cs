@@ -21,11 +21,11 @@ namespace widemeadows.Optimization.Tests
             var theta = Vector<double>.Build.Dense(new[] {0D, 1D});
             var inputs = Vector<double>.Build.Dense(1, value);
 
-            var outputs = h.Evaluate(inputs, theta);
+            var outputs = h.Evaluate(theta, inputs);
             outputs.Count.Should().Be(1, "because one output is expected");
             outputs.Single().Should().BeApproximately(value, 1E-5D, "because the function is linear");
 
-            var derivative = h.Derivative(inputs, theta, outputs);
+            var derivative = h.Gradient(theta, inputs, outputs);
             derivative.Count.Should().Be(2, "because two coefficients are evaluated");
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             derivative[0].Should().Be(1D, "because the offset is independent of the inmput");
@@ -45,7 +45,7 @@ namespace widemeadows.Optimization.Tests
             var theta = Vector<double>.Build.Dense(new[] { offset, scale });
             var inputs = Vector<double>.Build.Dense(1, value);
 
-            var outputs = h.Evaluate(inputs, theta);
+            var outputs = h.Evaluate(theta, inputs);
 
             outputs.Count.Should().Be(2, "because two outputs are expected");
 
@@ -66,7 +66,7 @@ namespace widemeadows.Optimization.Tests
             var theta = Vector<double>.Build.Dense(new[] { offset, scale });
             var inputs = Vector<double>.Build.Dense(1, value);
 
-            var outputs = h.Evaluate(inputs, theta);
+            var outputs = h.Evaluate(theta, inputs);
 
             outputs.Count.Should().Be(1, "because one output is expected");
 
@@ -74,7 +74,7 @@ namespace widemeadows.Optimization.Tests
             var expectedresult = value * scale + offset;
             output.Should().BeApproximately(expectedresult, 1E-5D, "because the function is linear");
 
-            var derivative = h.Derivative(inputs, theta, outputs);
+            var derivative = h.Gradient(theta, inputs, outputs);
             derivative.Count.Should().Be(2, "because two coefficients are evaluated");
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             derivative[0].Should().Be(1D, "because the offset is independent of the inmput");

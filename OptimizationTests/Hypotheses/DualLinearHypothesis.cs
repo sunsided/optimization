@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
+using widemeadows.Optimization.Hypotheses;
 
 namespace widemeadows.Optimization.Tests.Hypotheses
 {
@@ -34,10 +35,10 @@ namespace widemeadows.Optimization.Tests.Hypotheses
         /// <summary>
         /// Evaluates the hypothesis given the <paramref name="inputs"/> and the <paramref name="coefficients"/>.
         /// </summary>
-        /// <param name="inputs">The inputs.</param>
         /// <param name="coefficients">The coefficients.</param>
+        /// <param name="inputs">The inputs.</param>
         /// <returns>Vector&lt;TData&gt;.</returns>
-        public Vector<double> Evaluate(Vector<double> inputs, Vector<double> coefficients)
+        public Vector<double> Evaluate(Vector<double> coefficients, Vector<double> inputs)
         {
             Debug.Assert(inputs.Count == _ninputs, "inputs.Count == _ninputs");
             Debug.Assert(inputs.Count == coefficients.Count - 1, "inputs.Count == coefficients.Count - 1");
@@ -56,17 +57,28 @@ namespace widemeadows.Optimization.Tests.Hypotheses
         /// <summary>
         /// Derivatives the specified inputs.
         /// </summary>
-        /// <param name="inputs">The inputs.</param>
         /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
         /// <param name="outputs">The outputs.</param>
         /// <returns>Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> Derivative(Vector<double> inputs, Vector<double> coefficients, Vector<double> outputs)
+        public Vector<double> Gradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        {
+            return Gradient(coefficients, locations);
+        }
+
+        /// <summary>
+        /// Evaluates the hypothesis given the <paramref name="locations" /> and the <paramref name="coefficients" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
+        public Vector<double> Gradient(Vector<double> coefficients, Vector<double> locations)
         {
             // TODO: Implement MIMO version of this function
-            return coefficients.MapIndexed((i, v) => 
-                i == 0 
-                ? 1 
-                : inputs[i-1]
+            return coefficients.MapIndexed((i, v) =>
+                i == 0
+                ? 1
+                : locations[i - 1]
                 );
         }
     }

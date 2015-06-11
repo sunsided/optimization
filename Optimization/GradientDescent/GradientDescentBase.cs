@@ -7,10 +7,10 @@ namespace widemeadows.Optimization.GradientDescent
     /// Base class for Gradient Descent-type algorithms.
     /// </summary>
     /// <typeparam name="TData">The type of the data.</typeparam>
-    /// <typeparam name="TCost">The type of the cost.</typeparam>
-    public abstract class GradientDescentBase<TData, TCost> : IGradientDescent, IMinimization<TData, TCost>
+    /// <typeparam name="TCostFunction">The type of the cost function.</typeparam>
+    public abstract class GradientDescentBase<TData, TCostFunction> : IGradientDescent, IMinimization<TData, TCostFunction>
         where TData : struct, IEquatable<TData>, IFormattable, IComparable<TData>
-        where TCost : ICost<TData>
+        where TCostFunction : ICostFunction<TData>
     {
         /// <summary>
         /// The maximum number of iterations
@@ -61,6 +61,6 @@ namespace widemeadows.Optimization.GradientDescent
         /// </summary>
         /// <param name="problem">The problem.</param>
         /// <returns>IOptimizationResult&lt;TData&gt;.</returns>
-        public abstract IOptimizationResult<TData> Minimize(IOptimizationProblem<TData, TCost> problem);
+        public abstract IOptimizationResult<TData> Minimize(IOptimizationProblem<TData, TCostFunction> problem);
     }
 }

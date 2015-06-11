@@ -31,7 +31,7 @@ namespace widemeadows.Optimization.Tests
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, ICostGradient<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
             // optimize!
             var gd = new ResilientErrorGradientDescent
@@ -66,7 +66,7 @@ namespace widemeadows.Optimization.Tests
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, ICostGradient<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
             // optimize!
             var gd = new ResilientErrorGradientDescent

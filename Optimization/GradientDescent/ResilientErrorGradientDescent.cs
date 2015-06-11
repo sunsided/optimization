@@ -8,7 +8,7 @@ namespace widemeadows.Optimization.GradientDescent
     /// <summary>
     /// Resilient Error Gradient Descent.
     /// </summary>
-    public sealed class ResilientErrorGradientDescent : GradientDescentBase<double, ICostGradient<double>>
+    public sealed class ResilientErrorGradientDescent : GradientDescentBase<double, IDifferentiableCostFunction<double>>
     {
         /// <summary>
         /// The initial step width
@@ -80,7 +80,7 @@ namespace widemeadows.Optimization.GradientDescent
         /// Minimizes the specified problem.
         /// </summary>
         /// <param name="problem">The problem.</param>
-        public override IOptimizationResult<double> Minimize(IOptimizationProblem<double, ICostGradient<double>> problem)
+        public override IOptimizationResult<double> Minimize(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem)
         {
             var maxIterations = MaxIterations;
             var increaseFactor = _stepIncreaseFactor;
@@ -108,11 +108,10 @@ namespace widemeadows.Optimization.GradientDescent
             // loop over all allowed iterations
             for (var i = 0; i < maxIterations; ++i)
             {
-                // obtain the cost and its gradient
-                var costResult = costFunction.CalculateCost(coefficients);
+                // obtain the cost
+                cost = costFunction.CalculateCost(coefficients);
 
                 // determine the change in cost
-                cost = costResult.Cost;
                 var costChange = cost - previousCost;
                 if (Math.Abs(costChange) <= threshold)
                 {
@@ -121,7 +120,7 @@ namespace widemeadows.Optimization.GradientDescent
                 }
 
                 // determine changes in gradient direction
-                var gradient = costResult.CostGradient;
+                var gradient = costFunction.CalculateGradient(coefficients);
                 var gradientDirectionIndicator = gradient.PointwiseMultiply(previousGradient);
                 var previousGradientDirectionIndicator = previousGradient.PointwiseMultiply(secondPreviousGradient);
 
