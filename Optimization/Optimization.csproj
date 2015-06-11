@@ -41,28 +41,21 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cost\CostResult.cs" />
+    <Compile Include="Cost\ITwiceDifferentiableCostFunction.cs" />
     <Compile Include="Cost\IDifferentiableCostFunction.cs" />
     <Compile Include="Cost\ICostFunction.cs" />
     <Compile Include="Cost\ResidualSumOfSquaresCostFunction.cs" />
-    <Compile Include="Cost\DifferentiableCostResult.cs" />
     <Compile Include="DataPoint.cs" />
     <Compile Include="GradientDescent\ConjugateGradientDescent.cs" />
     <Compile Include="GradientDescent\GradientDescentBase.cs" />
     <Compile Include="GradientDescent\IGradientDescent.cs" />
     <Compile Include="GradientDescent\ResilientErrorGradientDescent.cs" />
-    <Compile Include="Cost\ICostGradient.cs" />
-    <Compile Include="Cost\ICost.cs" />
+    <Compile Include="Hypotheses\ITwiceDifferentiableHypothesis.cs" />
     <Compile Include="Hypotheses\LinearHypothesis.cs" />
-    <Compile Include="IDifferentiableHypothesis.cs" />
-    <Compile Include="IHypothesis.cs" />
+    <Compile Include="Hypotheses\IDifferentiableHypothesis.cs" />
+    <Compile Include="Hypotheses\IHypothesis.cs" />
     <Compile Include="IInitialCoefficients.cs" />
     <Compile Include="IMinimzation.cs" />
     <Compile Include="IOptimizationProblem.cs" />
