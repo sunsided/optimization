@@ -54,12 +54,68 @@ namespace widemeadows.Optimization.Hypotheses
             return Vector<double>.Build.Dense(1, result);
         }
 
+        #region Partial derivatives with respect to the inputs
+
         /// <summary>
-        /// Gradients the specified coefficients.
+        /// Determines the gradient of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
-        /// <param name="locations">The locations.</param>
-        /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
+        /// <param name="locations">The inputs.</param>
+        /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
+        public Vector<double> Gradient(Vector<double> coefficients, Vector<double> locations)
+        {
+            Debug.Assert(coefficients.Count == locations.Count+1, "coefficients.Count == locations.Count+1");
+
+            // partial derivatives of the function with respect to the inputs are the coefficients
+            return locations.MapIndexed((i, v) => coefficients[i + 1]);
+        }
+
+        /// <summary>
+        /// Determines the second derivative of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
+        public Vector<double> Laplacian(Vector<double> coefficients, Vector<double> locations)
+        {
+            // second partial derivatives of the function with respect to the inputs is the zero vector
+            return locations.Map(v => 0D);
+        }
+
+        /// <summary>
+        /// Determines the gradient of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
+        /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
+        public Vector<double> Gradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        {
+            return Gradient(coefficients, locations);
+        }
+
+        /// <summary>
+        /// Determines the second derivative of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
+        /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
+        public Vector<double> Laplacian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        {
+            return Laplacian(coefficients, locations);
+        }
+
+        #endregion Partial derivatives with respect to the inputs
+
+        #region Partial derivatives with respect to the coefficients
+
+        /// <summary>
+        /// Determines the gradient of the hypothesis with respect to the <paramref name="coefficients" /> given the <paramref name="locations" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
         public Vector<double> CoefficientGradient(Vector<double> coefficients, Vector<double> locations)
         {
             // TODO: Implement MIMO (coefficient matrix) version of this function
@@ -71,23 +127,11 @@ namespace widemeadows.Optimization.Hypotheses
         }
 
         /// <summary>
-        /// Derivatives the specified inputs.
+        /// Determines the second derivative of the hypothesis with respect to the <paramref name="coefficients" /> given the <paramref name="locations" />.
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
-        /// <param name="locations">The locations.</param>
-        /// <param name="outputs">The outputs.</param>
-        /// <returns>Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> CoefficientGradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
-        {
-            return CoefficientGradient(coefficients, locations);
-        }
-
-        /// <summary>
-        /// Laplacians the specified coefficients.
-        /// </summary>
-        /// <param name="coefficients">The coefficients.</param>
-        /// <param name="locations">The locations.</param>
-        /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
+        /// <param name="locations">The inputs.</param>
+        /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
         public Vector<double> CoefficientLaplacian(Vector<double> coefficients, Vector<double> locations)
         {
             // TODO: Implement MIMO (coefficient matrix) version of this function
@@ -95,15 +139,29 @@ namespace widemeadows.Optimization.Hypotheses
         }
 
         /// <summary>
-        /// Laplacians the specified coefficients.
+        /// Determines the gradient of the hypothesis with respect to the <paramref name="coefficients" /> given the <paramref name="locations" />.
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
-        /// <param name="locations">The locations.</param>
-        /// <param name="outputs">The outputs.</param>
-        /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
+        /// <param name="locations">The inputs.</param>
+        /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
+        /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
+        public Vector<double> CoefficientGradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        {
+            return CoefficientGradient(coefficients, locations);
+        }
+
+        /// <summary>
+        /// Determines the second derivative of the hypothesis with respect to the <paramref name="coefficients" /> given the <paramref name="locations" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
+        /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
         public Vector<double> CoefficientLaplacian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
             return CoefficientLaplacian(coefficients, locations);
         }
+
+        #endregion Partial derivatives with respect to the coefficients
     }
 }
