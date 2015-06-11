@@ -79,12 +79,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <returns>Vector&lt;System.Double&gt;.</returns>
         public Vector<double> Gradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
-            // TODO: Implement MIMO (coefficient matrix) version of this function
-            return coefficients.MapIndexed((i, v) =>
-                i == 0
-                ? 1 // the offset
-                : locations[i - 1] // input vector is shorter by one entry
-                );
+            return Gradient(coefficients, locations);
         }
 
         /// <summary>
@@ -108,8 +103,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
         public Vector<double> Laplacian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
-            // TODO: Implement MIMO (coefficient matrix) version of this function
-            return coefficients.Map(v => 0D);
+            return Laplacian(coefficients, locations);
         }
     }
 }

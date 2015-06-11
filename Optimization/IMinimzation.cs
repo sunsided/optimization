@@ -8,10 +8,10 @@ namespace widemeadows.Optimization
     /// Interface IMinimization
     /// </summary>
     /// <typeparam name="TData">The type of the data.</typeparam>
-    /// <typeparam name="TCost">The type of the cost.</typeparam>
-    public interface IMinimization<TData, in TCost>
+    /// <typeparam name="TCostFunction">The type of the cost function.</typeparam>
+    public interface IMinimization<TData, in TCostFunction>
         where TData : struct, IEquatable<TData>, IFormattable, IComparable<TData>
-        where TCost : ICost<TData>
+        where TCostFunction : ICostFunction<TData>
     {
         /// <summary>
         /// Minimizes the specified problem.
@@ -19,6 +19,6 @@ namespace widemeadows.Optimization
         /// <param name="problem">The problem.</param>
         /// <returns>IOptimizationResult&lt;TData&gt;.</returns>
         [NotNull]
-        IOptimizationResult<TData> Minimize([NotNull] IOptimizationProblem<TData, TCost> problem);
+        IOptimizationResult<TData> Minimize([NotNull] IOptimizationProblem<TData, TCostFunction> problem);
     }
 }
