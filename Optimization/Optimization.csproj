@@ -60,6 +60,7 @@
     <Compile Include="GradientDescent\ResilientErrorGradientDescent.cs" />
     <Compile Include="Cost\ICostGradient.cs" />
     <Compile Include="Cost\ICost.cs" />
+    <Compile Include="Hypotheses\ITwiceDifferentiableHypothesis.cs" />
     <Compile Include="Hypotheses\LinearHypothesis.cs" />
     <Compile Include="Hypotheses\IDifferentiableHypothesis.cs" />
     <Compile Include="Hypotheses\IHypothesis.cs" />
