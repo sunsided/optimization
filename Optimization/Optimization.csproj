@@ -56,6 +56,7 @@
     <Compile Include="Hypotheses\LinearHypothesis.cs" />
     <Compile Include="Hypotheses\IDifferentiableHypothesis.cs" />
     <Compile Include="Hypotheses\IHypothesis.cs" />
+    <Compile Include="Hypotheses\RosenbrockHypothesis.cs" />
     <Compile Include="IInitialCoefficients.cs" />
     <Compile Include="IMinimzation.cs" />
     <Compile Include="IOptimizationProblem.cs" />

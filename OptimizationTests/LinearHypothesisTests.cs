@@ -25,7 +25,7 @@ namespace widemeadows.Optimization.Tests
             outputs.Count.Should().Be(1, "because one output is expected");
             outputs.Single().Should().BeApproximately(value, 1E-5D, "because the function is linear");
 
-            var derivative = h.Gradient(theta, inputs, outputs);
+            var derivative = h.CoefficientGradient(theta, inputs, outputs);
             derivative.Count.Should().Be(2, "because two coefficients are evaluated");
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             derivative[0].Should().Be(1D, "because the offset is independent of the inmput");
@@ -74,7 +74,7 @@ namespace widemeadows.Optimization.Tests
             var expectedresult = value * scale + offset;
             output.Should().BeApproximately(expectedresult, 1E-5D, "because the function is linear");
 
-            var derivative = h.Gradient(theta, inputs, outputs);
+            var derivative = h.CoefficientGradient(theta, inputs, outputs);
             derivative.Count.Should().Be(2, "because two coefficients are evaluated");
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             derivative[0].Should().Be(1D, "because the offset is independent of the inmput");

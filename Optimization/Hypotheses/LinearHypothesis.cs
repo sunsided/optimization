@@ -60,13 +60,13 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="coefficients">The coefficients.</param>
         /// <param name="locations">The locations.</param>
         /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> Gradient(Vector<double> coefficients, Vector<double> locations)
+        public Vector<double> CoefficientGradient(Vector<double> coefficients, Vector<double> locations)
         {
             // TODO: Implement MIMO (coefficient matrix) version of this function
             return coefficients.MapIndexed((i, v) =>
                 i == 0
-                ? 1 // the offset
-                : locations[i - 1] // input vector is shorter by one entry
+                ? 1 // <-- the offset
+                : locations[i - 1] // partial derivative with respect to theta(i) is input(i)
                 );
         }
 
@@ -77,9 +77,9 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="locations">The locations.</param>
         /// <param name="outputs">The outputs.</param>
         /// <returns>Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> Gradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        public Vector<double> CoefficientGradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
-            return Gradient(coefficients, locations);
+            return CoefficientGradient(coefficients, locations);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="coefficients">The coefficients.</param>
         /// <param name="locations">The locations.</param>
         /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> Laplacian(Vector<double> coefficients, Vector<double> locations)
+        public Vector<double> CoefficientLaplacian(Vector<double> coefficients, Vector<double> locations)
         {
             // TODO: Implement MIMO (coefficient matrix) version of this function
             return coefficients.Map(v => 0D);
@@ -101,9 +101,9 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="locations">The locations.</param>
         /// <param name="outputs">The outputs.</param>
         /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> Laplacian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        public Vector<double> CoefficientLaplacian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
-            return Laplacian(coefficients, locations);
+            return CoefficientLaplacian(coefficients, locations);
         }
     }
 }

@@ -87,7 +87,7 @@ namespace widemeadows.Optimization.Cost
                 var error = (outputs - expectedOutputs);
 
                 // calculate the derivate of the hypothesis
-                var gradient = hypothesis.Gradient(coefficients, inputs, outputs);
+                var gradient = hypothesis.CoefficientGradient(coefficients, inputs, outputs);
 
                 // calculate the gradient
                 totalGradient += error.OuterProduct(gradient).Row(0);
@@ -121,8 +121,8 @@ namespace widemeadows.Optimization.Cost
                 var error = (outputs - expectedOutputs);
 
                 // calculate the gradient and laplacian of the hypothesis
-                var gradient = hypothesis.Gradient(coefficients, inputs, outputs);
-                var laplacian = hypothesis.Gradient(coefficients, inputs, outputs);
+                var gradient = hypothesis.CoefficientGradient(coefficients, inputs, outputs);
+                var laplacian = hypothesis.CoefficientGradient(coefficients, inputs, outputs);
 
                 // calculate the gradient
                 totalLaplacian += gradient.Map(v => v * v) + error.OuterProduct(laplacian).Row(0);
