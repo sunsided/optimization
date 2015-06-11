@@ -51,7 +51,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="coefficients">The coefficients.</param>
         /// <param name="locations">The inputs.</param>
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
-        public Vector<double> Gradient(Vector<double> coefficients, Vector<double> locations)
+        public Vector<double> Jacobian(Vector<double> coefficients, Vector<double> locations)
         {
             Debug.Assert(coefficients.Count == 1, "coefficients.Count == 1");
             Debug.Assert(locations.Count == 2, "inputs.Count == 2");
@@ -77,7 +77,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="coefficients">The coefficients.</param>
         /// <param name="locations">The inputs.</param>
         /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
-        public Vector<double> Laplacian(Vector<double> coefficients, Vector<double> locations)
+        public Vector<double> Hessian(Vector<double> coefficients, Vector<double> locations)
         {
             Debug.Assert(coefficients.Count == 1, "coefficients.Count == 1");
             Debug.Assert(locations.Count == 2, "inputs.Count == 2");
@@ -104,9 +104,9 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="locations">The inputs.</param>
         /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
-        public Vector<double> Gradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        public Vector<double> Jacobian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
-            return Gradient(coefficients, locations);
+            return Jacobian(coefficients, locations);
         }
 
         /// <summary>
@@ -116,9 +116,9 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="locations">The inputs.</param>
         /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
         /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
-        public Vector<double> Laplacian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        public Vector<double> Hessian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
-            return Laplacian(coefficients, locations);
+            return Hessian(coefficients, locations);
         }
 
         #endregion Partial derivatives with respect to the inputs
@@ -131,7 +131,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="coefficients">The coefficients.</param>
         /// <param name="locations">The inputs.</param>
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
-        public Vector<double> CoefficientGradient(Vector<double> coefficients, Vector<double> locations)
+        public Vector<double> CoefficientJacobian(Vector<double> coefficients, Vector<double> locations)
         {
             Debug.Assert(coefficients.Count == 1, "coefficients.Count == 1");
             Debug.Assert(locations.Count == 2, "inputs.Count == 2");
@@ -152,7 +152,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="coefficients">The coefficients.</param>
         /// <param name="locations">The inputs.</param>
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
-        public Vector<double> CoefficientLaplacian(Vector<double> coefficients, Vector<double> locations)
+        public Vector<double> CoefficientHessian(Vector<double> coefficients, Vector<double> locations)
         {
             Debug.Assert(coefficients.Count == 1, "coefficients.Count == 1");
             Debug.Assert(locations.Count == 2, "inputs.Count == 2");
@@ -168,9 +168,9 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="locations">The inputs.</param>
         /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
-        public Vector<double> CoefficientGradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        public Vector<double> CoefficientJacobian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
-            return CoefficientGradient(coefficients, locations);
+            return CoefficientJacobian(coefficients, locations);
         }
 
         /// <summary>
@@ -180,9 +180,9 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="locations">The inputs.</param>
         /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
-        public Vector<double> CoefficientLaplacian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        public Vector<double> CoefficientHessian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
-            return CoefficientLaplacian(coefficients, locations);
+            return CoefficientHessian(coefficients, locations);
         }
 
         #endregion Partial derivatives with respect to the coefficients

@@ -53,6 +53,7 @@
     <Compile Include="Hypotheses\DualLinearHypothesis.cs" />
     <Compile Include="LinearHypothesisTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ConjugateGradientDescentTests.cs" />
     <Compile Include="ResilientErrorGradientDescentTests.cs" />
   </ItemGroup>
   <ItemGroup>

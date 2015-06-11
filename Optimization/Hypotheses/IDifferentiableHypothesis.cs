@@ -12,27 +12,6 @@ namespace widemeadows.Optimization.Hypotheses
         where TData : struct, IEquatable<TData>, IFormattable
     {
         /// <summary>
-        /// Determines the gradient of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
-        /// </summary>
-        /// <param name="coefficients">The coefficients.</param>
-        /// <param name="locations">The inputs.</param>
-        /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate"/>.</param>
-        /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="locations"/>.</returns>
-        [NotNull]
-        [Obsolete("Shouldn't be required")]
-        Vector<TData> Gradient([NotNull] Vector<double> coefficients, [NotNull] Vector<TData> locations, [NotNull] Vector<TData> outputs);
-
-        /// <summary>
-        /// Determines the gradient of the hypothesis with respect to the <paramref name="coefficients" /> given the <paramref name="coefficients" />.
-        /// </summary>
-        /// <param name="coefficients">The coefficients.</param>
-        /// <param name="locations">The inputs.</param>
-        /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="locations"/>.</returns>
-        [NotNull]
-        [Obsolete("Shouldn't be required")]
-        Vector<TData> Gradient([NotNull] Vector<double> coefficients, [NotNull] Vector<double> locations);
-
-        /// <summary>
         /// Determines the gradient of the hypothesis with respect to the <paramref name="coefficients" /> given the <paramref name="locations" />.
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
@@ -40,7 +19,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate"/>.</param>
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients"/>.</returns>
         [NotNull]
-        Vector<TData> CoefficientGradient([NotNull] Vector<double> coefficients, [NotNull] Vector<TData> locations, [NotNull] Vector<TData> outputs);
+        Vector<TData> CoefficientJacobian([NotNull] Vector<double> coefficients, [NotNull] Vector<TData> locations, [NotNull] Vector<TData> outputs);
 
         /// <summary>
         /// Determines the gradient of the hypothesis with respect to the <paramref name="coefficients" /> given the <paramref name="locations" />.
@@ -49,6 +28,6 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="locations">The inputs.</param>
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients"/>.</returns>
         [NotNull]
-        Vector<TData> CoefficientGradient([NotNull] Vector<double> coefficients, [NotNull] Vector<double> locations);
+        Vector<TData> CoefficientJacobian([NotNull] Vector<double> coefficients, [NotNull] Vector<double> locations);
     }
 }

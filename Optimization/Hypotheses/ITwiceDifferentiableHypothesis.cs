@@ -20,7 +20,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="locations"/>.</returns>
         [NotNull]
         [Obsolete("Shouldn't be required")]
-        Vector<TData> Laplacian([NotNull] Vector<double> coefficients, [NotNull] Vector<TData> locations, [NotNull] Vector<TData> outputs);
+        Vector<TData> Hessian([NotNull] Vector<double> coefficients, [NotNull] Vector<TData> locations, [NotNull] Vector<TData> outputs);
 
         /// <summary>
         /// Determines the second derivative of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
@@ -30,7 +30,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="locations"/>.</returns>
         [NotNull]
         [Obsolete("Shouldn't be required")]
-        Vector<TData> Laplacian([NotNull] Vector<double> coefficients, [NotNull] Vector<double> locations);
+        Vector<TData> Hessian([NotNull] Vector<double> coefficients, [NotNull] Vector<double> locations);
 
         /// <summary>
         /// Determines the second derivative of the hypothesis with respect to the <paramref name="coefficients" /> given the <paramref name="locations" />.
@@ -40,7 +40,8 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate"/>.</param>
         /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="coefficients"/>.</returns>
         [NotNull]
-        Vector<TData> CoefficientLaplacian([NotNull] Vector<double> coefficients, [NotNull] Vector<TData> locations, [NotNull] Vector<TData> outputs);
+        [Obsolete("Shouldn't be required")]
+        Vector<TData> CoefficientHessian([NotNull] Vector<double> coefficients, [NotNull] Vector<TData> locations, [NotNull] Vector<TData> outputs);
 
         /// <summary>
         /// Determines the second derivative of the hypothesis with respect to the <paramref name="coefficients" /> given the <paramref name="locations" />.
@@ -49,6 +50,7 @@ namespace widemeadows.Optimization.Hypotheses
         /// <param name="locations">The inputs.</param>
         /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="coefficients"/>.</returns>
         [NotNull]
-        Vector<TData> CoefficientLaplacian([NotNull] Vector<double> coefficients, [NotNull] Vector<double> locations);
+        [Obsolete("Shouldn't be required")]
+        Vector<TData> CoefficientHessian([NotNull] Vector<double> coefficients, [NotNull] Vector<double> locations);
     }
 }

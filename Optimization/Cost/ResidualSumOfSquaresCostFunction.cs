@@ -71,7 +71,7 @@ namespace widemeadows.Optimization.Cost
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> CalculateGradient(Vector<double> coefficients)
+        public Vector<double> Jacobian(Vector<double> coefficients)
         {
             var hypothesis = _hypothesis;
             var trainingSet = _trainingSet;
@@ -87,7 +87,7 @@ namespace widemeadows.Optimization.Cost
                 var error = (outputs - expectedOutputs);
 
                 // calculate the derivate of the hypothesis
-                var gradient = hypothesis.CoefficientGradient(coefficients, inputs, outputs);
+                var gradient = hypothesis.CoefficientJacobian(coefficients, inputs, outputs);
 
                 // calculate the gradient
                 totalGradient += error.OuterProduct(gradient).Row(0);
@@ -105,7 +105,7 @@ namespace widemeadows.Optimization.Cost
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> CalculateLaplacian(Vector<double> coefficients)
+        public Vector<double> Hessian(Vector<double> coefficients)
         {
             var hypothesis = _hypothesis;
             var trainingSet = _trainingSet;
@@ -121,8 +121,8 @@ namespace widemeadows.Optimization.Cost
                 var error = (outputs - expectedOutputs);
 
                 // calculate the gradient and laplacian of the hypothesis
-                var gradient = hypothesis.CoefficientGradient(coefficients, inputs, outputs);
-                var laplacian = hypothesis.CoefficientGradient(coefficients, inputs, outputs);
+                var gradient = hypothesis.CoefficientJacobian(coefficients, inputs, outputs);
+                var laplacian = hypothesis.CoefficientJacobian(coefficients, inputs, outputs);
 
                 // calculate the gradient
                 totalLaplacian += gradient.Map(v => v * v) + error.OuterProduct(laplacian).Row(0);

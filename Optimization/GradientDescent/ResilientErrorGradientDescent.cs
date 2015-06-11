@@ -120,7 +120,7 @@ namespace widemeadows.Optimization.GradientDescent
                 }
 
                 // determine changes in gradient direction
-                var gradient = costFunction.CalculateGradient(coefficients);
+                var gradient = costFunction.Jacobian(coefficients);
                 var gradientDirectionIndicator = gradient.PointwiseMultiply(previousGradient);
                 var previousGradientDirectionIndicator = previousGradient.PointwiseMultiply(secondPreviousGradient);
 

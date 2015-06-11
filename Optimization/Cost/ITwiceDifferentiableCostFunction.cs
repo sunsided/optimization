@@ -17,6 +17,7 @@ namespace widemeadows.Optimization.Cost
         /// <param name="locations">The locations at which to evaluate the second derivative.</param>
         /// <returns>The second derivative.</returns>
         [NotNull]
-        Vector<TData> CalculateLaplacian([NotNull] Vector<TData> locations);
+        [Obsolete("Shouldn't be required")]
+        Vector<TData> Hessian([NotNull] Vector<TData> locations); // TODO: should return a vector
     }
 }

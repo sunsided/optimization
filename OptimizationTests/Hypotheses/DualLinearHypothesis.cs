@@ -61,9 +61,9 @@ namespace widemeadows.Optimization.Tests.Hypotheses
         /// <param name="locations">The inputs.</param>
         /// <param name="outputs">The outputs.</param>
         /// <returns>Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> CoefficientGradient(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        public Vector<double> CoefficientJacobian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
         {
-            return CoefficientGradient(coefficients, locations);
+            return CoefficientJacobian(coefficients, locations);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace widemeadows.Optimization.Tests.Hypotheses
         /// <param name="coefficients">The coefficients.</param>
         /// <param name="locations">The inputs.</param>
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
-        public Vector<double> CoefficientGradient(Vector<double> coefficients, Vector<double> locations)
+        public Vector<double> CoefficientJacobian(Vector<double> coefficients, Vector<double> locations)
         {
             return coefficients.MapIndexed((i, v) =>
                 i == 0
