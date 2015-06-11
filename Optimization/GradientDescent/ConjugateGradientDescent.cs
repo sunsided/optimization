@@ -21,11 +21,11 @@ namespace widemeadows.Optimization.GradientDescent
 
             // in order to obtain the initial residuals, we'll calculate the cost once
             var costFunction = problem.CostFunction;
-            var costResult = costFunction.CalculateCost(theta);
+            var cost = costFunction.CalculateCost(theta);
 
             // now we determine the initial residuals, which are defined to
             // be the opposite gradient direction
-            var residuals = -costResult.CostGradient;
+            var residuals = -costFunction.CalculateGradient(theta);
 
             // we want to restart CG at least every n steps,
             // and use this variable as a counter.
@@ -58,7 +58,7 @@ namespace widemeadows.Optimization.GradientDescent
                 } while (j < jmax && (alpha*alpha)*deltaD > (epsilon*epsilon));
 
                 // obtain the new residuals
-                residuals = -costResult.CostGradient; // TODO: needs to be calculated above
+                residuals = -costFunction.CalculateGradient(theta); // TODO: needs to be calculated above
 
                 // --------------------------------------------------------------------------------
                 // TODO: The cost function and its gradients must be available from different calls
