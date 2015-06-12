@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
@@ -8,7 +7,7 @@ using widemeadows.Optimization.Hypotheses;
 namespace widemeadows.Optimization.Cost
 {
     /// <summary>
-    /// Class ResidualSumOfSquaresCostFunction.
+    /// Implements the sum of squared errors cost function.
     /// </summary>
     public class ResidualSumOfSquaresCostFunction : ITwiceDifferentiableCostFunction<double>
     {
@@ -72,7 +71,7 @@ namespace widemeadows.Optimization.Cost
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> CalculateGradient(Vector<double> coefficients)
+        public Vector<double> Jacobian(Vector<double> coefficients)
         {
             var hypothesis = _hypothesis;
             var trainingSet = _trainingSet;
@@ -83,17 +82,15 @@ namespace widemeadows.Optimization.Cost
                 var inputs = dataPoint.Inputs;
                 var expectedOutputs = dataPoint.Outputs;
 
-                // evaluate the hypothesis
+                // obtain the error term by evaluating the hypothesis at the current input locations
                 var outputs = hypothesis.Evaluate(coefficients, inputs);
-
-                // calculate the sum of the squared differences
                 var error = (outputs - expectedOutputs);
 
                 // calculate the derivate of the hypothesis
-                var derivatives = hypothesis.Gradient(coefficients, inputs, outputs);
+                var gradient = hypothesis.CoefficientJacobian(coefficients, inputs, outputs);
 
                 // calculate the gradient
-                totalGradient += error.OuterProduct(derivatives).Row(0);
+                totalGradient += error.OuterProduct(gradient).Row(0);
             }
 
             // scale by the number of training examples
@@ -108,11 +105,10 @@ namespace widemeadows.Optimization.Cost
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>MathNet.Numerics.LinearAlgebra.Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> CalculateLaplacian(Vector<double> coefficients)
+        public Vector<double> Hessian(Vector<double> coefficients)
         {
             var hypothesis = _hypothesis;
             var trainingSet = _trainingSet;
-            var totalGradient = Vector<double>.Build.Dense(coefficients.Count, Vector<double>.Zero);
             var totalLaplacian = Vector<double>.Build.Dense(coefficients.Count, Vector<double>.Zero);
 
             foreach (var dataPoint in trainingSet)
@@ -120,30 +116,20 @@ namespace widemeadows.Optimization.Cost
                 var inputs = dataPoint.Inputs;
                 var expectedOutputs = dataPoint.Outputs;
 
-                // evaluate the hypothesis
+                // obtain the error term by evaluating the hypothesis at the current input locations
                 var outputs = hypothesis.Evaluate(coefficients, inputs);
-
-                // calculate the sum of the squared differences
                 var error = (outputs - expectedOutputs);
 
-                // calculate the derivate of the hypothesis
-                var derivatives = hypothesis.Gradient(coefficients, inputs, outputs);
-
-                // calculate the  second derivate of the hypothesis
-                var secondDerivatives = hypothesis.Gradient(coefficients, inputs, outputs);
+                // calculate the gradient and laplacian of the hypothesis
+                var gradient = hypothesis.CoefficientJacobian(coefficients, inputs, outputs);
+                var laplacian = hypothesis.CoefficientJacobian(coefficients, inputs, outputs);
 
                 // calculate the gradient
-                totalGradient += error.OuterProduct(derivatives).Row(0);
+                totalLaplacian += gradient.Map(v => v * v) + error.OuterProduct(laplacian).Row(0);
             }
 
             // scale by the number of training examples
-            var gradient = totalGradient / trainingSet.Count;
-            var laplacian = totalLaplacian / trainingSet.Count;
-
-            throw new NotImplementedException("Laplacian of Residual Sum of Squares cost function not implemented");
-
-            // done.
-            return laplacian;
+            return totalLaplacian / trainingSet.Count;
         }
     }
 }

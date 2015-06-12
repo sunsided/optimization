@@ -87,7 +87,7 @@ namespace widemeadows.Optimization.GradientDescent
             var decreaseFactor = _stepDecreaseFactor;
             var initialStepSize = _initialStepSize;
             // ReSharper disable once ExceptionNotDocumented
-            var threshold = CostChangeThreshold;
+            var threshold = ErrorTolerance;
 
             // obtain the initial cost
             var costFunction = problem.CostFunction;
@@ -120,7 +120,7 @@ namespace widemeadows.Optimization.GradientDescent
                 }
 
                 // determine changes in gradient direction
-                var gradient = costFunction.CalculateGradient(coefficients);
+                var gradient = costFunction.Jacobian(coefficients);
                 var gradientDirectionIndicator = gradient.PointwiseMultiply(previousGradient);
                 var previousGradientDirectionIndicator = previousGradient.PointwiseMultiply(secondPreviousGradient);
 

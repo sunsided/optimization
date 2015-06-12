@@ -21,7 +21,7 @@ namespace widemeadows.Optimization.GradientDescent
         /// The cost change threshold. If the cost change
         /// is less than the given threshold, iteration stops immediately.
         /// </summary>
-        private double _costChangeThreshold = 1E-20D;
+        private double _errorTolerance = 1E-10D;
 
         /// <summary>
         /// Gets or sets the maximum number of iterations.
@@ -39,20 +39,20 @@ namespace widemeadows.Optimization.GradientDescent
         }
 
         /// <summary>
-        /// Gets or sets the cost change threshold. If the cost change
-        /// is less than the given threshold, iteration stops immediately.
+        /// Gets or sets the error tolerance. If, e.g. the cost change
+        /// is less than the given threshold, optimization stops immediately.
         /// </summary>
-        /// <value>The cost change threshold.</value>
+        /// <value>The error tolerance.</value>
         /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">The value must be nonnegative</exception>
-        public double CostChangeThreshold
+        public virtual double ErrorTolerance
         {
-            get { return _costChangeThreshold; }
+            get { return _errorTolerance; }
             set
             {
                 if (double.IsNaN(value) || double.IsInfinity(value)) throw new NotFiniteNumberException("The value must be finite", value);
                 if (value < 0) throw new ArgumentOutOfRangeException("value", value, "The value must be nonnegative");
-                _costChangeThreshold = value;
+                _errorTolerance = value;
             }
         }
 

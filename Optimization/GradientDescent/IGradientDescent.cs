@@ -19,6 +19,6 @@
         /// <value>The cost change threshold.</value>
         /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
         /// <exception cref="System.ArgumentOutOfRangeException">The value must be nonnegative</exception>
-        double CostChangeThreshold { get; set; }
+        double ErrorTolerance { get; set; }
     }
 }

@@ -11,7 +11,7 @@ using widemeadows.Optimization.Tests.Hypotheses;
 namespace widemeadows.Optimization.Tests
 {
     [TestFixture]
-    public class ResilientErrorGradientDescentTests
+    public class ConjugateGradientDescentTests
     {
         [Test]
         public void LinearRegressionWithResidualSumOfSquares()
@@ -36,10 +36,7 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
             // optimize!
-            var gd = new ResilientErrorGradientDescent
-            {
-                ErrorTolerance = 0.0D
-            };
+            var gd = new FletcherReevesConjugateGradientDescent();
             var result = gd.Minimize(problem);
 
             // assert!
@@ -71,10 +68,7 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
             // optimize!
-            var gd = new ResilientErrorGradientDescent
-            {
-                ErrorTolerance = 0.0D
-            };
+            var gd = new FletcherReevesConjugateGradientDescent();
             var result = gd.Minimize(problem);
 
             // assert!
@@ -84,7 +78,44 @@ namespace widemeadows.Optimization.Tests
         }
 
         [Test]
-        public void RosenbrockRegressionWithResidualSumOfSquares()
+        public void FletcherReevesRosenbrockRegressionWithResidualSumOfSquares()
+        {
+            // parameter is default Rosenbrock
+            var theta = Vector<double>.Build.Dense(1, 105D);
+
+            // define the hypothesis
+            var hypothesis = new RosenbrockHypothesis();
+
+            // define a probability distribution
+            var distribution = new ContinuousUniform(-10D, 10D);
+
+            // obtain the test data
+            const int dataPoints = 10;
+            var trainingSet = new List<DataPoint<double>>(dataPoints);
+            for(int i=0; i<dataPoints; ++i)
+            {
+                var inputs = Vector<double>.Build.Random(2, distribution);
+                var output = hypothesis.Evaluate(theta, inputs);
+                trainingSet.Add(new DataPoint<double>(inputs, output));
+            };
+
+            // cost function is sum of squared errors
+            var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
+
+            // define the optimization problem
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+
+            // optimize!
+            var gd = new FletcherReevesConjugateGradientDescent();
+            var result = gd.Minimize(problem);
+
+            // assert!
+            var coefficients = result.Coefficients;
+            coefficients[0].Should().BeApproximately(theta[0], 1D, "because that's the underlying system's parameter");
+        }
+
+        [Test]
+        public void PolakRibiereRosenbrockRegressionWithResidualSumOfSquares()
         {
             // parameter is default Rosenbrock
             var theta = Vector<double>.Build.Dense(1, 105D);
@@ -112,7 +143,7 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
             // optimize!
-            var gd = new ResilientErrorGradientDescent
+            var gd = new PolakRibiereConjugateGradientDescent
             {
                 ErrorTolerance = 0.0D // TODO: actually use it
             };

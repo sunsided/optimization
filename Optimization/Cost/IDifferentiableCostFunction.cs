@@ -19,6 +19,6 @@ namespace widemeadows.Optimization.Cost
         /// <param name="locations">The locations at which to evaluate the gradient.</param>
         /// <returns>The gradient.</returns>
         [NotNull]
-        Vector<TData> CalculateGradient([NotNull] Vector<TData> locations);
+        Vector<TData> Jacobian([NotNull] Vector<TData> locations);
     }
 }
