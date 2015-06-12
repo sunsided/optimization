@@ -63,11 +63,12 @@ namespace widemeadows.Optimization.GradientDescent
             for (var i = 0; i < maxIterations; ++i)
             {
                 // stop if the gradient change is below the threshold
+                /*
                 if (delta <= epsilonSquare*initialDelta)
                 {
                     Debug.WriteLine("Stopping CG/S/PR at iteration {0}/{1} because cost |{2}| <= {3}", i, maxIterations, delta, epsilonSquare * initialDelta);
                     break;
-                }
+                }*/
 
                 // var cost = costFunction.CalculateCost(x);
 

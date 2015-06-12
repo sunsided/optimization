@@ -56,6 +56,7 @@
     <Compile Include="GradientDescent\ResilientErrorGradientDescent.cs" />
     <Compile Include="GradientDescent\SecantMethodConjugateGradientDescentBase.cs" />
     <Compile Include="Hypotheses\ITwiceDifferentiableHypothesis.cs" />
+    <Compile Include="Hypotheses\UnivariateExponentialHypothesis.cs" />
     <Compile Include="Hypotheses\LinearHypothesis.cs" />
     <Compile Include="Hypotheses\IDifferentiableHypothesis.cs" />
     <Compile Include="Hypotheses\IHypothesis.cs" />

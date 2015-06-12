@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
@@ -45,9 +46,12 @@ namespace widemeadows.Optimization.GradientDescent
                 // we'll end up with a (close to ) zero term if both directions are orthogonal.
                 // At this point, alpha will be zero (or close to it), which terminates our search.
                 var eta = costFunction.Jacobian(theta)*direction;
+                Debug.Assert(!double.IsInfinity(eta), "!double.IsInfinity(eta)");
 
                 // adjust the step size
                 alpha = alpha*eta/(previousEta - eta);
+                Debug.Assert(!double.IsNaN(alpha), "!double.IsNaN(alpha)");
+
                 previousEta = eta;
 
                 // step to the new location along the line

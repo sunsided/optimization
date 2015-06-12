@@ -80,7 +80,7 @@ namespace widemeadows.Optimization.GradientDescent
             get { return base.ErrorTolerance; }
             set
             {
-                if (value <= 0 || value > 1) throw new ArgumentOutOfRangeException("value", value, "The value must positive and less than or equal to 1");
+                if (value <= 0 || value > 1) throw new ArgumentOutOfRangeException("value", value, "The value must be positive and less than or equal to 1");
                 base.ErrorTolerance = value;
                 _errorToleranceSquared = value*value;
             }
