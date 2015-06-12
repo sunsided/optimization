@@ -81,7 +81,7 @@ namespace widemeadows.Optimization.GradientDescent
 
                 // var cost = costFunction.CalculateCost(x);
 
-                // perform a line search by using the secant method
+                // perform a line search to find the minimum along the given direction
                 theta = LineSearch(costFunction, theta, direction);
 
                 // obtain the new residuals
