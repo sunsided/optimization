@@ -7,8 +7,20 @@ using widemeadows.Optimization.Cost;
 namespace widemeadows.Optimization.GradientDescent
 {
     /// <summary>
-    /// Conjugate-Gradient Descent
+    /// Conjugate-Gradient Descent using Fletcher-Reeves conjugation and a Secant Method line search.
     /// </summary>
+    /// <remarks>
+    /// <code>
+    /// @techreport{Shewchuk:1994:ICG:865018,
+    ///  author = {Shewchuk, Jonathan R},
+    ///  title = {An Introduction to the Conjugate Gradient Method Without the Agonizing Pain},
+    ///  year = {1994},
+    ///  source = {http://www.ncstrl.org:8900/ncstrl/servlet/search?formname=detail\&amp;id=oai%3Ancstrlh%3Acmucs%3ACMU%2F%2FCS-94-125},
+    ///  publisher = {Carnegie Mellon University},
+    ///  address = {Pittsburgh, PA, USA},
+    /// }
+    /// </code>
+    /// </remarks>
     public sealed class ConjugateGradientDescent : GradientDescentBase<double, IDifferentiableCostFunction<double>>
     {
         /// <summary>
