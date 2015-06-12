@@ -65,7 +65,7 @@ namespace widemeadows.Optimization.GradientDescent
                 // stop if the gradient change is below the threshold
                 if (delta <= epsilonSquare*initialDelta)
                 {
-                    Debug.WriteLine("Stopping CG/S/FR at iteration {0}/{1} because cost |{2}| <= {3}", i, maxIterations, delta, epsilonSquare * initialDelta);
+                    Debug.WriteLine("Stopping CG/S/PR at iteration {0}/{1} because cost |{2}| <= {3}", i, maxIterations, delta, epsilonSquare * initialDelta);
                     break;
                 }
 
