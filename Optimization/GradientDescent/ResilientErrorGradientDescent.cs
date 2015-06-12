@@ -87,7 +87,7 @@ namespace widemeadows.Optimization.GradientDescent
             var decreaseFactor = _stepDecreaseFactor;
             var initialStepSize = _initialStepSize;
             // ReSharper disable once ExceptionNotDocumented
-            var threshold = CostChangeThreshold;
+            var threshold = ErrorTolerance;
 
             // obtain the initial cost
             var costFunction = problem.CostFunction;
