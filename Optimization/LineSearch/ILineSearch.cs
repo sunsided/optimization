@@ -6,7 +6,7 @@ using widemeadows.Optimization.Cost;
 namespace widemeadows.Optimization.LineSearch
 {
     /// <summary>
-    /// Interface ILineSearch
+    /// Line search-based directed function minimization.
     /// </summary>
     /// <typeparam name="TData">The type of the t data.</typeparam>
     /// <typeparam name="TFunction">The type of the t cost function.</typeparam>
@@ -15,13 +15,13 @@ namespace widemeadows.Optimization.LineSearch
         where TFunction : ICostFunction<TData>
     {
         /// <summary>
-        /// Performs a line search by using the secant method.
+        /// Minimizes the <paramref name="function"/> by performing a line search along the <paramref name="direction"/>, starting from the given <paramref name="location"/>.
         /// </summary>
         /// <param name="function">The cost function.</param>
         /// <param name="location">The starting point.</param>
         /// <param name="direction">The search direction.</param>
         /// <returns>The best found minimum point along the <paramref name="direction"/>.</returns>
         [NotNull]
-        Vector<TData> LineSearch([NotNull] TFunction function, [NotNull] Vector<TData> location, [NotNull] Vector<TData> direction);
+        Vector<TData> Minimize([NotNull] TFunction function, [NotNull] Vector<TData> location, [NotNull] Vector<TData> direction);
     }
 }

@@ -111,6 +111,6 @@ namespace widemeadows.Optimization.LineSearch
         /// <param name="location">The starting point.</param>
         /// <param name="direction">The search direction.</param>
         /// <returns>The best found minimum point along the <paramref name="direction" />.</returns>
-        public abstract Vector<TData> LineSearch(TFunction function, Vector<TData> location, Vector<TData> direction);
+        public abstract Vector<TData> Minimize(TFunction function, Vector<TData> location, Vector<TData> direction);
     }
 }

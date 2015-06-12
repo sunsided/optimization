@@ -16,7 +16,7 @@ namespace widemeadows.Optimization.LineSearch
         /// <param name="theta">The starting point.</param>
         /// <param name="direction">The search direction.</param>
         /// <returns>The best found minimum point along the <paramref name="direction"/>.</returns>
-        public override Vector<double> LineSearch(IDifferentiableCostFunction<double> costFunction, Vector<double> theta, Vector<double> direction)
+        public override Vector<double> Minimize(IDifferentiableCostFunction<double> costFunction, Vector<double> theta, Vector<double> direction)
         {
             var maxLineSearchIteration = MaxLineSearchIterations;
             var initialStepSize = LineSearchStepSize;

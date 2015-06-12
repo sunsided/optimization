@@ -75,7 +75,7 @@ namespace widemeadows.Optimization.GradientDescent
         [NotNull]
         protected Vector<TData> LineSearch([NotNull] TCostFunction costFunction, [NotNull] Vector<TData> theta, [NotNull] Vector<TData> direction)
         {
-            return _lineSearch.LineSearch(costFunction, theta, direction);
+            return _lineSearch.Minimize(costFunction, theta, direction);
         }
     }
 }
