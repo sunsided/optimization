@@ -6,6 +6,7 @@ using NUnit.Framework;
 using widemeadows.Optimization.Cost;
 using widemeadows.Optimization.GradientDescent;
 using widemeadows.Optimization.Hypotheses;
+using widemeadows.Optimization.LineSearch;
 using widemeadows.Optimization.Tests.Hypotheses;
 
 namespace widemeadows.Optimization.Tests
@@ -35,8 +36,11 @@ namespace widemeadows.Optimization.Tests
             // define the optimization problem
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
+            // define the line search algorithm
+            var lineSearch = new SecantMethod();
+
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent();
+            var gd = new FletcherReevesConjugateGradientDescent(lineSearch);
             var result = gd.Minimize(problem);
 
             // assert!
@@ -67,8 +71,11 @@ namespace widemeadows.Optimization.Tests
             // define the optimization problem
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
+            // define the line search algorithm
+            var lineSearch = new SecantMethod();
+
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent();
+            var gd = new FletcherReevesConjugateGradientDescent(lineSearch);
             var result = gd.Minimize(problem);
 
             // assert!
@@ -105,8 +112,11 @@ namespace widemeadows.Optimization.Tests
             // define the optimization problem
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
+            // define the line search algorithm
+            var lineSearch = new SecantMethod();
+
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent();
+            var gd = new FletcherReevesConjugateGradientDescent(lineSearch);
             var result = gd.Minimize(problem);
 
             // assert!
@@ -142,8 +152,11 @@ namespace widemeadows.Optimization.Tests
             // define the optimization problem
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
+            // define the line search algorithm
+            var lineSearch = new SecantMethod();
+
             // optimize!
-            var gd = new PolakRibiereConjugateGradientDescent();
+            var gd = new PolakRibiereConjugateGradientDescent(lineSearch);
             var result = gd.Minimize(problem);
 
             // assert!
@@ -179,11 +192,18 @@ namespace widemeadows.Optimization.Tests
             // define the optimization problem
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
 
+            // define the line search algorithm
+            var lineSearch = new SecantMethod
+                             {
+                                 MaxLineSearchIterations = 40,
+                                 LineSearchStepSize = 1E-5D,
+                                 ErrorTolerance = 1E-5D
+                             };
+
             // optimize!
-            var gd = new PolakRibiereConjugateGradientDescent
+            var gd = new PolakRibiereConjugateGradientDescent(lineSearch)
                      {
-                         MaxLineSearchIterations = 40,
-                         LineSearchStepSize = 1E-5D,
+
                          MaxIterations = 10000,
                          ErrorTolerance = 1E-5D
                      };

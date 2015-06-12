@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
+using widemeadows.Optimization.LineSearch;
 
 namespace widemeadows.Optimization.GradientDescent
 {
@@ -20,8 +21,17 @@ namespace widemeadows.Optimization.GradientDescent
     /// }
     /// </code>
     /// </remarks>
-    public sealed class PolakRibiereConjugateGradientDescent : SecantMethodConjugateGradientDescentBase
+    public sealed class PolakRibiereConjugateGradientDescent : ConjugateGradientDescentBase<double, IDifferentiableCostFunction<double>>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FletcherReevesConjugateGradientDescent"/> class.
+        /// </summary>
+        /// <param name="lineSearch">The line search.</param>
+        public PolakRibiereConjugateGradientDescent([NotNull] ILineSearch<double, IDifferentiableCostFunction<double>> lineSearch)
+            : base(lineSearch)
+        {
+        }
+
         /// <summary>
         /// Minimizes the specified problem.
         /// </summary>
@@ -63,12 +73,11 @@ namespace widemeadows.Optimization.GradientDescent
             for (var i = 0; i < maxIterations; ++i)
             {
                 // stop if the gradient change is below the threshold
-                /*
                 if (delta <= epsilonSquare*initialDelta)
                 {
                     Debug.WriteLine("Stopping CG/S/PR at iteration {0}/{1} because cost |{2}| <= {3}", i, maxIterations, delta, epsilonSquare * initialDelta);
                     break;
-                }*/
+                }
 
                 // var cost = costFunction.CalculateCost(x);
 

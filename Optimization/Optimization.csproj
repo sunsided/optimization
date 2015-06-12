@@ -54,7 +54,6 @@
     <Compile Include="GradientDescent\GradientDescentBase.cs" />
     <Compile Include="GradientDescent\IGradientDescent.cs" />
     <Compile Include="GradientDescent\ResilientErrorGradientDescent.cs" />
-    <Compile Include="GradientDescent\SecantMethodConjugateGradientDescentBase.cs" />
     <Compile Include="Hypotheses\ITwiceDifferentiableHypothesis.cs" />
     <Compile Include="Hypotheses\UnivariateExponentialHypothesis.cs" />
     <Compile Include="Hypotheses\LinearHypothesis.cs" />
@@ -64,6 +63,9 @@
     <Compile Include="IInitialCoefficients.cs" />
     <Compile Include="IMinimzation.cs" />
     <Compile Include="IOptimizationProblem.cs" />
+    <Compile Include="LineSearch\LineSearchBase.cs" />
+    <Compile Include="LineSearch\ILineSearch.cs" />
+    <Compile Include="LineSearch\SecantMethod.cs" />
     <Compile Include="OptimizationProblem.cs" />
     <Compile Include="IOptimizationResult.cs" />
     <Compile Include="OptimizationResult.cs" />
