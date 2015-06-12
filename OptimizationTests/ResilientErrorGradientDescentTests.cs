@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using MathNet.Numerics.Distributions;
+using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 using widemeadows.Optimization.Cost;
 using widemeadows.Optimization.GradientDescent;
@@ -79,6 +81,46 @@ namespace widemeadows.Optimization.Tests
             var coefficients = result.Coefficients;
             coefficients[0].Should().BeApproximately(0.5, 1E-6D, "because that's the underlying system's intercept");
             coefficients[1].Should().BeApproximately(2, 1E-6D, "because that's the underlying system's slope");
+        }
+
+        [Test]
+        public void RosenbrockRegressionWithResidualSumOfSquares()
+        {
+            // parameter is default Rosenbrock
+            var theta = Vector<double>.Build.Dense(1, 105D);
+
+            // define the hypothesis
+            var hypothesis = new RosenbrockHypothesis();
+
+            // define a probability distribution
+            var distribution = new ContinuousUniform(-10D, 10D);
+
+            // obtain the test data
+            const int dataPoints = 10;
+            var trainingSet = new List<DataPoint<double>>(dataPoints);
+            for (int i = 0; i < dataPoints; ++i)
+            {
+                var inputs = Vector<double>.Build.Random(2, distribution);
+                var output = hypothesis.Evaluate(theta, inputs);
+                trainingSet.Add(new DataPoint<double>(inputs, output));
+            };
+
+            // cost function is sum of squared errors
+            var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
+
+            // define the optimization problem
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+
+            // optimize!
+            var gd = new ResilientErrorGradientDescent
+            {
+                CostChangeThreshold = 0.0D // TODO: actually use it
+            };
+            var result = gd.Minimize(problem);
+
+            // assert!
+            var coefficients = result.Coefficients;
+            coefficients[0].Should().BeApproximately(theta[0], 1D, "because that's the underlying system's parameter");
         }
     }
 }
