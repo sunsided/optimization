@@ -1,5 +1,8 @@
 ﻿using System;
+using JetBrains.Annotations;
+using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
+using widemeadows.Optimization.LineSearch;
 
 namespace widemeadows.Optimization.GradientDescent
 {
@@ -13,19 +16,15 @@ namespace widemeadows.Optimization.GradientDescent
         where TCostFunction : IDifferentiableCostFunction<TData>
     {
         /// <summary>
-        /// The maximum number of iterations
-        /// </summary>
-        private int _maxLineSearchIterations = 40;
-
-        /// <summary>
-        /// The maximum number of iterations
-        /// </summary>
-        private double _lineSearchStepSize = 1E-5D;
-
-        /// <summary>
         /// The error tolerance
         /// </summary>
         private double _errorToleranceSquared;
+
+        /// <summary>
+        /// The line search algorithm
+        /// </summary>
+        [NotNull]
+        private ILineSearch<TData, TCostFunction> _lineSearch;
 
         /// <summary>
         /// Gets the squared error tolerance.
@@ -34,38 +33,6 @@ namespace widemeadows.Optimization.GradientDescent
         protected double ErrorToleranceSquared
         {
             get { return _errorToleranceSquared; }
-        }
-
-        /// <summary>
-        /// Gets or sets the maximum number of iterations for the line search.
-        /// </summary>
-        /// <value>The maximum iterations.</value>
-        /// <exception cref="System.ArgumentOutOfRangeException">The value must be positive</exception>
-        public int MaxLineSearchIterations
-        {
-            get { return _maxLineSearchIterations; }
-            set
-            {
-                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "The value must be positive");
-                _maxLineSearchIterations = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the initial line search step size.
-        /// </summary>
-        /// <value>The cost change threshold.</value>
-        /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">The value must be nonnegative</exception>
-        public double LineSearchStepSize
-        {
-            get { return _lineSearchStepSize; }
-            set
-            {
-                if (double.IsNaN(value) || double.IsInfinity(value)) throw new NotFiniteNumberException("The value must be finite", value);
-                if (value < 0) throw new ArgumentOutOfRangeException("value", value, "The value must be nonnegative");
-                _lineSearchStepSize = value;
-            }
         }
 
         /// <summary>
@@ -89,11 +56,26 @@ namespace widemeadows.Optimization.GradientDescent
         /// <summary>
         /// Initializes a new instance of the <see cref="ConjugateGradientDescentBase{TData,TCostFunction}"/> class.
         /// </summary>
-        protected ConjugateGradientDescentBase()
+        /// <param name="lineSearch">The line search algorithm.</param>
+        protected ConjugateGradientDescentBase([NotNull] ILineSearch<TData, TCostFunction> lineSearch)
         {
+            _lineSearch = lineSearch;
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             // ReSharper disable once ExceptionNotDocumented
             ErrorTolerance = 1E-10D;
+        }
+
+        /// <summary>
+        /// Performs a line search by using the secant method.
+        /// </summary>
+        /// <param name="costFunction">The cost function.</param>
+        /// <param name="theta">The starting point.</param>
+        /// <param name="direction">The search direction.</param>
+        /// <returns>The best found minimum point along the <paramref name="direction"/>.</returns>
+        [NotNull]
+        protected Vector<TData> LineSearch([NotNull] TCostFunction costFunction, [NotNull] Vector<TData> theta, [NotNull] Vector<TData> direction)
+        {
+            return _lineSearch.Minimize(costFunction, theta, direction);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using JetBrains.Annotations;
 using widemeadows.Optimization.Cost;
+using widemeadows.Optimization.LineSearch;
 
 namespace widemeadows.Optimization.GradientDescent
 {
@@ -18,8 +20,17 @@ namespace widemeadows.Optimization.GradientDescent
     /// }
     /// </code>
     /// </remarks>
-    public sealed class FletcherReevesConjugateGradientDescent : SecantMethodConjugateGradientDescentBase
+    public sealed class FletcherReevesConjugateGradientDescent : ConjugateGradientDescentBase<double, IDifferentiableCostFunction<double>>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FletcherReevesConjugateGradientDescent"/> class.
+        /// </summary>
+        /// <param name="lineSearch">The line search.</param>
+        public FletcherReevesConjugateGradientDescent([NotNull] ILineSearch<double, IDifferentiableCostFunction<double>> lineSearch)
+            : base(lineSearch)
+        {
+        }
+
         /// <summary>
         /// Minimizes the specified problem.
         /// </summary>
@@ -63,7 +74,7 @@ namespace widemeadows.Optimization.GradientDescent
 
                 // var cost = costFunction.CalculateCost(x);
 
-                // perform a line search by using the secant method
+                // perform a line search to find the minimum along the given direction
                 theta = LineSearch(costFunction, theta, direction);
 
                 // obtain the new residuals

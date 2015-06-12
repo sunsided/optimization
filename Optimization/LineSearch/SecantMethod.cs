@@ -1,14 +1,13 @@
 using System.Diagnostics;
-using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
 
-namespace widemeadows.Optimization.GradientDescent
+namespace widemeadows.Optimization.LineSearch
 {
     /// <summary>
     /// Class SecantMethodConjugateGradientDescentBase.
     /// </summary>
-    public abstract class SecantMethodConjugateGradientDescentBase : ConjugateGradientDescentBase<double, IDifferentiableCostFunction<double>>
+    public sealed class SecantMethod : LineSearchBase<double, IDifferentiableCostFunction<double>>
     {
         /// <summary>
         /// Performs a line search by using the secant method.
@@ -17,8 +16,7 @@ namespace widemeadows.Optimization.GradientDescent
         /// <param name="theta">The starting point.</param>
         /// <param name="direction">The search direction.</param>
         /// <returns>The best found minimum point along the <paramref name="direction"/>.</returns>
-        [NotNull]
-        protected Vector<double> LineSearch([NotNull] IDifferentiableCostFunction<double> costFunction, [NotNull] Vector<double> theta, [NotNull] Vector<double> direction)
+        public override Vector<double> Minimize(IDifferentiableCostFunction<double> costFunction, Vector<double> theta, Vector<double> direction)
         {
             var maxLineSearchIteration = MaxLineSearchIterations;
             var initialStepSize = LineSearchStepSize;
