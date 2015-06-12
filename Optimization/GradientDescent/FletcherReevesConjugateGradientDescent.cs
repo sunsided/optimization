@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
@@ -21,81 +20,8 @@ namespace widemeadows.Optimization.GradientDescent
     /// }
     /// </code>
     /// </remarks>
-    public sealed class ConjugateGradientDescent : GradientDescentBase<double, IDifferentiableCostFunction<double>>
+    public sealed class FletcherReevesConjugateGradientDescent : ConjugateGradientDescentBase<double, IDifferentiableCostFunction<double>>
     {
-        /// <summary>
-        /// The maximum number of iterations
-        /// </summary>
-        private int _maxLineSearchIterations = 100;
-
-        /// <summary>
-        /// The maximum number of iterations
-        /// </summary>
-        private double _lineSearchStepSize = 1E-5D;
-
-        /// <summary>
-        /// The error tolerance
-        /// </summary>
-        private double _errorToleranceSquared;
-
-        /// <summary>
-        /// Gets or sets the maximum number of iterations for the line search.
-        /// </summary>
-        /// <value>The maximum iterations.</value>
-        /// <exception cref="System.ArgumentOutOfRangeException">The value must be positive</exception>
-        public int MaxLineSearchIterations
-        {
-            get { return _maxLineSearchIterations; }
-            set
-            {
-                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "The value must be positive");
-                _maxLineSearchIterations = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the initial line search step size.
-        /// </summary>
-        /// <value>The cost change threshold.</value>
-        /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">The value must be nonnegative</exception>
-        public double LineSearchStepSize
-        {
-            get { return _lineSearchStepSize; }
-            set
-            {
-                if (double.IsNaN(value) || double.IsInfinity(value)) throw new NotFiniteNumberException("The value must be finite", value);
-                if (value < 0) throw new ArgumentOutOfRangeException("value", value, "The value must be nonnegative");
-                _lineSearchStepSize = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the error tolerance. If, e.g. the cost change
-        /// is less than the given threshold, optimization stops immediately.
-        /// </summary>
-        /// <value>The error tolerance.</value>
-        /// <exception cref="System.NotFiniteNumberException">The value must be finite</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">The value must be nonnegative</exception>
-        public override double ErrorTolerance
-        {
-            get { return base.ErrorTolerance; }
-            set
-            {
-                base.ErrorTolerance = value;
-                _errorToleranceSquared = value*value;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConjugateGradientDescent"/> class.
-        /// </summary>
-        public ConjugateGradientDescent()
-        {
-            var epsilon = ErrorTolerance;
-            _errorToleranceSquared = epsilon * epsilon;
-        }
-
         /// <summary>
         /// Minimizes the specified problem.
         /// </summary>
@@ -104,7 +30,7 @@ namespace widemeadows.Optimization.GradientDescent
         public override IOptimizationResult<double> Minimize(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem)
         {
             var maxIterations = MaxIterations;
-            var epsilonSquare = _errorToleranceSquared;
+            var epsilonSquare = ErrorToleranceSquared;
 
             // fetch a starting point and obtain the problem size
             var theta = problem.GetInitialCoefficients();
@@ -183,9 +109,9 @@ namespace widemeadows.Optimization.GradientDescent
         [NotNull]
         private Vector<double> LineSearch([NotNull] IDifferentiableCostFunction<double> costFunction, [NotNull] Vector<double> theta, [NotNull] Vector<double> direction)
         {
-            var maxLineSearchIteration = _maxLineSearchIterations;
-            var initialStepSize = _lineSearchStepSize;
-            var epsilonSquare = _errorToleranceSquared;
+            var maxLineSearchIteration = MaxLineSearchIterations;
+            var initialStepSize = LineSearchStepSize;
+            var epsilonSquare = ErrorToleranceSquared;
 
             // the eta value determines how much the gradient at the current step
             // point differs from the gradient that is orthogonal to the search direction.

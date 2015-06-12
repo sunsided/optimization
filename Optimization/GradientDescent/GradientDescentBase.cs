@@ -21,7 +21,7 @@ namespace widemeadows.Optimization.GradientDescent
         /// The cost change threshold. If the cost change
         /// is less than the given threshold, iteration stops immediately.
         /// </summary>
-        private double _errorTolerance = 1E-20D;
+        private double _errorTolerance = 1E-10D;
 
         /// <summary>
         /// Gets or sets the maximum number of iterations.
