@@ -1,4 +1,6 @@
-﻿using widemeadows.Optimization.Cost;
+﻿using System;
+using System.Diagnostics;
+using widemeadows.Optimization.Cost;
 
 namespace widemeadows.Optimization.GradientDescent
 {
@@ -8,12 +10,36 @@ namespace widemeadows.Optimization.GradientDescent
     public sealed class ConjugateGradientDescent : GradientDescentBase<double, IDifferentiableCostFunction<double>>
     {
         /// <summary>
+        /// The maximum number of iterations
+        /// </summary>
+        private int _maxLineSearchIterations = 100;
+
+        /// <summary>
+        /// Gets or sets the maximum number of iterations for the line search.
+        /// </summary>
+        /// <value>The maximum iterations.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">The value must be positive</exception>
+        public int MaxLineSearchIterations
+        {
+            get { return _maxLineSearchIterations; }
+            set
+            {
+                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "The value must be positive");
+                _maxLineSearchIterations = value;
+            }
+        }
+
+        /// <summary>
         /// Minimizes the specified problem.
         /// </summary>
         /// <param name="problem">The problem.</param>
         /// <returns>IOptimizationResult&lt;TData&gt;.</returns>
         public override IOptimizationResult<double> Minimize(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem)
         {
+            // determine the iteration counts
+            var maxIterations = MaxIterations;
+            var maxLineSearchIteration = _maxLineSearchIterations;
+
             // fetch a starting point and obtain the problem size
             var x = problem.GetInitialCoefficients();
             var n = x.Count;
@@ -21,8 +47,6 @@ namespace widemeadows.Optimization.GradientDescent
             // we want to restart CG at least every n steps,
             // and use this variable as a counter.
             var k = n;
-
-            // var cost = costFunction.CalculateCost(x);
 
             // now we determine the initial residuals, which are defined to
             // be the opposite gradient direction
@@ -44,29 +68,36 @@ namespace widemeadows.Optimization.GradientDescent
             var epsilon = 1E-10D;
             var epsilonSquare = epsilon*epsilon;
 
-            // TODO: add comment and better name
-            var jmax = 100; // TODO: ???
-
             // loop for the maximum iteration count
-            var maxIterations = MaxIterations;
             for (var i = 0; i < maxIterations; ++i)
             {
-                // stop if the cost change is below the threshold
-                if (deltaNew <= epsilonSquare*delta0) break;
+                // stop if the gradient change is below the threshold
+                if (deltaNew <= epsilonSquare*delta0)
+                {
+                    Debug.WriteLine("Stopping CG/S/FR at iteration {0}/{1} because cost |{2}| <= {3}", i, maxIterations, deltaNew, epsilonSquare * delta0);
+                    break;
+                }
 
-                var j = 0;
-                var deltaD = d*d;
+                // var cost = costFunction.CalculateCost(x);
 
                 // perform a line search by using the secant method
-                var alpha = -sigma0;
-                var etaPrev = costFunction.Jacobian(x + sigma0*d)*d;
-                do
                 {
-                    var eta = costFunction.Jacobian(x) * d;
-                    alpha = alpha*eta/(etaPrev - eta);
-                    x += alpha*d;
-                    ++j;
-                } while (j < jmax && (alpha*alpha)*deltaD > (epsilonSquare)); // TODO: convert to for loop
+                    var alpha = -sigma0;
+                    var etaPrev = costFunction.Jacobian(x + sigma0*d)*d;
+                    var deltaD = d*d; // used for terminating the line search
+                    for (var j = 0; j < maxLineSearchIteration; ++j)
+                    {
+                        // terminate line search
+                        if ((alpha*alpha)*deltaD <= epsilonSquare)
+                        {
+                            break;
+                        }
+
+                        var eta = costFunction.Jacobian(x)*d;
+                        alpha = alpha*eta/(etaPrev - eta);
+                        x += alpha*d;
+                    }
+                }
 
                 // obtain the new residuals
                 r = -costFunction.Jacobian(x);
@@ -77,11 +108,17 @@ namespace widemeadows.Optimization.GradientDescent
                 var beta = deltaNew/deltaOld;
                 d = r + beta*d;
 
-                // reset every n iterations or when the
-                // gradient is known to be nonorthogonal
-                if (--k == 0 || r*d <= 0)
+                // Conjugate Gradient can generate only n conjugate jump directions
+                // in n-dimensional space, so we'll reset the algorithm every n steps.
+                // reset every n iterations or when the gradient is known to be nonorthogonal
+                var shouldRestart = (--k == 0);
+                var isDescentDirection = (r*d > 0);
+                if (shouldRestart || !isDescentDirection)
                 {
+                    // reset the
                     d = r;
+
+                    // reset the counter
                     k = n;
                 }
             }
