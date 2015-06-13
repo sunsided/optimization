@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
@@ -119,7 +120,10 @@ namespace widemeadows.Optimization.Tests
             var lineSearch = new SecantMethod();
 
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent(lineSearch);
+            var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
+            {
+                ErrorTolerance = 1E-8D
+            };
             var result = gd.Minimize(problem);
 
             // assert!
@@ -161,7 +165,10 @@ namespace widemeadows.Optimization.Tests
             var lineSearch = new SecantMethod();
 
             // optimize!
-            var gd = new PolakRibiereConjugateGradientDescent(lineSearch);
+            var gd = new PolakRibiereConjugateGradientDescent(lineSearch)
+                     {
+                         ErrorTolerance = 1E-8D
+                     };
             var result = gd.Minimize(problem);
 
             // assert!
@@ -220,6 +227,70 @@ namespace widemeadows.Optimization.Tests
             coefficients[1].Should().BeApproximately(theta[1], 1000D, "because that's the underlying system's [a] parameter");
             coefficients[2].Should().BeApproximately(theta[2], 1E-2D, "because that's the underlying system's [b] parameter");
             coefficients[0].Should().BeApproximately(theta[0], 1E-5D, "because that's the underlying system's offset");
+        }
+
+        [Test]
+        public void FletcherReevesRosenbrock()
+        {
+            // starting point for search is somewhere
+            var initialTheta = Vector<double>.Build.DenseOfArray(new[] { 1D, 3D });
+
+            // define the hypothesis with default parameter
+            var rosenbrockParameter = Vector<double>.Build.DenseOfArray(new[] { 1D, 100D });
+            var hypothesis = new RosenbrockHypothesis();
+
+            // cost function is sum of squared errors
+            var costFunction = new FunctionValueOptimization<double>(hypothesis, rosenbrockParameter);
+
+            // define the optimization problem
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
+
+            // define the line search algorithm
+            var lineSearch = new SecantMethod();
+
+            // optimize!
+            var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
+            {
+                ErrorTolerance = 1E-8D
+            };
+            var result = gd.Minimize(problem);
+
+            // assert!
+            var coefficients = result.Coefficients;
+            coefficients[0].Should().BeApproximately(initialTheta[0], 1E-5D, "because the Rosenbrock function as a minimum at x=0 (given y=0)");
+            coefficients[1].Should().BeApproximately(Math.Sqrt(initialTheta[0]), 1E-5D, "because the Rosenbrock function as a minimum at y=0 (given x=0)");
+        }
+
+        [Test]
+        public void PolakRibiereRosenbrock()
+        {
+            // starting point for search is somewhere
+            var initialTheta = Vector<double>.Build.DenseOfArray(new[] { 1D, 3D });
+
+            // define the hypothesis with default parameter
+            var rosenbrockParameter = Vector<double>.Build.DenseOfArray(new[] { 1D, 100D });
+            var hypothesis = new RosenbrockHypothesis();
+
+            // cost function is sum of squared errors
+            var costFunction = new FunctionValueOptimization<double>(hypothesis, rosenbrockParameter);
+
+            // define the optimization problem
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
+
+            // define the line search algorithm
+            var lineSearch = new SecantMethod();
+
+            // optimize!
+            var gd = new PolakRibiereConjugateGradientDescent(lineSearch)
+                     {
+                         ErrorTolerance = 1E-8D
+                     };
+            var result = gd.Minimize(problem);
+
+            // assert!
+            var coefficients = result.Coefficients;
+            coefficients[0].Should().BeApproximately(initialTheta[0], 1E-5D, "because the Rosenbrock function as a minimum at x=0 (given y=0)");
+            coefficients[1].Should().BeApproximately(Math.Sqrt(initialTheta[0]), 1E-5D, "because the Rosenbrock function as a minimum at y=0 (given x=0)");
         }
     }
 }

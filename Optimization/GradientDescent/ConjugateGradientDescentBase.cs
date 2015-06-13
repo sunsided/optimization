@@ -24,7 +24,7 @@ namespace widemeadows.Optimization.GradientDescent
         /// The line search algorithm
         /// </summary>
         [NotNull]
-        private ILineSearch<TData, TCostFunction> _lineSearch;
+        private readonly ILineSearch<TData, TCostFunction> _lineSearch;
 
         /// <summary>
         /// Gets the squared error tolerance.
@@ -62,7 +62,7 @@ namespace widemeadows.Optimization.GradientDescent
             _lineSearch = lineSearch;
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor
             // ReSharper disable once ExceptionNotDocumented
-            ErrorTolerance = 1E-10D;
+            ErrorTolerance = 1E-5D;
         }
 
         /// <summary>
