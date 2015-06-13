@@ -32,7 +32,7 @@ namespace widemeadows.Optimization.LineSearch
         /// The cost change threshold. If the cost change
         /// is less than the given threshold, iteration stops immediately.
         /// </summary>
-        private double _errorTolerance = 1E-10D;
+        private double _errorTolerance = 1E-5D;
 
         /// <summary>
         /// Gets the squared error tolerance.

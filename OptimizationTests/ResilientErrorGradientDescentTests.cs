@@ -132,7 +132,7 @@ namespace widemeadows.Optimization.Tests
         public void Rosenbrock()
         {
             // starting point for search is somewhere
-            var initialTheta = Vector<double>.Build.DenseOfArray(new [] { 1D, 3D });
+            var initialTheta = Vector<double>.Build.DenseOfArray(new[] { -1D, 1D });
 
             // define the hypothesis with default parameter
             var rosenbrockParameter = Vector<double>.Build.DenseOfArray(new[] { 1D, 100D });
@@ -154,8 +154,8 @@ namespace widemeadows.Optimization.Tests
 
             // assert!
             var coefficients = result.Coefficients;
-            coefficients[0].Should().BeApproximately(initialTheta[0], 1E-5D, "because the Rosenbrock function as a minimum at x=0 (given y=0)");
-            coefficients[1].Should().BeApproximately(Math.Sqrt(initialTheta[0]), 1E-5D, "because the Rosenbrock function as a minimum at y=0 (given x=0)");
+            coefficients[0].Should().BeApproximately(rosenbrockParameter[0], 1E-5D, "because the Rosenbrock function as a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
+            coefficients[1].Should().BeApproximately(Math.Sqrt(rosenbrockParameter[0]), 1E-5D, "because the Rosenbrock function as a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
         }
 
         [Test, Explicit]
