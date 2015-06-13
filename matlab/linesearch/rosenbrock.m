@@ -20,8 +20,15 @@ function [ f, g ] = rosenbrock( x, y, varargin )
     m = size(x,1);
     n = size(x,2);
     
-    g(1:m,1:n,1) = gx;
-    g(1:m,1:n,2) = gy;
+    if n > 1
+        g(1:m,1:n,1) = gx;
+        g(1:m,1:n,2) = gy;
+    elseif m > 1
+        g(1:m,1) = gx;
+        g(1:m,2) = gy;
+    else
+        g = [gx; gy];
+    end
     
 end
 
