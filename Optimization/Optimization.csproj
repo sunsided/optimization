@@ -43,6 +43,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cost\FunctionValueOptimization.cs" />
     <Compile Include="Cost\ITwiceDifferentiableCostFunction.cs" />
     <Compile Include="Cost\IDifferentiableCostFunction.cs" />
     <Compile Include="Cost\ICostFunction.cs" />

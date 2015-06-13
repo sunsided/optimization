@@ -29,12 +29,13 @@ namespace widemeadows.Optimization.Tests
 
             // assume a hypothesis
             var hypothesis = new LinearHypothesis(1);
+            var initialCoefficients = Vector<double>.Build.Random(2);
 
             // cost function is sum of squared errors
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialCoefficients);
 
             // define the line search algorithm
             var lineSearch = new SecantMethod();
@@ -64,12 +65,13 @@ namespace widemeadows.Optimization.Tests
 
             // assume a hypothesis
             var hypothesis = new DualLinearHypothesis(1);
+            var initialCoefficients = Vector<double>.Build.Random(2);
 
             // cost function is sum of squared errors
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialCoefficients);
 
             // define the line search algorithm
             var lineSearch = new SecantMethod();
@@ -85,13 +87,14 @@ namespace widemeadows.Optimization.Tests
         }
 
         [Test]
-        public void FletcherReevesRosenbrockRegressionWithResidualSumOfSquares()
+        public void FletcherReevesRosenbrockParameterFitWithResidualSumOfSquares()
         {
             // parameter is default Rosenbrock
             var theta = Vector<double>.Build.Dense(1, 105D);
+            var initialTheta = Vector<double>.Build.Dense(1, 200D);
 
             // define the hypothesis
-            var hypothesis = new RosenbrockHypothesis();
+            var hypothesis = new RosenbrockHypothesis(theta[0]);
 
             // define a probability distribution
             var distribution = new ContinuousUniform(-10D, 10D);
@@ -110,7 +113,7 @@ namespace widemeadows.Optimization.Tests
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // define the line search algorithm
             var lineSearch = new SecantMethod();
@@ -125,13 +128,14 @@ namespace widemeadows.Optimization.Tests
         }
 
         [Test]
-        public void PolakRibiereRosenbrockRegressionWithResidualSumOfSquares()
+        public void PolakRibiereRosenbrockParameterFitWithResidualSumOfSquares()
         {
             // parameter is default Rosenbrock
             var theta = Vector<double>.Build.Dense(1, 105D);
+            var initialTheta = Vector<double>.Build.Dense(1, 200D);
 
             // define the hypothesis
-            var hypothesis = new RosenbrockHypothesis();
+            var hypothesis = new RosenbrockHypothesis(theta[0]);
 
             // define a probability distribution
             var distribution = new ContinuousUniform(-10D, 10D);
@@ -150,7 +154,7 @@ namespace widemeadows.Optimization.Tests
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // define the line search algorithm
             var lineSearch = new SecantMethod();
@@ -171,7 +175,7 @@ namespace widemeadows.Optimization.Tests
             var initialTheta = Vector<double>.Build.DenseOfArray(new[] { 0D, 10000D, -1D });
 
             // define the hypothesis
-            var hypothesis = new UnivariateExponentialHypothesis(initialTheta);
+            var hypothesis = new UnivariateExponentialHypothesis();
 
             // define a probability distribution
             var distribution = new ContinuousUniform(0D, 1000D);
@@ -190,7 +194,7 @@ namespace widemeadows.Optimization.Tests
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // define the line search algorithm
             var lineSearch = new SecantMethod

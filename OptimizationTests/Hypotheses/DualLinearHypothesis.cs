@@ -54,6 +54,64 @@ namespace widemeadows.Optimization.Tests.Hypotheses
             return Vector<double>.Build.Dense(new []{result1, result2});
         }
 
+        #region Partial derivatives with respect to the inputs
+
+        /// <summary>
+        /// Determines the gradient of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
+        public Vector<double> Jacobian(Vector<double> coefficients, Vector<double> locations)
+        {
+            Debug.Assert(coefficients.Count == locations.Count + 1, "coefficients.Count == locations.Count+1");
+
+            // partial derivatives of the function with respect to the inputs are the coefficients
+            return locations.MapIndexed(
+                (i, v) => coefficients[i + 1]
+                );
+        }
+
+        /// <summary>
+        /// Determines the second derivative of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
+        public Vector<double> Hessian(Vector<double> coefficients, Vector<double> locations)
+        {
+            // second partial derivatives of the function with respect to the inputs is the zero vector
+            return locations.Map(v => 0D);
+        }
+
+        /// <summary>
+        /// Determines the gradient of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
+        /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
+        public Vector<double> Jacobian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        {
+            return Jacobian(coefficients, locations);
+        }
+
+        /// <summary>
+        /// Determines the second derivative of the hypothesis with respect to the <paramref name="locations" /> given the <paramref name="coefficients" />.
+        /// </summary>
+        /// <param name="coefficients">The coefficients.</param>
+        /// <param name="locations">The inputs.</param>
+        /// <param name="outputs">The outputs of <see cref="IHypothesis{TData}.Evaluate" />.</param>
+        /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
+        public Vector<double> Hessian(Vector<double> coefficients, Vector<double> locations, Vector<double> outputs)
+        {
+            return Hessian(coefficients, locations);
+        }
+
+        #endregion Partial derivatives with respect to the inputs
+
+        #region Partial derivatives with respect to the coefficients
+
         /// <summary>
         /// Derivatives the specified inputs.
         /// </summary>
@@ -80,5 +138,7 @@ namespace widemeadows.Optimization.Tests.Hypotheses
                 : locations[i - 1] // partial derivative with respect to theta(i) is input(i)
                 );
         }
+
+        #endregion Partial derivatives with respect to the coefficients
     }
 }

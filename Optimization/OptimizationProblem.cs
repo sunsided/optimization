@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
-using widemeadows.Optimization.Hypotheses;
 
 namespace widemeadows.Optimization
 {
@@ -14,10 +13,10 @@ namespace widemeadows.Optimization
         where TCostFunction : ICostFunction<TData>
     {
         /// <summary>
-        /// Gets the hypothesis.
+        /// The initial coefficients.
         /// </summary>
-        /// <value>The hypothesis.</value>
-        public IHypothesis<TData> Hypothesis { get; private set; }
+        [NotNull]
+        private readonly Vector<TData> _initialCoefficients;
 
         /// <summary>
         /// Gets the cost function.
@@ -29,12 +28,12 @@ namespace widemeadows.Optimization
         /// <summary>
         /// Initializes a new instance of the <see cref="OptimizationProblem{TData, TCost}" /> class.
         /// </summary>
-        /// <param name="hypothesis">The hypothesis.</param>
         /// <param name="costFunction">The cost function.</param>
-        public OptimizationProblem([NotNull] IHypothesis<TData> hypothesis, [NotNull] TCostFunction costFunction)
+        /// <param name="initialCoefficients"></param>
+        public OptimizationProblem([NotNull] TCostFunction costFunction, [NotNull] Vector<TData> initialCoefficients)
         {
-            Hypothesis = hypothesis;
             CostFunction = costFunction;
+            _initialCoefficients = initialCoefficients;
         }
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace widemeadows.Optimization
         /// <returns>Vector&lt;TData&gt;.</returns>
         public Vector<TData> GetInitialCoefficients()
         {
-            return Hypothesis.GetInitialCoefficients();
+            return _initialCoefficients;
         }
     }
 }

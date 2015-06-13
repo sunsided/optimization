@@ -23,15 +23,6 @@ namespace widemeadows.Optimization.Hypotheses
         }
 
         /// <summary>
-        /// Gets the initial coefficients.
-        /// </summary>
-        /// <returns>Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> GetInitialCoefficients()
-        {
-            return Vector<double>.Build.Random(_ninputs + 1);
-        }
-
-        /// <summary>
         /// Evaluates the hypothesis given the <paramref name="inputs"/> and the <paramref name="coefficients"/>.
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>

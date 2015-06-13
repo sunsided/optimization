@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace widemeadows.Optimization.Hypotheses
@@ -10,13 +11,28 @@ namespace widemeadows.Optimization.Hypotheses
     public sealed class RosenbrockHypothesis : ITwiceDifferentiableHypothesis<double>
     {
         /// <summary>
-        /// Gets an initial guess for the coefficients.
+        /// The _coefficient
         /// </summary>
-        /// <returns>Vector&lt;TData&gt;.</returns>
-        public Vector<double> GetInitialCoefficients()
+        private readonly double _coefficient;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RosenbrockHypothesis"/> class.
+        /// </summary>
+        /// <param name="coefficient">The coefficient.</param>
+        public RosenbrockHypothesis(double coefficient = 100D)
         {
-            var random = new Random();
-            return Vector<double>.Build.Dense(1, random.NextDouble()*200D);
+            _coefficient = coefficient;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RosenbrockHypothesis" /> class.
+        /// </summary>
+        /// <param name="coefficient">The coefficient.</param>
+        /// <exception cref="System.ArgumentException">Expected exactly one parameter</exception>
+        public RosenbrockHypothesis([NotNull] Vector<double> coefficient)
+            : this(coefficient[0])
+        {
+            if (coefficient.Count != 1) throw new ArgumentException("Expected exactly one parameter", "coefficient");
         }
 
         /// <summary>
@@ -58,7 +74,7 @@ namespace widemeadows.Optimization.Hypotheses
 
             var x = locations[0];
             var y = locations[1];
-            var theta = coefficients[1];
+            var theta = coefficients[0];
 
             var gradient = Vector<double>.Build.Dense(2);
 
@@ -84,7 +100,7 @@ namespace widemeadows.Optimization.Hypotheses
 
             var x = locations[0];
             var y = locations[1];
-            var theta = coefficients[1];
+            var theta = coefficients[0];
 
             var gradient = Vector<double>.Build.Dense(2);
 

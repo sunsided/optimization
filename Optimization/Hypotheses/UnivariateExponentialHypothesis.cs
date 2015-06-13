@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace widemeadows.Optimization.Hypotheses
@@ -10,30 +9,6 @@ namespace widemeadows.Optimization.Hypotheses
     /// </summary>
     public sealed class UnivariateExponentialHypothesis : ITwiceDifferentiableHypothesis<double>
     {
-        /// <summary>
-        /// The initial coefficients
-        /// </summary>
-        [NotNull]
-        private readonly Vector<double> _initialCoefficients;
-
-        /// <summary>
-        /// Gets the initial coefficients.
-        /// </summary>
-        /// <returns>Vector&lt;System.Double&gt;.</returns>
-        public Vector<double> GetInitialCoefficients()
-        {
-            return _initialCoefficients;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnivariateExponentialHypothesis"/> class.
-        /// </summary>
-        /// <param name="initialCoefficients">The initial coefficients.</param>
-        public UnivariateExponentialHypothesis([NotNull] Vector<double> initialCoefficients)
-        {
-            _initialCoefficients = initialCoefficients;
-        }
-
         /// <summary>
         /// Evaluates the hypothesis given the <paramref name="inputs"/> and the <paramref name="coefficients"/>.
         /// </summary>

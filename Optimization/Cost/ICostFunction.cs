@@ -16,6 +16,6 @@ namespace widemeadows.Optimization.Cost
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
         /// <returns>TCost.</returns>
-        double CalculateCost([NotNull] Vector<TData> coefficients);
+        TData CalculateCost([NotNull] Vector<TData> coefficients);
     }
 }

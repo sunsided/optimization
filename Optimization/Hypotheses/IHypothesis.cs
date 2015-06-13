@@ -8,7 +8,7 @@ namespace widemeadows.Optimization.Hypotheses
     /// Interface IHypothesis
     /// </summary>
     /// <typeparam name="TData">The type of the data.</typeparam>
-    public interface IHypothesis<TData> : IInitialCoefficients<TData> 
+    public interface IHypothesis<TData>
         where TData : struct, IEquatable<TData>, IFormattable
     {
         /// <summary>

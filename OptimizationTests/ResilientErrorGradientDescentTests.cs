@@ -28,12 +28,13 @@ namespace widemeadows.Optimization.Tests
 
             // assume a hypothesis
             var hypothesis = new LinearHypothesis(1);
+            var initialCoefficients = Vector<double>.Build.Random(2);
 
             // cost function is sum of squared errors
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialCoefficients);
 
             // optimize!
             var gd = new ResilientErrorGradientDescent
@@ -63,12 +64,13 @@ namespace widemeadows.Optimization.Tests
 
             // assume a hypothesis
             var hypothesis = new DualLinearHypothesis(1);
+            var initialCoefficients = Vector<double>.Build.Random(2);
 
             // cost function is sum of squared errors
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialCoefficients);
 
             // optimize!
             var gd = new ResilientErrorGradientDescent
@@ -84,13 +86,14 @@ namespace widemeadows.Optimization.Tests
         }
 
         [Test]
-        public void RosenbrockRegressionWithResidualSumOfSquares()
+        public void RosenbrockParameterFitWithResidualSumOfSquares()
         {
             // parameter is default Rosenbrock
             var theta = Vector<double>.Build.Dense(1, 105D);
+            var initialTheta = Vector<double>.Build.Dense(1, 200D);
 
             // define the hypothesis
-            var hypothesis = new RosenbrockHypothesis();
+            var hypothesis = new RosenbrockHypothesis(theta[0]);
 
             // define a probability distribution
             var distribution = new ContinuousUniform(-10D, 10D);
@@ -109,7 +112,7 @@ namespace widemeadows.Optimization.Tests
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // optimize!
             var gd = new ResilientErrorGradientDescent
@@ -123,6 +126,37 @@ namespace widemeadows.Optimization.Tests
             coefficients[0].Should().BeApproximately(theta[0], 1D, "because that's the underlying system's parameter");
         }
 
+        [Test]
+        public void Rosenbrock()
+        {
+            // starting point for search is somewhere
+            var initialTheta = Vector<double>.Build.DenseOfArray(new [] { 1D, 3D });
+
+            // define the hypothesis with default parameter
+            var rosenbrockParameter = Vector<double>.Build.Dense(1, 100D);
+            var hypothesis = new RosenbrockHypothesis(rosenbrockParameter);
+
+            // cost function is sum of squared errors
+            var costFunction = new FunctionValueOptimization<double>(hypothesis, rosenbrockParameter);
+
+            // define the optimization problem
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
+
+            // optimize!
+            var gd = new ResilientErrorGradientDescent
+            {
+                MaxIterations = 10000,
+                ErrorTolerance = 1E-10D
+            };
+            var result = gd.Minimize(problem);
+
+            // assert!
+            var coefficients = result.Coefficients;
+            coefficients[0].Should().BeApproximately(0D, 1E-5D, "because the Rosenbrock function as a minimum at x=0 (given y=0)");
+            coefficients[1].Should().BeApproximately(0D, 1E-5D, "because the Rosenbrock function as a minimum at y=0 (given x=0)");
+        }
+
+
         [Test, Explicit]
         public void UnivariateExponentialRegressionWithResidualSumOfSquares()
         {
@@ -130,7 +164,7 @@ namespace widemeadows.Optimization.Tests
             var initialTheta = Vector<double>.Build.DenseOfArray(new[] { 0D, 10000D, -1D });
 
             // define the hypothesis
-            var hypothesis = new UnivariateExponentialHypothesis(initialTheta);
+            var hypothesis = new UnivariateExponentialHypothesis();
 
             // define a probability distribution
             var distribution = new ContinuousUniform(0D, 1000D);
@@ -149,7 +183,7 @@ namespace widemeadows.Optimization.Tests
             var costFunction = new ResidualSumOfSquaresCostFunction(hypothesis, trainingSet);
 
             // define the optimization problem
-            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(hypothesis, costFunction);
+            var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // optimize!
             var gd = new ResilientErrorGradientDescent();
