@@ -24,8 +24,8 @@ zlabel('f(\theta)');
 title('Rosenbrock function (a=1, b=100)');
 
 % determine a starting point
-sx = -1.9; % datasample(x,1);
-sy =  0.5; % datasample(y,1);
+sx = -1.5; % datasample(x,1);
+sy =  0.6; % datasample(y,1);
 [fs, gs] = rosenbrock(sx,sy);
 
 % plot the starting point
@@ -37,7 +37,7 @@ d = -gs/sqrt(gs'*gs);
 dx = sx+d(1);
 dy = sy+d(2);
 
-m = 4;
+m = 3.5;
 ex = sx+m*d(1); % determine actual length required
 ey = sy+m*d(2); % determine actual length required
 [fe] = rosenbrock(dx,dy);
@@ -46,10 +46,10 @@ ey = sy+m*d(2); % determine actual length required
 plot3(dx, dy, fe, 'm+', 'MarkerSize', 5, 'LineWidth', 1)
 
 % construct a plane patch
-A = [sx; sy; fs];
+A = [sx; sy; 4*fs];
 B = [sx; sy; 0];
 C = [ex; ey; 0];
-D = [ex; ey; fs];
+D = [ex; ey; 4*fs];
 PX = [A(1) B(1) C(1) D(1)];
 PY = [A(2) B(2) C(2) D(2)];
 PZ = [A(3) B(3) C(3) D(3)];
