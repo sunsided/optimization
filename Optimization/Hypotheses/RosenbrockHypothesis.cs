@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using JetBrains.Annotations;
+﻿using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace widemeadows.Optimization.Hypotheses
@@ -11,31 +9,6 @@ namespace widemeadows.Optimization.Hypotheses
     public sealed class RosenbrockHypothesis : ITwiceDifferentiableHypothesis<double>
     {
         /// <summary>
-        /// The _coefficient
-        /// </summary>
-        private readonly double _coefficient;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RosenbrockHypothesis"/> class.
-        /// </summary>
-        /// <param name="coefficient">The coefficient.</param>
-        public RosenbrockHypothesis(double coefficient = 100D)
-        {
-            _coefficient = coefficient;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RosenbrockHypothesis" /> class.
-        /// </summary>
-        /// <param name="coefficient">The coefficient.</param>
-        /// <exception cref="System.ArgumentException">Expected exactly one parameter</exception>
-        public RosenbrockHypothesis([NotNull] Vector<double> coefficient)
-            : this(coefficient[0])
-        {
-            if (coefficient.Count != 1) throw new ArgumentException("Expected exactly one parameter", "coefficient");
-        }
-
-        /// <summary>
         /// Evaluates the hypothesis given the <paramref name="inputs" /> and the <paramref name="coefficients" />.
         /// </summary>
         /// <param name="coefficients">The coefficients.</param>
@@ -43,17 +16,18 @@ namespace widemeadows.Optimization.Hypotheses
         /// <returns>The estimated outputs.</returns>
         public Vector<double> Evaluate(Vector<double> coefficients, Vector<double> inputs)
         {
-            Debug.Assert(coefficients.Count == 1, "coefficients.Count == 1");
+            Debug.Assert(coefficients.Count == 2, "coefficients.Count == 2");
             Debug.Assert(inputs.Count == 2, "inputs.Count == 2");
 
             var x = inputs[0];
             var y = inputs[1];
-            var theta = coefficients[0];
+            var a = coefficients[0];
+            var b = coefficients[1];
 
-            var a = (1D - x);
-            var b = (y - x*x);
+            var term1 = (a - x);
+            var term2 = (y - x*x);
 
-            var value = a*a + theta*b*b;
+            var value = term1*term1 + b*term2*term2;
 
             // return the value
             return Vector<double>.Build.Dense(1, value);
@@ -69,20 +43,21 @@ namespace widemeadows.Optimization.Hypotheses
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
         public Vector<double> Jacobian(Vector<double> coefficients, Vector<double> locations)
         {
-            Debug.Assert(coefficients.Count == 1, "coefficients.Count == 1");
+            Debug.Assert(coefficients.Count == 2, "coefficients.Count == 2");
             Debug.Assert(locations.Count == 2, "inputs.Count == 2");
 
             var x = locations[0];
             var y = locations[1];
-            var theta = coefficients[0];
+            var a = coefficients[0];
+            var b = coefficients[1];
 
             var gradient = Vector<double>.Build.Dense(2);
 
             // first partial derivative with respect to the first input
-            gradient[0] = 2*(2*theta*x*x*x - 2*theta*x*y + x - 1);
+            gradient[0] = -2*a + 4*b*x*x*x - 4*b*x*y + 2*x;
 
             // first partial derivative with respect to the second input
-            gradient[1] = 2 * theta * (y - x * x);
+            gradient[1] = 2 * b * (y - x * x);
 
             return gradient;
         }
@@ -95,22 +70,23 @@ namespace widemeadows.Optimization.Hypotheses
         /// <returns>The second partial derivatives of the evaluation function with respect to the <paramref name="locations" />.</returns>
         public Vector<double> Hessian(Vector<double> coefficients, Vector<double> locations)
         {
-            Debug.Assert(coefficients.Count == 1, "coefficients.Count == 1");
+            Debug.Assert(coefficients.Count == 2, "coefficients.Count == 2");
             Debug.Assert(locations.Count == 2, "inputs.Count == 2");
 
             var x = locations[0];
             var y = locations[1];
-            var theta = coefficients[0];
+            var a = coefficients[0];
+            var b = coefficients[1];
 
-            var gradient = Vector<double>.Build.Dense(2);
+            var unmixedHessian = Vector<double>.Build.Dense(2);
 
             // second partial derivative with respect to the first input
-            gradient[0] = 12*theta*x*x - 4*theta*y + 2;
+            unmixedHessian[0] = 12*b*x*x - 4*b*y + 2;
 
             // second partial derivative with respect to the second input
-            gradient[1] = 2 * theta;
+            unmixedHessian[1] = 2 * b;
 
-            return gradient;
+            return unmixedHessian;
         }
 
         /// <summary>
@@ -149,17 +125,23 @@ namespace widemeadows.Optimization.Hypotheses
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
         public Vector<double> CoefficientJacobian(Vector<double> coefficients, Vector<double> locations)
         {
-            Debug.Assert(coefficients.Count == 1, "coefficients.Count == 1");
+            Debug.Assert(coefficients.Count == 2, "coefficients.Count == 2");
             Debug.Assert(locations.Count == 2, "inputs.Count == 2");
 
             var x = locations[0];
             var y = locations[1];
+            var a = coefficients[0];
+            var b = coefficients[1];
 
-            // first partial derivative with respect to the only coefficient
-            var a = (y - x*x);
-            var dtheta = a*a;
+            var gradient = Vector<double>.Build.Dense(2);
 
-            return Vector<double>.Build.Dense(1, dtheta);
+            // first partial derivative with respect to the first coefficient
+            gradient[0] = 2*(a-x);
+
+            // first partial derivative with respect to the second coefficient
+            gradient[1] = (y - x*x)*(y - x*x);
+
+            return gradient;
         }
 
         /// <summary>
@@ -170,11 +152,23 @@ namespace widemeadows.Optimization.Hypotheses
         /// <returns>The partial derivatives of the evaluation function with respect to the <paramref name="coefficients" />.</returns>
         public Vector<double> CoefficientHessian(Vector<double> coefficients, Vector<double> locations)
         {
-            Debug.Assert(coefficients.Count == 1, "coefficients.Count == 1");
+            Debug.Assert(coefficients.Count == 2, "coefficients.Count == 2");
             Debug.Assert(locations.Count == 2, "inputs.Count == 2");
 
-            // second partial derivative with respect to the only coefficient
-            return Vector<double>.Build.Dense(1, 0);
+            var x = locations[0];
+            var y = locations[1];
+            var a = coefficients[0];
+            var b = coefficients[1];
+
+            var unmixedHessian = Vector<double>.Build.Dense(2);
+
+            // second partial derivative with respect to the first coefficient
+            unmixedHessian[0] = 2;
+
+            // second partial derivative with respect to the second coefficient
+            unmixedHessian[1] = 0;
+
+            return unmixedHessian;
         }
 
         /// <summary>

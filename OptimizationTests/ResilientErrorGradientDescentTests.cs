@@ -89,11 +89,11 @@ namespace widemeadows.Optimization.Tests
         public void RosenbrockParameterFitWithResidualSumOfSquares()
         {
             // parameter is default Rosenbrock
-            var theta = Vector<double>.Build.Dense(1, 105D);
-            var initialTheta = Vector<double>.Build.Dense(1, 200D);
+            var realTheta = Vector<double>.Build.DenseOfArray(new []{1D, 105D});
+            var initialTheta = Vector<double>.Build.DenseOfArray(new []{2D, 200D});
 
             // define the hypothesis
-            var hypothesis = new RosenbrockHypothesis(theta[0]);
+            var hypothesis = new RosenbrockHypothesis();
 
             // define a probability distribution
             var distribution = new ContinuousUniform(-10D, 10D);
@@ -104,7 +104,7 @@ namespace widemeadows.Optimization.Tests
             for (int i = 0; i < dataPoints; ++i)
             {
                 var inputs = Vector<double>.Build.Random(2, distribution);
-                var output = hypothesis.Evaluate(theta, inputs);
+                var output = hypothesis.Evaluate(realTheta, inputs);
                 trainingSet.Add(new DataPoint<double>(inputs, output));
             };
 
@@ -123,7 +123,8 @@ namespace widemeadows.Optimization.Tests
 
             // assert!
             var coefficients = result.Coefficients;
-            coefficients[0].Should().BeApproximately(theta[0], 1D, "because that's the underlying system's parameter");
+            coefficients[0].Should().BeApproximately(realTheta[0], 1D, "because that's the functions [a] parameter");
+            coefficients[1].Should().BeApproximately(realTheta[1], 1D, "because that's the functions [b] parameter");
         }
 
         [Test]
@@ -133,8 +134,8 @@ namespace widemeadows.Optimization.Tests
             var initialTheta = Vector<double>.Build.DenseOfArray(new [] { 1D, 3D });
 
             // define the hypothesis with default parameter
-            var rosenbrockParameter = Vector<double>.Build.Dense(1, 100D);
-            var hypothesis = new RosenbrockHypothesis(rosenbrockParameter);
+            var rosenbrockParameter = Vector<double>.Build.DenseOfArray(new[] { 1D, 105D });
+            var hypothesis = new RosenbrockHypothesis();
 
             // cost function is sum of squared errors
             var costFunction = new FunctionValueOptimization<double>(hypothesis, rosenbrockParameter);
