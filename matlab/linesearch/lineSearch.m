@@ -13,6 +13,7 @@ addpath(genpath('colormaps'));
 
 % plot the surface
 surf(X,Y,R,'FaceColor','interp','EdgeAlpha', 0.2);
+view(27, 40);
 xlim([min(x), max(x)]);
 ylim([min(y), max(y)]);
 hold on;
