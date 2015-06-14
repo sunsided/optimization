@@ -257,8 +257,8 @@ namespace widemeadows.Optimization.Tests
 
             // assert!
             var coefficients = result.Coefficients;
-            coefficients[0].Should().BeApproximately(rosenbrockParameter[0], 1E-5D, "because the Rosenbrock function as a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
-            coefficients[1].Should().BeApproximately(Math.Sqrt(rosenbrockParameter[0]), 1E-5D, "because the Rosenbrock function as a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
+            coefficients[0].Should().BeApproximately(rosenbrockParameter[0], 1E-5D, "because the Rosenbrock function has a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
+            coefficients[1].Should().BeApproximately(Math.Sqrt(rosenbrockParameter[0]), 1E-5D, "because the Rosenbrock function has a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
         }
 
         [Test]
@@ -278,19 +278,23 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // define the line search algorithm
-            var lineSearch = new SecantMethod();
+            var lineSearch = new SecantMethod
+            {
+                LineSearchStepSize = 1E-5D
+            };
 
             // optimize!
             var gd = new PolakRibiereConjugateGradientDescent(lineSearch)
                      {
-                         ErrorTolerance = 1E-8D
+                         ErrorTolerance = 1E-8D,
+                         MaxIterations = 15000
                      };
             var result = gd.Minimize(problem);
 
             // assert!
             var coefficients = result.Coefficients;
-            coefficients[0].Should().BeApproximately(rosenbrockParameter[0], 1E-5D, "because the Rosenbrock function as a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
-            coefficients[1].Should().BeApproximately(Math.Sqrt(rosenbrockParameter[0]), 1E-5D, "because the Rosenbrock function as a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
+            coefficients[0].Should().BeApproximately(rosenbrockParameter[0], 1E-5D, "because the Rosenbrock function has a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
+            coefficients[1].Should().BeApproximately(Math.Sqrt(rosenbrockParameter[0]), 1E-5D, "because the Rosenbrock function has a minimum at x={0}, y={1}", rosenbrockParameter[0], Math.Sqrt(rosenbrockParameter[0]));
         }
     }
 }
