@@ -1,13 +1,12 @@
 ﻿using System.Diagnostics;
 using JetBrains.Annotations;
-using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
 using widemeadows.Optimization.LineSearch;
 
-namespace widemeadows.Optimization.GradientDescent
+namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 {
     /// <summary>
-    /// Conjugate-Gradient Descent using Polak-Ribière conjugation and a Secant Method line search.
+    /// Conjugate-Gradient Descent using Fletcher-Reeves conjugation and a Secant Method line search.
     /// </summary>
     /// <remarks>
     /// <code>
@@ -21,13 +20,13 @@ namespace widemeadows.Optimization.GradientDescent
     /// }
     /// </code>
     /// </remarks>
-    public sealed class PolakRibiereConjugateGradientDescent : ConjugateGradientDescentBase<double, IDifferentiableCostFunction<double>>
+    public sealed class FletcherReevesConjugateGradientDescent : ConjugateGradientDescentBase<double, IDifferentiableCostFunction<double>>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FletcherReevesConjugateGradientDescent"/> class.
         /// </summary>
         /// <param name="lineSearch">The line search.</param>
-        public PolakRibiereConjugateGradientDescent([NotNull] ILineSearch<double, IDifferentiableCostFunction<double>> lineSearch)
+        public FletcherReevesConjugateGradientDescent([NotNull] ILineSearch<double, IDifferentiableCostFunction<double>> lineSearch)
             : base(lineSearch)
         {
         }
@@ -59,15 +58,9 @@ namespace widemeadows.Optimization.GradientDescent
             var costFunction = problem.CostFunction;
             var residuals = -costFunction.Jacobian(theta);
 
-            // determine a preconditioner
-            var preconditioner = GetPreconditioner(problem, theta);
-
-            // get the preconditioned residuals
-            var preconditionedResiduals = preconditioner.Inverse()*residuals;
-
             // the initial search direction is along the residuals,
             // which makes the initial step a regular gradient descent.
-            var direction = preconditionedResiduals;
+            var direction = residuals;
 
             // determine the initial error
             var delta = residuals*residuals;
@@ -79,7 +72,7 @@ namespace widemeadows.Optimization.GradientDescent
                 // stop if the gradient change is below the threshold
                 if (delta <= epsilonSquare*initialDelta)
                 {
-                    Debug.WriteLine("Stopping CG/S/PR at iteration {0}/{1} because cost |{2}| <= {3}", i, maxIterations, delta, epsilonSquare * initialDelta);
+                    Debug.WriteLine("Stopping CG/S/FR at iteration {0}/{1} because cost |{2}| <= {3}", i, maxIterations, delta, epsilonSquare * initialDelta);
                     break;
                 }
 
@@ -91,21 +84,19 @@ namespace widemeadows.Optimization.GradientDescent
                 // obtain the new residuals
                 residuals = -costFunction.Jacobian(theta);
 
-                // update the search direction (Polak-Ribière)
+                // calculate the new error
                 var previousDelta = delta;
-                var midDelta = residuals*preconditionedResiduals;
+                delta = residuals*residuals;
 
-                preconditioner = GetPreconditioner(problem, theta);
-                preconditionedResiduals = preconditioner.Inverse()*residuals;
-
-                delta = residuals*preconditionedResiduals;
-                var beta = (delta - midDelta)/previousDelta;
+                // update the search direction (Fletcher-Reeves)
+                var beta = delta/previousDelta;
+                direction = residuals + beta*direction;
 
                 // Conjugate Gradient can generate only n conjugate jump directions
                 // in n-dimensional space, so we'll reset the algorithm every n steps.
                 // reset every n iterations or when the gradient is known to be nonorthogonal
                 var shouldRestart = (--iterationsUntilReset == 0);
-                var isDescentDirection = (beta > 0);
+                var isDescentDirection = (residuals*direction > 0);
                 if (shouldRestart || !isDescentDirection)
                 {
                     // reset the
@@ -114,28 +105,11 @@ namespace widemeadows.Optimization.GradientDescent
                     // reset the counter
                     iterationsUntilReset = problemDimension;
                 }
-                else
-                {
-                    // update the direction
-                    direction = residuals + beta*direction;
-                }
             }
 
             // that's it.
             var cost = costFunction.CalculateCost(theta);
             return new OptimizationResult<double>(cost, theta);
-        }
-
-        /// <summary>
-        /// Gets a preconditioner for the residuals.
-        /// </summary>
-        /// <param name="problem">The problem.</param>
-        /// <param name="theta">The coefficients to optimize.</param>
-        /// <returns>MathNet.Numerics.LinearAlgebra.Matrix&lt;System.Double&gt;.</returns>
-        private Matrix<double> GetPreconditioner([NotNull, UsedImplicitly] IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem, Vector<double> theta)
-        {
-            // sadly we have no clue.
-            return Matrix<double>.Build.DiagonalIdentity(theta.Count);
         }
     }
 }

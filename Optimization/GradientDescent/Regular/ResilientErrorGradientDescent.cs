@@ -3,7 +3,7 @@ using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
 
-namespace widemeadows.Optimization.GradientDescent
+namespace widemeadows.Optimization.GradientDescent.Regular
 {
     /// <summary>
     /// Resilient Error Gradient Descent.

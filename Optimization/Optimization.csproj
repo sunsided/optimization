@@ -49,12 +49,12 @@
     <Compile Include="Cost\ICostFunction.cs" />
     <Compile Include="Cost\ResidualSumOfSquaresCostFunction.cs" />
     <Compile Include="DataPoint.cs" />
-    <Compile Include="GradientDescent\ConjugateGradientDescentBase.cs" />
-    <Compile Include="GradientDescent\PolakRibiereConjugateGradientDescent.cs" />
-    <Compile Include="GradientDescent\FletcherReevesConjugateGradientDescent.cs" />
-    <Compile Include="GradientDescent\GradientDescentBase.cs" />
+    <Compile Include="GradientDescent\ConjugateGradients\ConjugateGradientDescentBase.cs" />
+    <Compile Include="GradientDescent\ConjugateGradients\PolakRibiereConjugateGradientDescent.cs" />
+    <Compile Include="GradientDescent\ConjugateGradients\FletcherReevesConjugateGradientDescent.cs" />
+    <Compile Include="GradientDescent\Regular\GradientDescentBase.cs" />
     <Compile Include="GradientDescent\IGradientDescent.cs" />
-    <Compile Include="GradientDescent\ResilientErrorGradientDescent.cs" />
+    <Compile Include="GradientDescent\Regular\ResilientErrorGradientDescent.cs" />
     <Compile Include="Hypotheses\ITwiceDifferentiableHypothesis.cs" />
     <Compile Include="Hypotheses\UnivariateExponentialHypothesis.cs" />
     <Compile Include="Hypotheses\LinearHypothesis.cs" />

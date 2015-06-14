@@ -1,7 +1,7 @@
 ﻿using System;
 using widemeadows.Optimization.Cost;
 
-namespace widemeadows.Optimization.GradientDescent
+namespace widemeadows.Optimization.GradientDescent.Regular
 {
     /// <summary>
     /// Base class for Gradient Descent-type algorithms.

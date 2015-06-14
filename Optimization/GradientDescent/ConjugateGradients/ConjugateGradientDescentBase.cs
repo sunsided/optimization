@@ -2,9 +2,10 @@
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
+using widemeadows.Optimization.GradientDescent.Regular;
 using widemeadows.Optimization.LineSearch;
 
-namespace widemeadows.Optimization.GradientDescent
+namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 {
     /// <summary>
     /// Class ConjugateGradientDescentBase.
