@@ -82,8 +82,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 residuals = -costFunction.Jacobian(theta);
 
                 // obtain the update parameter
-                double beta;
-                var resetRequested = UpdateDirection(state, theta, residuals, ref direction, ref delta);
+                var shouldContinue = UpdateDirection(state, theta, residuals, ref direction, ref delta);
 
                 // Conjugate Gradient can generate only n conjugate search directions
                 // in n-dimensional space, so we'll reset the algorithm every n steps in order
@@ -91,11 +90,8 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 // Alternatively, when the implementation decides that the resulting search direction
                 // would be non-A-conjugate (e.g. non-orthogonal to all previous search directions),
                 // reset is triggered as well.
-                var shouldContinue = (--iterationsUntilReset > 0) && !resetRequested;
-                if (shouldContinue)
-                {
-                }
-                else
+                var shouldReset = (--iterationsUntilReset == 0) || !shouldContinue;
+                if (shouldReset)
                 {
                     // reset the search direction to point towards the current
                     // residuals (which are opposite of the gradient!)
