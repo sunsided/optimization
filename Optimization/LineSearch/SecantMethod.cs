@@ -24,10 +24,12 @@ namespace widemeadows.Optimization.LineSearch
 
             // the eta value determines how much the gradient at the current step
             // point differs from the gradient that is orthogonal to the search direction.
-            var previousEta = costFunction.Jacobian(theta + initialStepSize*direction)*direction;
+            var gradient = costFunction.Jacobian(theta + initialStepSize*direction);
+            var eta = gradient*direction;
+            var previousEta = eta;
 
             // if our step size is small enough to drop this error term under the
-            // thershold, we terminate the search.
+            // threshold, we terminate the search.
             var deltaD = direction*direction;
 
             // the step size used during line search.
@@ -38,19 +40,25 @@ namespace widemeadows.Optimization.LineSearch
             for (var j = 0; j < maxLineSearchIteration; ++j)
             {
                 // terminate line search if alpha is close enough to zero
-                if ((alpha*alpha)*deltaD <= epsilonSquare) break;
+                var alphaSquare = alpha*alpha;
+                Debug.Assert(!double.IsNaN(alphaSquare) && !double.IsInfinity(alphaSquare), string.Format("Numerical instability in alpha² with alpha={0}", alpha));
+                if (alphaSquare * deltaD <= epsilonSquare) break;
 
                 // by multiplying the current gradient with the search direction,
                 // we'll end up with a (close to ) zero term if both directions are orthogonal.
                 // At this point, alpha will be zero (or close to it), which terminates our search.
-                var eta = costFunction.Jacobian(theta)*direction;
+                gradient = costFunction.Jacobian(theta);
+                eta = gradient*direction;
                 Debug.Assert(!double.IsInfinity(eta), "!double.IsInfinity(eta)");
 
-                // adjust the step size
-                alpha = alpha*eta/(previousEta - eta);
-                Debug.Assert(!double.IsNaN(alpha), "!double.IsNaN(alpha)");
-
+                // determine the change in orthogonality error
+                var etaChange = previousEta - eta;
                 previousEta = eta;
+                if (etaChange == 0.0D) break;
+
+                // adjust the step size
+                alpha = alpha * eta / etaChange;
+                Debug.Assert(!double.IsNaN(alpha) && !double.IsInfinity(alpha), "!double.IsNaN(alpha) && !double.IsInfinity(alpha)");
 
                 // step to the new location along the line
                 theta += alpha*direction;
