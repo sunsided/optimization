@@ -36,8 +36,10 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// Initializes the algorithm.
         /// </summary>
         /// <param name="problem">The problem.</param>
+        /// <param name="theta">The theta.</param>
         /// <param name="residuals">The initial residuals.</param>
-        /// <returns>The state to be passed to the <see cref="DetermineBeta" /> function.</returns>
+        /// <param name="searchDirection">The initial search direction.</param>
+        /// <returns>The state to be passed to the <see cref="UpdateDirection" /> function.</returns>
         protected override object InitializeAlgorithm(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem, Vector<double> theta, Vector<double> residuals, out Vector<double> searchDirection)
         {
             // determine a preconditioner
@@ -60,10 +62,10 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// <param name="internalState">The algorithm's internal state.</param>
         /// <param name="theta">The theta.</param>
         /// <param name="residuals">The residuals.</param>
-        /// <param name="beta">The beta coefficient.</param>
+        /// <param name="direction">The search direction.</param>
         /// <param name="delta">The squared norm of the residuals.</param>
         /// <returns><see langword="true" /> if the algorithm should continue, <see langword="false" /> if the algorithm should restart.</returns>
-        protected override bool DetermineBeta(object internalState, Vector<double> theta, Vector<double> residuals, out double beta, ref double delta)
+        protected override bool UpdateDirection(object internalState, Vector<double> theta, Vector<double> residuals, ref Vector<double> direction, ref double delta)
         {
             Debug.Assert(internalState != null, "internalState != null");
             var state = (State) internalState;
@@ -74,19 +76,23 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 
             // update the search direction (Polak-Ribière)
             var previousDelta = delta;
-            var midDelta = residuals * state.PreviousPreconditionedResiduals;
+            var midDelta = residuals * preconditionedResiduals;
 
             var preconditioner = GetPreconditioner(problem, theta);
             preconditionedResiduals = preconditioner.Inverse() * residuals;
 
             delta = residuals * preconditionedResiduals;
-            beta = (delta - midDelta) / previousDelta;
+            var beta = (delta - midDelta) / previousDelta;
 
             // store the preconditioned residuals for the next iteration
             state.PreviousPreconditionedResiduals = preconditionedResiduals;
 
-            // reset condition for Polak-Rebière
-            return (beta > 0);
+            // check the reset condition for Polak-Rebière
+            if (!(beta > 0)) return false;
+
+            // update the direction
+            direction = residuals + beta * direction;
+            return true;
         }
 
         /// <summary>

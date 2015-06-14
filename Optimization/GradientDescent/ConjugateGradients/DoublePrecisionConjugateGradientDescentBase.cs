@@ -83,7 +83,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 
                 // obtain the update parameter
                 double beta;
-                var resetRequested = DetermineBeta(state, theta, residuals, out beta, ref delta);
+                var resetRequested = UpdateDirection(state, theta, residuals, ref direction, ref delta);
 
                 // Conjugate Gradient can generate only n conjugate search directions
                 // in n-dimensional space, so we'll reset the algorithm every n steps in order
@@ -94,8 +94,6 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 var shouldContinue = (--iterationsUntilReset > 0) && !resetRequested;
                 if (shouldContinue)
                 {
-                    // update the direction
-                    direction = residuals + beta*direction;
                 }
                 else
                 {
@@ -119,17 +117,18 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// <param name="problem">The problem.</param>
         /// <param name="residuals">The initial residuals.</param>
         /// <param name="searchDirection">The initial search direction.</param>
-        /// <returns>The state to be passed to the <see cref="DetermineBeta" /> function.</returns>
+        /// <returns>The state to be passed to the <see cref="UpdateDirection" /> function.</returns>
         protected abstract object InitializeAlgorithm([NotNull] IOptimizationProblem<double, TCostFunction> problem, Vector<double> theta, Vector<double> residuals, out Vector<double> searchDirection);
 
         /// <summary>
         /// Determines the beta coefficient used to update the direction.
         /// </summary>
         /// <param name="internalState">The algorithm's internal state.</param>
+        /// <param name="theta">The theta.</param>
         /// <param name="residuals">The residuals.</param>
-        /// <param name="beta">The beta coefficient.</param>
+        /// <param name="direction">The search direction.</param>
         /// <param name="delta">The squared norm of the residuals.</param>
         /// <returns><see langword="true" /> if the algorithm should continue, <see langword="false" /> if the algorithm should restart.</returns>
-        protected abstract bool DetermineBeta([CanBeNull] object internalState, [NotNull] Vector<double> theta, [NotNull] Vector<double> residuals, out double beta, ref double delta);
+        protected abstract bool UpdateDirection([CanBeNull] object internalState, [NotNull] Vector<double> theta, [NotNull] Vector<double> residuals, ref Vector<double> direction, ref double delta);
     }
 }
