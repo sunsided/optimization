@@ -27,7 +27,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// </summary>
         /// <param name="problem">The problem.</param>
         /// <returns>IOptimizationResult&lt;TData&gt;.</returns>
-        public override IOptimizationResult<double> Minimize(IOptimizationProblem<double, TCostFunction> problem)
+        public sealed override IOptimizationResult<double> Minimize(IOptimizationProblem<double, TCostFunction> problem)
         {
             var maxIterations = MaxIterations;
 
@@ -49,12 +49,15 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             var costFunction = problem.CostFunction;
             var residuals = -costFunction.Jacobian(theta);
 
-            // initialize the algorithm
-            object state = InitializeAlgorithm(problem, residuals);
-
             // the initial search direction is along the residuals,
             // which makes the initial step a regular gradient descent.
-            var direction = residuals;
+            // However, some CG algorithms (especially when using a preconditioner)
+            // might yield slightly different directions, so we'll leave that to
+            // the initialization function.
+            Vector<double> direction; // = residuals
+
+            // initialize the algorithm
+            object state = InitializeAlgorithm(problem, theta, residuals, out direction);
 
             // determine the initial error
             var delta = residuals * residuals;
@@ -80,7 +83,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 
                 // obtain the update parameter
                 double beta;
-                var resetRequested = DetermineBeta(problem, residuals, out beta, out delta);
+                var resetRequested = DetermineBeta(state, theta, residuals, out beta, ref delta);
 
                 // Conjugate Gradient can generate only n conjugate search directions
                 // in n-dimensional space, so we'll reset the algorithm every n steps in order
@@ -115,17 +118,18 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// </summary>
         /// <param name="problem">The problem.</param>
         /// <param name="residuals">The initial residuals.</param>
-        /// <returns>The state to be passed to the <see cref="DetermineBeta"/> function.</returns>
-        protected abstract object InitializeAlgorithm([NotNull] IOptimizationProblem<double, TCostFunction> problem, Vector<double> residuals);
+        /// <param name="searchDirection">The initial search direction.</param>
+        /// <returns>The state to be passed to the <see cref="DetermineBeta" /> function.</returns>
+        protected abstract object InitializeAlgorithm([NotNull] IOptimizationProblem<double, TCostFunction> problem, Vector<double> theta, Vector<double> residuals, out Vector<double> searchDirection);
 
         /// <summary>
         /// Determines the beta coefficient used to update the direction.
         /// </summary>
-        /// <param name="state">The algorithm's internal state.</param>
+        /// <param name="internalState">The algorithm's internal state.</param>
         /// <param name="residuals">The residuals.</param>
         /// <param name="beta">The beta coefficient.</param>
         /// <param name="delta">The squared norm of the residuals.</param>
         /// <returns><see langword="true" /> if the algorithm should continue, <see langword="false" /> if the algorithm should restart.</returns>
-        protected abstract bool DetermineBeta([CanBeNull] object state, [NotNull] Vector<double> residuals, out double beta, out double delta);
+        protected abstract bool DetermineBeta([CanBeNull] object internalState, [NotNull] Vector<double> theta, [NotNull] Vector<double> residuals, out double beta, ref double delta);
     }
 }

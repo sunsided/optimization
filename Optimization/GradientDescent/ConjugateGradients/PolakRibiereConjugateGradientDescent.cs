@@ -21,7 +21,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
     /// }
     /// </code>
     /// </remarks>
-    public sealed class PolakRibiereConjugateGradientDescent : ConjugateGradientDescentBase<double, IDifferentiableCostFunction<double>>
+    public sealed class PolakRibiereConjugateGradientDescent : DoublePrecisionConjugateGradientDescentBase<IDifferentiableCostFunction<double>>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FletcherReevesConjugateGradientDescent"/> class.
@@ -33,97 +33,60 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         }
 
         /// <summary>
-        /// Minimizes the specified problem.
+        /// Initializes the algorithm.
         /// </summary>
         /// <param name="problem">The problem.</param>
-        /// <returns>IOptimizationResult&lt;TData&gt;.</returns>
-        public override IOptimizationResult<double> Minimize(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem)
+        /// <param name="residuals">The initial residuals.</param>
+        /// <returns>The state to be passed to the <see cref="DetermineBeta" /> function.</returns>
+        protected override object InitializeAlgorithm(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem, Vector<double> theta, Vector<double> residuals, out Vector<double> searchDirection)
         {
-            var maxIterations = MaxIterations;
-
-            // The idea is that we should stop the operation if ||residuals|| < epsilon.
-            // Since the norm calculation requires taking the square root,
-            // we instead square epsilon and compare against that.
-            var epsilonSquare = ErrorToleranceSquared;
-
-            // fetch a starting point and obtain the problem size
-            var theta = problem.GetInitialCoefficients();
-            var problemDimension = theta.Count;
-
-            // we want to restart nonlinear CG at least every n steps,
-            // and use this variable as a counter.
-            var iterationsUntilReset = problemDimension;
-
-            // now we determine the initial residuals, which are defined to
-            // be the opposite gradient direction
-            var costFunction = problem.CostFunction;
-            var residuals = -costFunction.Jacobian(theta);
-
             // determine a preconditioner
             var preconditioner = GetPreconditioner(problem, theta);
 
             // get the preconditioned residuals
-            var preconditionedResiduals = preconditioner.Inverse()*residuals;
+            var preconditionedResiduals = preconditioner.Inverse() * residuals;
 
             // the initial search direction is along the residuals,
             // which makes the initial step a regular gradient descent.
-            var direction = preconditionedResiduals;
+            searchDirection = preconditionedResiduals;
 
-            // determine the initial error
-            var delta = residuals*residuals;
-            var initialDelta = delta;
+            // return some state information
+            return new State(problem, preconditionedResiduals);
+        }
 
-            // loop for the maximum iteration count
-            for (var i = 0; i < maxIterations; ++i)
-            {
-                // stop if the gradient change is below the threshold
-                if (delta <= epsilonSquare*initialDelta)
-                {
-                    Debug.WriteLine("Stopping CG/S/PR at iteration {0}/{1} because cost |{2}| <= {3}", i, maxIterations, delta, epsilonSquare * initialDelta);
-                    break;
-                }
+        /// <summary>
+        /// Determines the beta coefficient used to update the direction.
+        /// </summary>
+        /// <param name="internalState">The algorithm's internal state.</param>
+        /// <param name="theta">The theta.</param>
+        /// <param name="residuals">The residuals.</param>
+        /// <param name="beta">The beta coefficient.</param>
+        /// <param name="delta">The squared norm of the residuals.</param>
+        /// <returns><see langword="true" /> if the algorithm should continue, <see langword="false" /> if the algorithm should restart.</returns>
+        protected override bool DetermineBeta(object internalState, Vector<double> theta, Vector<double> residuals, out double beta, ref double delta)
+        {
+            Debug.Assert(internalState != null, "internalState != null");
+            var state = (State) internalState;
 
-                // TODO: var cost = costFunction.CalculateCost(x);
+            // fetch the old state
+            var problem = state.Problem;
+            var preconditionedResiduals = state.PreviousPreconditionedResiduals;
 
-                // perform a line search to find the minimum along the given direction
-                theta = LineSearch(costFunction, theta, direction);
+            // update the search direction (Polak-Ribière)
+            var previousDelta = delta;
+            var midDelta = residuals * state.PreviousPreconditionedResiduals;
 
-                // obtain the new residuals
-                residuals = -costFunction.Jacobian(theta);
+            var preconditioner = GetPreconditioner(problem, theta);
+            preconditionedResiduals = preconditioner.Inverse() * residuals;
 
-                // update the search direction (Polak-Ribière)
-                var previousDelta = delta;
-                var midDelta = residuals*preconditionedResiduals;
+            delta = residuals * preconditionedResiduals;
+            beta = (delta - midDelta) / previousDelta;
 
-                preconditioner = GetPreconditioner(problem, theta);
-                preconditionedResiduals = preconditioner.Inverse()*residuals;
+            // store the preconditioned residuals for the next iteration
+            state.PreviousPreconditionedResiduals = preconditionedResiduals;
 
-                delta = residuals*preconditionedResiduals;
-                var beta = (delta - midDelta)/previousDelta;
-
-                // Conjugate Gradient can generate only n conjugate jump directions
-                // in n-dimensional space, so we'll reset the algorithm every n steps.
-                // reset every n iterations or when the gradient is known to be nonorthogonal
-                var shouldRestart = (--iterationsUntilReset == 0);
-                var isDescentDirection = (beta > 0);
-                if (shouldRestart || !isDescentDirection)
-                {
-                    // reset the
-                    direction = residuals;
-
-                    // reset the counter
-                    iterationsUntilReset = problemDimension;
-                }
-                else
-                {
-                    // update the direction
-                    direction = residuals + beta*direction;
-                }
-            }
-
-            // that's it.
-            var cost = costFunction.CalculateCost(theta);
-            return new OptimizationResult<double>(cost, theta);
+            // reset condition for Polak-Rebière
+            return (beta > 0);
         }
 
         /// <summary>
@@ -136,6 +99,34 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         {
             // sadly we have no clue.
             return Matrix<double>.Build.DiagonalIdentity(theta.Count);
+        }
+
+
+        /// <summary>
+        /// The algorithm's state.
+        /// </summary>
+        private sealed class State
+        {
+            /// <summary>
+            /// The problem
+            /// </summary>
+            public readonly IOptimizationProblem<double, IDifferentiableCostFunction<double>> Problem;
+
+            /// <summary>
+            /// The previous preconditioned residuals
+            /// </summary>
+            public Vector<double> PreviousPreconditionedResiduals;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="State"/> class.
+            /// </summary>
+            /// <param name="problem">The problem.</param>
+            /// <param name="previousPreconditionedResiduals">The previous preconditioned residuals.</param>
+            public State(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem, Vector<double> previousPreconditionedResiduals)
+            {
+                Problem = problem;
+                PreviousPreconditionedResiduals = previousPreconditionedResiduals;
+            }
         }
     }
 }
