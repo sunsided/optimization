@@ -40,6 +40,10 @@ namespace widemeadows.Optimization.GradientDescent
         public override IOptimizationResult<double> Minimize(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem)
         {
             var maxIterations = MaxIterations;
+
+            // The idea is that we should stop the operation if ||residuals|| < epsilon.
+            // Since the norm calculation requires taking the square root,
+            // we instead square epsilon and compare against that.
             var epsilonSquare = ErrorToleranceSquared;
 
             // fetch a starting point and obtain the problem size
