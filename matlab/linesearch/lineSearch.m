@@ -65,7 +65,7 @@ ly = linspace(sy, ey, 50);
 lv = linspace(0, m, 50);
 lf = rosenbrock(lx, ly);
 figure;
-plot(lv, lf);
+plot(lv, lf, 'k');
 title('Rosenbrock function along search direction');
 xlabel('\lambda = \nablaf(\theta)/|\nablaf(\theta)|');
 ylabel('f(\theta - \lambda \nablaf(\theta))');
