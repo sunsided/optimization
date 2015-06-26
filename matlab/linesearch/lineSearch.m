@@ -67,5 +67,5 @@ lf = rosenbrock(lx, ly);
 figure;
 plot(lv, lf, 'k');
 title('Rosenbrock function along search direction');
-xlabel('\lambda = \nablaf(\theta)/|\nablaf(\theta)|');
-ylabel('f(\theta - \lambda \nablaf(\theta))');
+xlabel('\alpha = \nablaf(\theta)/|\nablaf(\theta)|');
+ylabel('\phi(\alpha) = f(\theta - \alpha \nablaf(\theta))');
