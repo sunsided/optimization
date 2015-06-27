@@ -38,7 +38,7 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
     
     % find an initial bracketing interval [a0,b0]
     alpha = 0;
-    a0 = 0; % easy way out, since we already know that the gradient here is descending
+    [a0, b0] = findInitialBracketing(x0, direction, fun, f0);
     
     % determine the next point of evaluation
     x_next = x0+alpha*direction;
@@ -52,7 +52,7 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
         % Check for termination
 
         % T1: Original Wolfe conditions
-        [f_next, g_next] = fun(x_next);
+        [f_next, g_next]     = fun(x_next);
         line_derivative      = g'*direction;
         line_derivative_next = g_next'*direction;
         if ...
@@ -98,3 +98,69 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
     
 end
 
+
+function [a, b] = findInitialBracketing(x0, direction, fun, f0)
+% FINDINITIALBRACKETING Finds an initial bracketing interval [a,b] for the
+% line search. Described as the Forward-Backward method in Optimization
+% Theory and Methods: Nonlinear Programming by Sun and Yuan.
+
+%{
+@book{sun2006optimization,
+  title={Optimization Theory and Methods: Nonlinear Programming},
+  author={Sun, W. and Yuan, Y.X.},
+  isbn={9780387249759},
+  lccn={2005042696},
+  series={Springer Optimization and Its Applications},
+  url={https://books.google.de/books?id=nwcenwEACAAJ},
+  year={2006},
+  publisher={Springer US}
+}
+%}
+    
+    if ~exist('f0', 'var')
+        f0 = fun(x0);
+    end
+
+    t     = 1.1; % step length increase factor
+    h     = 0.1; % initial step length
+    alpha = 0;   % initial alpha
+    f     = f0;  % initial function value
+    k     = 0;   % iteration counter
+    
+    % set a number of iterations after which the line search stops
+    while (true)
+
+        % evaluate the function at the new step
+        alpha_next = alpha + h;
+        f_next     = fun(x0 + alpha_next*direction);
+
+        % divide the search interval
+        if f_next < f
+            
+            % perform a forward step
+            h_next = t*h;
+           
+        else
+            
+            % perform a backward step
+            
+            % if this is the first iteration, invert the search direction
+            if k == 0
+                h = -h;
+            else
+                a = min(alpha, alpha_next);
+                b = max(alpha, alpha_next);
+                return;
+            end
+            
+        end
+
+        % time update
+        f     = f_next;
+        alpha = alpha_next;
+        h     = h_next;
+        k     = k+1;
+        
+    end
+    
+end
