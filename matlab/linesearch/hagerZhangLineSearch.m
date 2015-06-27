@@ -28,6 +28,9 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
     f = f0;
     g = g0;
     
+    % error tolerance
+    epsilon = 1E-5;
+    
     % parameters for the Wolfe conditions
     % 0 < delta < sigma < 1
     delta = 0.25;
@@ -45,12 +48,23 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
     if ...
         ((f_next - f) <= (delta*alpha*cosine)) && ... % first Wolfe condition
         (cosine_next >= sigma*cosine)                 % second Wolfe condition
-        % original Wolfe conditions are meth, so alpha is
-        % our final value.
+        % original Wolfe conditions are met,
+        % so alpha is our final value.
         return;
     end
     
     % T2: Approximate Wolfe conditions
+    if ...
+        ((2*delta-1)*g0 >= g_next) & ...
+        (g_next >= (sigma * g0))
+    
+        % approximate Wolfe conditions are met,
+        % so alpha may be a candidate IF there was
+        % actually a descent
+        if (f_next <= (f0 + epsilon))
+            return;
+        end
+    end
 
     alpha = 1;
     
