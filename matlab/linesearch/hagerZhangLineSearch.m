@@ -36,48 +36,58 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
     delta = 0.25;
     sigma = 0.75;
     
+    % bisection tuning
+    gamma = 0.5; % range (0, 1)
+    
     % find an initial bracketing interval [a0,b0]
     alpha = 0;
     [a0, b0] = findInitialBracketing(x0, direction, fun, f0);
-    
-    % determine the next point of evaluation
-    x_next = x0+alpha*direction;
 
     % loop variables
-    ak = a0;
-    bk = b0;
+    a = a0;
+    b = b0;
+    c = 0;
     k = 0;
     while(true)
 
-        % Check for termination
+        % check if a point was generated that satisfied the
+        % termination conditions
+        for alpha = [a, b, c]
 
-        % T1: Original Wolfe conditions
-        [f_next, g_next]     = fun(x_next);
-        line_derivative      = g'*direction;
-        line_derivative_next = g_next'*direction;
-        if ...
-            ((f_next - f) <= (delta*alpha*line_derivative)) && ... % first Wolfe condition
-            (line_derivative_next >= sigma*line_derivative)        % second Wolfe condition
-            % original Wolfe conditions are met,
-            % so alpha is our final value.
-            return;
-        end
+            % determine the next point of evaluation
+            x_next = x0+alpha*direction;
 
-        % T2: Approximate Wolfe conditions
-        if ...
-            ((2*delta-1)*line_derivative_0 >= line_derivative_next) && ...
-            (line_derivative_next >= sigma*line_derivative_0)
+            % Check for termination
 
-            % approximate Wolfe conditions are met,
-            % so alpha may be a candidate IF there was
-            % actually a descent
-            if (f_next <= (f0 + epsilon))
+            % T1: Original Wolfe conditions
+            [f_next, g_next]     = fun(x_next);
+            line_derivative      = g'*direction;
+            line_derivative_next = g_next'*direction;
+            if ...
+                ((f_next - f) <= (delta*alpha*line_derivative)) && ... % first Wolfe condition
+                (line_derivative_next >= sigma*line_derivative)        % second Wolfe condition
+                % original Wolfe conditions are met,
+                % so alpha is our final value.
                 return;
             end
-        end
 
+            % T2: Approximate Wolfe conditions
+            if ...
+                ((2*delta-1)*line_derivative_0 >= line_derivative_next) && ...
+                (line_derivative_next >= sigma*line_derivative_0)
+
+                % approximate Wolfe conditions are met,
+                % so alpha may be a candidate IF there was
+                % actually a descent
+                if (f_next <= (f0 + epsilon))
+                    return;
+                end
+            end
+
+        end
+        
         % L1: perform a double secant step
-        [a, b] = secant2(ak, bk);
+        [a, b] = doubleSecant(ak, bk, fun, x0, direction, epsilon);
 
         % L2: select midpoint
         if (b-a) > (gamma*(bk-ak))
@@ -87,15 +97,46 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
 
         % L3: loop
         k = k+1;
-        ak = a;
-        bk = b;
-        alpha = c;
 
     end
+        
+end
+
+function [c] = secant(a, b, fun, x0, direction)
+% SECANT Performs a secant step
+
+    [~, ga] = fun(x0 + a*direction);
+    [~, gb] = fun(x0 + b*direction);
+
+    c = (a*(gb'*direction) - b*(ga'*direction)) / ...
+        ((gb'*direction) - (ga'*direction));
     
-    % derp
-    alpha = 1;
+end
+
+function [a_bar, b_bar] = doubleSecant(a, b, fun, x0, direction, epsilon)
+% DOUBLESECANT Performs a double secant step.
+
+    % S1
+    c = secant(a, b, fun, x0, direction);
+    [A, B] = updateBracketing(a, b, c, fun, x0, direction, epsilon);
+
+    % S2
+    if (c == B)
+        c_bar = secant(b, B, fun, x0, direction);
     
+    % S3
+    elseif (c == A)
+        c_bar = secant(a, A, fun, x0, direction);
+    end
+    
+    % S4
+    if (c == A) || (c == B)
+        [a_bar, b_bar] = updateBracketing(A, B, c_bar, fun, x0, direction, epsilon);
+    else
+        a_bar = A;
+        b_bar = B;
+    end
+        
 end
 
 function [a_bar, b_bar] = updateBracketing(a, b, c, fun, x0, direction, epsilon)
