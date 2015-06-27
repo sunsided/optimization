@@ -45,10 +45,14 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
     % find an initial bracketing interval [a0,b0]
     alpha = 0;
     [a0, b0] = findInitialBracketing(x0, direction, fun, f0);
+    
+    % If the initial bracketing algorithm is badly configured,
+    % this really helps a lot:
+    % a0 = 0;
 
     % loop variables
-    a = a0;
-    b = b0;
+    ak = a0;
+    bk = b0;
     c = 0;
     k = 0;
     while(true)
