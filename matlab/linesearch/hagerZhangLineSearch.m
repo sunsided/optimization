@@ -39,6 +39,9 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
     % bisection tuning
     gamma = 0.5; % range (0, 1)
     
+    % update rule tuning
+    theta = 0.5; % range (0, 1)
+    
     % find an initial bracketing interval [a0,b0]
     alpha = 0;
     [a0, b0] = findInitialBracketing(x0, direction, fun, f0);
@@ -52,7 +55,7 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
 
         % check if a point was generated that satisfied the
         % termination conditions
-        for alpha = [a, b, c]
+        for alpha = [ak, bk, c]
 
             % determine the next point of evaluation
             x_next = x0+alpha*direction;
@@ -87,15 +90,17 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
         end
         
         % L1: perform a double secant step
-        [a, b] = doubleSecant(ak, bk, fun, x0, direction, epsilon);
+        [a, b] = doubleSecant(ak, bk, fun, x0, direction, epsilon, theta);
 
         % L2: select midpoint
         if (b-a) > (gamma*(bk-ak))
             c = (a+b)/2;
-            [a, b] = updateBracketing(a, b, c, fun, x0, direction, epsilon);
+            [a, b] = updateBracketing(a, b, c, fun, x0, direction, epsilon, theta);
         end
 
         % L3: loop
+        ak = a;
+        bk = b;
         k = k+1;
 
     end
@@ -113,12 +118,12 @@ function [c] = secant(a, b, fun, x0, direction)
     
 end
 
-function [a_bar, b_bar] = doubleSecant(a, b, fun, x0, direction, epsilon)
+function [a_bar, b_bar] = doubleSecant(a, b, fun, x0, direction, epsilon, theta)
 % DOUBLESECANT Performs a double secant step.
 
     % S1
     c = secant(a, b, fun, x0, direction);
-    [A, B] = updateBracketing(a, b, c, fun, x0, direction, epsilon);
+    [A, B] = updateBracketing(a, b, c, fun, x0, direction, epsilon, theta);
 
     % S2
     if (c == B)
@@ -131,7 +136,7 @@ function [a_bar, b_bar] = doubleSecant(a, b, fun, x0, direction, epsilon)
     
     % S4
     if (c == A) || (c == B)
-        [a_bar, b_bar] = updateBracketing(A, B, c_bar, fun, x0, direction, epsilon);
+        [a_bar, b_bar] = updateBracketing(A, B, c_bar, fun, x0, direction, epsilon, theta);
     else
         a_bar = A;
         b_bar = B;
@@ -139,7 +144,7 @@ function [a_bar, b_bar] = doubleSecant(a, b, fun, x0, direction, epsilon)
         
 end
 
-function [a_bar, b_bar] = updateBracketing(a, b, c, fun, x0, direction, epsilon)
+function [a_bar, b_bar] = updateBracketing(a, b, c, fun, x0, direction, epsilon, theta)
 % UPDATEBRACKETING Updates the bracketing interval.
 
     % some values required for the tests
