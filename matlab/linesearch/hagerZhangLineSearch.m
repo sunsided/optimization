@@ -21,11 +21,12 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
 %}
 
     % fetch the initial point (required for the Wolfe conditions)
-    [f0 g0] = fun(x0);
+    [f0, g0] = fun(x0);
 
     % initial function values
     f = f0;
     g = g0;
+    line_derivative_0 = g0'*direction;
     
     % error tolerance
     epsilon = 1E-5;
@@ -37,7 +38,7 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
     
     % find an initial bracketing interval [a0,b0]
     alpha = 0;
-    
+    a0 = 0; % easy way out, since we already know that the gradient here is descending
     
     % determine the next point of evaluation
     x_next = x0+alpha*direction;
@@ -52,11 +53,11 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
 
         % T1: Original Wolfe conditions
         [f_next, g_next] = fun(x_next);
-        cosine      = g'*direction;
-        cosine_next = g_next'*direction;
+        line_derivative      = g'*direction;
+        line_derivative_next = g_next'*direction;
         if ...
-            ((f_next - f) <= (delta*alpha*cosine)) && ... % first Wolfe condition
-            (cosine_next >= sigma*cosine)                 % second Wolfe condition
+            ((f_next - f) <= (delta*alpha*line_derivative)) && ... % first Wolfe condition
+            (line_derivative_next >= sigma*line_derivative)        % second Wolfe condition
             % original Wolfe conditions are met,
             % so alpha is our final value.
             return;
@@ -64,8 +65,8 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
 
         % T2: Approximate Wolfe conditions
         if ...
-            ((2*delta-1)*g0 >= g_next) & ...
-            (g_next >= (sigma * g0))
+            ((2*delta-1)*line_derivative_0 >= line_derivative_next) && ...
+            (line_derivative_next >= sigma*line_derivative_0)
 
             % approximate Wolfe conditions are met,
             % so alpha may be a candidate IF there was
