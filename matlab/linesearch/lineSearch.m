@@ -81,10 +81,11 @@ ylabel('\phi(\alpha) = f(\theta - \alpha \nablaf(\theta))');
 %% Perform a line search
 
 % express the function to optimize in terms of alpha
-phi = @(alpha) rosenbrock(startX+alpha*direction(1), startY+alpha*direction(2));
+theta = [sx; sy];
+fun = @(theta) rosenbrock(theta(1), theta(2));
 
 % fire in the hole!
-alpha = hagerZhangLineSearch(phi);
+alpha = hagerZhangLineSearch(theta, fun, d);
 
 % plottify
-plot(alpha, phi(alpha), '+r');
+plot(alpha, fun(theta+alpha*d), '+r');

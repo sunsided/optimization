@@ -1,4 +1,4 @@
-function [ alpha ] = hagerZhangLineSearch( fun )
+function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
 %HAGERZHANGLINESEARCH Implements Hager-Zhang line search.
 
 %{
@@ -20,8 +20,29 @@ function [ alpha ] = hagerZhangLineSearch( fun )
 }
 %}
 
-    % First termination criterion: Original Wolfe conditions
-    % Second termination criteron: Approximate Wolfe conditions
+    % fetch the initial point (required for the Wolfe conditions)
+    y0 = fun(x0);
+
+    % initial alpha
+    alpha = 0;
+    
+    % parameters for the Wolfe conditions
+    % 0 < delta < sigma < 1
+    delta = 0.25;
+    sigma = 0.75;
+        
+    % Check for termination
+
+    % T1: Original Wolfe conditions
+    x_next = x0+alpha*direction;
+    [f_next g_next] = fun(x_next);
+    cosine = g_next'*direction;
+%    if ...
+%        ((f_alpha - y0) <= (delta*alpha*cosine)) & ...
+%        (true) 
+%    end
+    
+    % T2: Approximate Wolfe conditions
 
     alpha = 1;
     
