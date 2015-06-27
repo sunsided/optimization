@@ -21,26 +21,34 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
 %}
 
     % fetch the initial point (required for the Wolfe conditions)
-    y0 = fun(x0);
+    [f0 g0] = fun(x0);
 
-    % initial alpha
+    % initial values
     alpha = 0;
+    f = f0;
+    g = g0;
     
     % parameters for the Wolfe conditions
     % 0 < delta < sigma < 1
     delta = 0.25;
     sigma = 0.75;
-        
+    
+    % determine the next point of evaluation
+    x_next = x0+alpha*direction;
+    
     % Check for termination
 
     % T1: Original Wolfe conditions
-    x_next = x0+alpha*direction;
-    [f_next g_next] = fun(x_next);
-    cosine = g_next'*direction;
-%    if ...
-%        ((f_alpha - y0) <= (delta*alpha*cosine)) & ...
-%        (true) 
-%    end
+    [f_next, g_next] = fun(x_next);
+    cosine      = g'*direction;
+    cosine_next = g_next'*direction;
+    if ...
+        ((f_next - f) <= (delta*alpha*cosine)) && ... % first Wolfe condition
+        (cosine_next >= sigma*cosine)                 % second Wolfe condition
+        % original Wolfe conditions are meth, so alpha is
+        % our final value.
+        return;
+    end
     
     % T2: Approximate Wolfe conditions
 
