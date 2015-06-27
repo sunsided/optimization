@@ -73,6 +73,7 @@ lv = linspace(0, m, 50);
 lf = rosenbrock(lx, ly);
 figure;
 plot(lv, lf, 'k');
+hold on;
 title('Rosenbrock function along search direction');
 xlabel('\alpha = \nablaf(\theta)/|\nablaf(\theta)|');
 ylabel('\phi(\alpha) = f(\theta - \alpha \nablaf(\theta))');
@@ -82,5 +83,8 @@ ylabel('\phi(\alpha) = f(\theta - \alpha \nablaf(\theta))');
 % express the function to optimize in terms of alpha
 phi = @(alpha) rosenbrock(startX+alpha*direction(1), startY+alpha*direction(2));
 
-% First termination criterion: Original Wolfe conditions
-% Second termination criteron: Approximate Wolfe conditions
+% fire in the hole!
+alpha = hagerZhangLineSearch(phi);
+
+% plottify
+plot(alpha, phi(alpha), '+r');
