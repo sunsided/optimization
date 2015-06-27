@@ -1,24 +1,24 @@
 function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
 %HAGERZHANGLINESEARCH Implements Hager-Zhang line search.
 
-%{
-@article{DBLP:journals/siamjo/HagerZ05,
-  author    = {William W. Hager and
-               Hongchao Zhang},
-  title     = {A New Conjugate Gradient Method with Guaranteed Descent and an Efficient
-               Line Search},
-  journal   = {{SIAM} Journal on Optimization},
-  volume    = {16},
-  number    = {1},
-  pages     = {170--192},
-  year      = {2005},
-  url       = {http://dx.doi.org/10.1137/030601880},
-  doi       = {10.1137/030601880},
-  timestamp = {Fri, 25 Jun 2010 08:07:11 +0200},
-  biburl    = {http://dblp2.uni-trier.de/rec/bib/journals/siamjo/HagerZ05},
-  bibsource = {dblp computer science bibliography, http://dblp.org}
-}
-%}
+    %{
+    @article{DBLP:journals/siamjo/HagerZ05,
+      author    = {William W. Hager and
+                   Hongchao Zhang},
+      title     = {A New Conjugate Gradient Method with Guaranteed Descent and an Efficient
+                   Line Search},
+      journal   = {{SIAM} Journal on Optimization},
+      volume    = {16},
+      number    = {1},
+      pages     = {170--192},
+      year      = {2005},
+      url       = {http://dx.doi.org/10.1137/030601880},
+      doi       = {10.1137/030601880},
+      timestamp = {Fri, 25 Jun 2010 08:07:11 +0200},
+      biburl    = {http://dblp2.uni-trier.de/rec/bib/journals/siamjo/HagerZ05},
+      bibsource = {dblp computer science bibliography, http://dblp.org}
+    }
+    %}
 
     % fetch the initial point (required for the Wolfe conditions)
     [f0, g0] = fun(x0);
@@ -166,18 +166,18 @@ function [a, b] = findInitialBracketing(x0, direction, fun, f0)
 % line search. Described as the Forward-Backward method in Optimization
 % Theory and Methods: Nonlinear Programming by Sun and Yuan.
 
-%{
-@book{sun2006optimization,
-  title={Optimization Theory and Methods: Nonlinear Programming},
-  author={Sun, W. and Yuan, Y.X.},
-  isbn={9780387249759},
-  lccn={2005042696},
-  series={Springer Optimization and Its Applications},
-  url={https://books.google.de/books?id=nwcenwEACAAJ},
-  year={2006},
-  publisher={Springer US}
-}
-%}
+    %{
+    @book{sun2006optimization,
+      title={Optimization Theory and Methods: Nonlinear Programming},
+      author={Sun, W. and Yuan, Y.X.},
+      isbn={9780387249759},
+      lccn={2005042696},
+      series={Springer Optimization and Its Applications},
+      url={https://books.google.de/books?id=nwcenwEACAAJ},
+      year={2006},
+      publisher={Springer US}
+    }
+    %}
     
     if ~exist('f0', 'var')
         f0 = fun(x0);
