@@ -71,8 +71,8 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
             line_derivative      = g'*direction;
             line_derivative_next = g_next'*direction;
             if ...
-                ((f_next - f) <= (delta*alpha*line_derivative)) && ... % first Wolfe condition
-                (line_derivative_next >= sigma*line_derivative)        % second Wolfe condition
+                ((f_next - f) <= (delta*alpha*line_derivative)) && ... % sufficient decrease condition
+                (line_derivative_next >= sigma*line_derivative)        % curvature condition
                 % original Wolfe conditions are met,
                 % so alpha is our final value.
                 return;
