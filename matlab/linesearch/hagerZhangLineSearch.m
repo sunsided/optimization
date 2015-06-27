@@ -29,15 +29,15 @@ function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
     line_derivative_0 = g0'*direction;
     
     % error tolerance
-    epsilon = 1E-5;
+    epsilon = 1E-6;
     
     % parameters for the Wolfe conditions
     % 0 < delta < sigma < 1
-    delta = 0.25;
-    sigma = 0.75;
+    delta = 0.1;
+    sigma = 0.9;
     
     % bisection tuning
-    gamma = 0.5; % range (0, 1)
+    gamma = 0.66; % range (0, 1)
     
     % update rule tuning
     theta = 0.5; % range (0, 1)
