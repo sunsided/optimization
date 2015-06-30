@@ -49,14 +49,14 @@ function [a_bar, b_bar] = updateBracketing(a, b, c, fun, x0, direction, varargin
         return;
     end
     
-    % U2
+    % U3
     % if (gc'*direction < 0) && (fc > f0 + epsilon)
     a_hat = a;
     b_hat = c;
 
     while (true)
 
-        % U2a
+        % U3a
         d = (1-theta)*a_hat + theta*b_hat;
         [fd, gd] = fun(x0 + d*direction);
 
@@ -66,13 +66,13 @@ function [a_bar, b_bar] = updateBracketing(a, b, c, fun, x0, direction, varargin
             return
         end
 
-        % U2b
+        % U3b
         if (gd'*direction < 0) && (fd <= f0+epsilon)
             a_hat = d;
             continue
         end
 
-        % U2c
+        % U3c
         %if (gd'*direction < 0) && (fd > f0+epsilon)
         b_hat = d;
         continue;

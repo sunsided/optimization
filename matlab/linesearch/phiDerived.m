@@ -9,7 +9,7 @@ function [fd] = phiDerived(alpha, fun, x0, direction)
     
     parse(p, alpha, fun, x0, direction);
 
-    [~, g] = fun(x0 + a*direction);
+    [~, g] = fun(x0 + alpha*direction);
     
     fd = g'*direction;
    

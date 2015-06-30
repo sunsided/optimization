@@ -1,5 +1,5 @@
 function [alpha] = initial(previousAlpha, fun, x0, direction, varargin)
-% SECANT Performs a secant step
+% INITIAL Determines the initial step length
 
     % The user-defined starting point in the line search
     % or nan if none is given
@@ -18,7 +18,7 @@ function [alpha] = initial(previousAlpha, fun, x0, direction, varargin)
     defaultPsi2 = 2; % range (1, ?)
     
     p = inputParser;
-    addRequired(p, 'prviousAlpha', @isscalar);
+    addRequired(p, 'previousAlpha', @isscalar);
     addRequired(p, 'fun', @(f) isa(f, 'function_handle'));
     addRequired(p, 'x0', @isnumeric);
     addRequired(p, 'direction', @isnumeric);

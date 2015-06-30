@@ -43,7 +43,7 @@ function [ alpha ] = hagerZhangLineSearch2( fun, x0, direction, k, varargin )
     
     % L0
     c = initial(previousAlpha, fun, x0, direction);
-    [a0, b0] = bracket(c);
+    [a0, b0] = bracket(c, fun, x0, direction);
     j = 0;
     
     % initialize aj, bj for j = 0
@@ -52,12 +52,12 @@ function [ alpha ] = hagerZhangLineSearch2( fun, x0, direction, k, varargin )
     
     while (true)
         % L1
-        [a, b] = doubleSecant(aj, bj);
+        [a, b] = doubleSecant(aj, bj, fun, x0, direction);
 
         % L2
         if (b-a) > gamma*(bj-aj)
             c = (a+b)/2;
-            [a, b] = updateBracketing(a, b, c);
+            [a, b] = updateBracketing(a, b, c, fun, x0, direction);
         end
 
         % L3

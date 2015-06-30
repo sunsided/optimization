@@ -9,6 +9,6 @@ function [f] = phi(alpha, fun, x0, direction)
     
     parse(p, alpha, fun, x0, direction);
 
-    [f, ~] = fun(x0 + a*direction);
+    [f, ~] = fun(x0 + alpha*direction);
    
 end
