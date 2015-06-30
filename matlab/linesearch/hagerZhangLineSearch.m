@@ -94,12 +94,12 @@ function [ alpha ] = hagerZhangLineSearch( fun, x0, direction )
         end
         
         % L1: perform a double secant step
-        [a, b] = doubleSecant(ak, bk, fun, x0, direction, epsilon, theta);
+        [a, b] = doubleSecant(ak, bk, fun, x0, direction, 'epsilon', epsilon, 'theta', theta);
 
         % L2: select midpoint
         if (b-a) > (gamma*(bk-ak))
             c = (a+b)/2;
-            [a, b] = updateBracketing(a, b, c, fun, x0, direction, epsilon, theta);
+            [a, b] = updateBracketing(a, b, c, fun, x0, direction, 'epsilon', epsilon, 'theta', theta);
         end
 
         % L3: loop
