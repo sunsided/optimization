@@ -1,5 +1,5 @@
 function [fd] = phiDerived(alpha, fun, x0, direction)
-% PHI Calculates ?'(?) = fun(x0+?*direction)
+% PHI Calculates phi'(alpha) = fun(x0+alpha*direction)
 
     p = inputParser;
     addRequired(p, 'alpha', @isscalar);
