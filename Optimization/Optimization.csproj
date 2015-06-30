@@ -51,6 +51,7 @@
     <Compile Include="DataPoint.cs" />
     <Compile Include="GradientDescent\ConjugateGradients\ConjugateGradientDescentBase.cs" />
     <Compile Include="GradientDescent\ConjugateGradients\DoublePrecisionConjugateGradientDescentBase.cs" />
+    <Compile Include="GradientDescent\ConjugateGradients\HagerZhangConjugateGradientDescent.cs" />
     <Compile Include="GradientDescent\ConjugateGradients\PolakRibiereConjugateGradientDescent.cs" />
     <Compile Include="GradientDescent\ConjugateGradients\FletcherReevesConjugateGradientDescent.cs" />
     <Compile Include="GradientDescent\Regular\GradientDescentBase.cs" />
