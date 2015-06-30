@@ -75,10 +75,16 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialCoefficients);
 
             // define the line search algorithm
-            var lineSearch = new SecantMethod();
+            var lineSearch = new SecantMethod()
+            {
+                ErrorTolerance = 1E-7
+            };
 
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent(lineSearch);
+            var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
+            {
+                ErrorTolerance = 1E-7
+            };
             var result = gd.Minimize(problem);
 
             // assert!
@@ -246,12 +252,15 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // define the line search algorithm
-            var lineSearch = new SecantMethod();
+            var lineSearch = new SecantMethod()
+            {
+                ErrorTolerance = 1E-5D
+            };
 
             // optimize!
             var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
             {
-                ErrorTolerance = 1E-8D
+                ErrorTolerance = 1E-4D
             };
             var result = gd.Minimize(problem);
 
