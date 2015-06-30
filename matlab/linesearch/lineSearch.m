@@ -67,12 +67,14 @@ clear PX PY PZ;
 %% Sample the line along the direction
 
 % sample the function along the direction for display purposes
-lx = linspace(startX, endX, 50);
-ly = linspace(startY, endY, 50);
+lx = linspace(startX, startX+m*direction(1), 50);
+ly = linspace(startY, startY+m*direction(2), 50);
 lv = linspace(0, m, 50);
 lf = rosenbrock(lx, ly);
+
 figure;
-plot(lv, lf, 'k');
+h = plot(lv, lf, 'k');
+
 hold on;
 title('Rosenbrock function along search direction');
 xlabel('\alpha = \nablaf(\theta)/|\nablaf(\theta)|');
@@ -83,6 +85,9 @@ ylabel('\phi(\alpha) = f(\theta - \alpha \nablaf(\theta))');
 % express the function to optimize in terms of alpha
 x = [startX; startY];
 alpha = 0;
+
+% plot the initial alpha
+a = plot(alpha, fun(x+alpha*direction), '+r');
 
 % do a little inexact 'steepest' descent here
 previous_fs = Inf;
@@ -102,19 +107,31 @@ for i=1:10000
     % obtain the search direction
     gradientNorm = norm(gs);
     direction = -gs/gradientNorm;
-
+    
     % define the directional function for the line search
     fun = @(theta) rosenbrock(theta(1), theta(2));
 
     % fire in the hole!
     alpha = hagerZhangLineSearch2(fun, x, direction, alpha);
-
+    
     % plottify
-    if i==1
-        plot(alpha, fun(x+alpha*direction), '+r');
+    if mod(i, 10) == 0
+        % sample the function along the direction for display purposes
+        m = 3*alpha;
+        lx = linspace(x(1), x(1)+m*direction(1), 50);
+        ly = linspace(x(2), x(2)+m*direction(2), 50);
+        lv = linspace(0, m, 50);
+        lf = rosenbrock(lx, ly);
+        set(h,'XData',lv);
+        set(h,'YData',lf);
+        set(a, 'XData', alpha);
+        set(a, 'YData', fun(x+alpha*direction));
+        drawnow;
     end
-
+    
     % next minimizer at
-    x = x + alpha*direction
-
+    x = x + alpha*direction;
+    
+    fprintf('location: %+1.4f %+1.4f - direction: %+1.4f %+1.4f\n', x(1), x(2), direction(1), direction(2));
+    
 end
