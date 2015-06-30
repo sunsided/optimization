@@ -44,7 +44,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         {
             // the initial search direction is along the residuals,
             // which makes the initial step a regular gradient descent.
-            searchDirection = residuals;
+            searchDirection = residuals.Normalize(2);
 
             // return some state information
             return null;
@@ -70,6 +70,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             // update the search direction (Fletcher-Reeves)
             var beta = delta / previousDelta;
             direction = residuals + beta * direction;
+            direction = direction.Normalize(2);
 
             // if this is not a descent direction, then restart
             return (residuals*direction > 0);

@@ -50,7 +50,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 
             // the initial search direction is along the residuals,
             // which makes the initial step a regular gradient descent.
-            searchDirection = preconditionedResiduals;
+            searchDirection = preconditionedResiduals.Normalize(2);
 
             // return some state information
             return new State(problem, preconditionedResiduals);
@@ -92,6 +92,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 
             // update the direction
             direction = residuals + beta * direction;
+            direction = direction.Normalize(2);
             return true;
         }
 
