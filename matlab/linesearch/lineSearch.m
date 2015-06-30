@@ -112,7 +112,7 @@ for i=1:10000
     fun = @(theta) rosenbrock(theta(1), theta(2));
 
     % fire in the hole!
-    alpha = hagerZhangLineSearch2(fun, x, direction, alpha);
+    alpha = hagerZhangLineSearch(fun, x, direction, alpha);
     
     % plottify
     if mod(i, 10) == 0
