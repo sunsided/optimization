@@ -111,6 +111,12 @@ for i=1:10000
     % define the directional function for the line search
     fun = @(theta) rosenbrock(theta(1), theta(2));
 
+    % artificially reset alpha to simulate
+    % CG restarts
+    if mod(i, 2) == 0
+        alpha = 0;
+    end
+    
     % fire in the hole!
     alpha = hagerZhangLineSearch(fun, x, direction, alpha);
     
