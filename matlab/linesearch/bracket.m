@@ -59,8 +59,10 @@ function [a, b] = bracket(c0, fun, x0, direction, varargin)
                     return;
                 end
             end
-            
-            error('bracket:b1', 'unable to determine a correct a');
+
+            % error('bracket:b1', 'unable to determine a correct a');
+            a = 0;
+            return;
         
         % B2
         elseif phiDcj < 0 && phi(cj, fun, x0, direction) > phi0

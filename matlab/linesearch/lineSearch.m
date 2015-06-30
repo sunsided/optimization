@@ -81,11 +81,40 @@ ylabel('\phi(\alpha) = f(\theta - \alpha \nablaf(\theta))');
 %% Perform a line search
 
 % express the function to optimize in terms of alpha
-theta = [startX; startY];
-fun = @(theta) rosenbrock(theta(1), theta(2));
+x = [startX; startY];
+alpha = 0;
 
-% fire in the hole!
-alpha = hagerZhangLineSearch2(fun, theta, direction, 0);
+% do a little inexact 'steepest' descent here
+previous_fs = Inf;
+value_change_delta = 1E-10;
+for i=1:10000
 
-% plottify
-plot(alpha, fun(theta+alpha*direction), '+r');
+    % determine the local position and gradient
+    [fs, gs] = rosenbrock(x(1),x(2));
+    
+    % abort if no better value can be obtained
+    if i > 1 && abs(previous_fs - fs) <= value_change_delta
+        disp(['stopping gradient descent in iteration ' num2str(i)]);
+        break;
+    end
+    previous_fs = fs;
+    
+    % obtain the search direction
+    gradientNorm = norm(gs);
+    direction = -gs/gradientNorm;
+
+    % define the directional function for the line search
+    fun = @(theta) rosenbrock(theta(1), theta(2));
+
+    % fire in the hole!
+    alpha = hagerZhangLineSearch2(fun, x, direction, alpha);
+
+    % plottify
+    if i==1
+        plot(alpha, fun(x+alpha*direction), '+r');
+    end
+
+    % next minimizer at
+    x = x + alpha*direction
+
+end
