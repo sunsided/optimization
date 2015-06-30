@@ -85,7 +85,7 @@ theta = [startX; startY];
 fun = @(theta) rosenbrock(theta(1), theta(2));
 
 % fire in the hole!
-alpha = hagerZhangLineSearch2(fun, theta, direction);
+alpha = hagerZhangLineSearch(fun, theta, direction);
 
 % plottify
 plot(alpha, fun(theta+alpha*direction), '+r');
