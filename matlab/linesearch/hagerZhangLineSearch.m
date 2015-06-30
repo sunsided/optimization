@@ -1,4 +1,4 @@
-function [ alpha ] = hagerZhangLineSearch( x0, fun, direction )
+function [ alpha ] = hagerZhangLineSearch( fun, x0, direction )
 %HAGERZHANGLINESEARCH Implements Hager-Zhang line search.
 
     %{
