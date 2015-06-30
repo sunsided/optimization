@@ -42,9 +42,23 @@ function [ alpha ] = hagerZhangLineSearch2( fun, x0, direction, k, varargin )
     previousAlpha = 0;
     
     % L0
-    c = initial(previousAlpha, fun, x0, direction);
+    c = initial(previousAlpha, fun, x0, direction);  
+    
+    if shouldTerminate(c, fun, x0, direction)
+        alpha = c;
+        return;
+    end
+    
     [a0, b0] = bracket(c, fun, x0, direction);
     j = 0;
+
+    if shouldTerminate(a0, fun, x0, direction)
+        alpha = a0;
+        return;
+    elseif shouldTerminate(b0, fun, x0, direction)
+        alpha = b0;
+        return;
+    end
     
     % initialize aj, bj for j = 0
     aj = a0;
@@ -54,9 +68,23 @@ function [ alpha ] = hagerZhangLineSearch2( fun, x0, direction, k, varargin )
         % L1
         [a, b] = doubleSecant(aj, bj, fun, x0, direction);
 
+        if shouldTerminate(a, fun, x0, direction)
+            alpha = a;
+            return;
+        elseif shouldTerminate(b, fun, x0, direction)
+            alpha = b;
+            return;
+        end
+        
         % L2
         if (b-a) > gamma*(bj-aj)
             c = (a+b)/2;
+            
+            if shouldTerminate(c, fun, x0, direction)
+                alpha = c;
+                return;
+            end
+            
             [a, b] = updateBracketing(a, b, c, fun, x0, direction);
         end
 
