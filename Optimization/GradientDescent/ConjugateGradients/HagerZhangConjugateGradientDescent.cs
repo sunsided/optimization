@@ -27,7 +27,7 @@
         /// <remarks>
         /// Range [0, ∞)
         /// </remarks>
-        private double _ϵ = 1E-6D;
+        private double _ɛ​ = 1E-6D;
 
         /// <summary>
         /// omega, used in switching fromWolfe to approximateWolfe conditions
