@@ -37,8 +37,12 @@ function [ alpha ] = hagerZhangLineSearch2( fun, x0, direction, k, varargin )
     parse(p, fun, x0, direction, k, varargin{:});
     gamma = p.Results.gamma;
     
+    % initialize "k"
+    % k itself is not required, however alpha(k-1) is
+    previousAlpha = 0;
+    
     % L0
-    c = initial(k);
+    c = initial(previousAlpha, fun, x0, direction);
     [a0, b0] = bracket(c);
     j = 0;
     
