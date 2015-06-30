@@ -61,6 +61,7 @@ function [a, b] = bracket(c0, fun, x0, direction, varargin)
             end
 
             % error('bracket:b1', 'unable to determine a correct a');
+            % This case is not handled in the paper.
             a = 0;
             return;
         
