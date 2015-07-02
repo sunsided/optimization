@@ -113,7 +113,7 @@ for i=1:10000
 
     % artificially reset alpha to simulate
     % CG restarts
-    if mod(i, 3) == 0
+    if mod(i, 2) == 0
         alpha = 0;
     end
     
