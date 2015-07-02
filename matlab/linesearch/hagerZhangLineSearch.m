@@ -1,4 +1,4 @@
-function [ alpha ] = hagerZhangLineSearch2( fun, x0, direction, k, varargin )
+function [ alpha ] = hagerZhangLineSearch2( fun, x0, direction, previousAlpha, varargin )
 %HAGERZHANGLINESEARCH Implements Hager-Zhang line search.
 
     %{
@@ -27,22 +27,24 @@ function [ alpha ] = hagerZhangLineSearch2( fun, x0, direction, k, varargin )
     % determines when a bisection step is performed
     defaultGamma = .66; % range (0, 1)
 
+    % determines if QuadStep is enabled
+    defaultQuadStep = false;
+    
     p = inputParser;
     addRequired(p, 'fun', @(f) isa(f, 'function_handle'));
     addRequired(p, 'x0', @isnumeric);
     addRequired(p, 'direction', @isnumeric);
     addRequired(p, 'k', @isscalar);
     addOptional(p, 'gamma', defaultGamma, @isscalar);
+    addOptional(p, 'quadStep', defaultQuadStep, @islogical);
     
-    parse(p, fun, x0, direction, k, varargin{:});
+    parse(p, fun, x0, direction, previousAlpha, varargin{:});
     gamma = p.Results.gamma;
-    
-    % initialize "k"
-    % k itself is not required, however alpha(k-1) is
-    previousAlpha = 0;
+    quadStep = p.Results.quadStep;
     
     % L0
-    c = initial(previousAlpha, fun, x0, direction);  
+    c = initial(previousAlpha, fun, x0, direction, ...
+        'quadStep', quadStep);
     
     if shouldTerminate(c, fun, x0, direction)
         alpha = c;

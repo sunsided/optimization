@@ -113,12 +113,13 @@ for i=1:10000
 
     % artificially reset alpha to simulate
     % CG restarts
-    if mod(i, 2) == 0
+    if mod(i, 3) == 0
         alpha = 0;
     end
     
     % fire in the hole!
-    alpha = hagerZhangLineSearch(fun, x, direction, alpha);
+    alpha = hagerZhangLineSearch(fun, x, direction, alpha, ...
+        'quadStep', true);
     
     % plottify
     if mod(i, 10) == 0

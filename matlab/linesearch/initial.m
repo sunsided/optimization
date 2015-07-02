@@ -71,18 +71,42 @@ function [alpha] = initial(previousAlpha, fun, x0, direction, varargin)
     % I1
     if quadStepEnabled
         
-        %{
-        If QuadStep is true, ?(?1?k?1) ? ?(0), and the quadratic 
-        interpolant q(·) that matches ?(0), ?(0), and ?(?1?k?1) is 
-        strongly convex with a minimizer ?q, then c = ?q and return.
-        %}
-        
-        error('initial:quadstep', 'QuadStep not implemented');
-        
-    else
-       
-        alpha = psi2 * previousAlpha;
+        % first we check the condition for QuadStep to be allowed
+        R = psi1*previousAlpha;
+        [f1, ~] = fun(x0+ R*direction);
+        if f1 <= f0
+            
+            % determine the parameters for the quadratic interpolant
+            % q(x) = ax^2+bx+c
+            % that matches the points phi(0) and phi(psi1*previousAlpha)
+            % as well as the derivative phi'(0) at x=0.
+            g = g0'*direction;
+            
+            d = (0-R)^2;
+            a = - (f0-f1-0*g+f1*g)/d;
+            %b = - (0^2*g-R^2*g-2*0*f0+2*0*f1)/d;
+            %c = (0^2*f1+R^2*f0-2*0*R*f0-0*R^2*g+0^2*R*g)/d;
+            
+            % one requirement is that the interpolant must
+            % be strongly convex. Since that requires
+            % the second derivative of q(x) to be greater
+            % than zero (or any epsilon), we have
+            % q''(x) = 2a > epsilon, requiring a to be
+            % positive.
+            if a > 1E-5
+                
+                % find the minimizer
+                alpha = -0.5 * (0^2*g-R^2*g-2*0*f0+2*0*f1)/ ...
+                         (f0-f1-0*g+R*g);
+                
+                return;
+            end
+            
+        end
         
     end
+    
+    % I2, fallback if no other condition matched
+    alpha = psi2 * previousAlpha;
     
 end
