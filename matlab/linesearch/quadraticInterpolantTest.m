@@ -12,7 +12,11 @@ syms a b c x_0 x_1 q(x_0) q(x_1) dq(x_0)
 disp('Solution for a = '); pretty(a);
 disp('Solution for c = '); pretty(b);
 disp('Solution for b = '); pretty(c);
-return
+
+syms q(x)
+q(x) = a*x^2 + b*x + c;
+q(x) = simplify(q(x));
+disp('Solution for q(x) = '); pretty(q);
 
 %% define the original function
 a = -5;
@@ -27,12 +31,17 @@ dfun = @(x) 3*a*x.^2 + 2*b*x + c;
 x0 = -0.8;
 x1 = 0.1;
 
-% b = dfun(x0);
-% c =  fun(x0);
-% a = fun(x1)/(x1^2) - b/x1 - c/(x1^2);
+% substitute variables
+q = subs(q, ...
+    {'q(x_0)', 'q(x_1)', 'dq(x_0)', 'x_0', 'x_1'}, ...
+    {fun(x0), fun(x1), dfun(x0), x0, x1});
 
-% q  = @(x) a*x.^2 + b*x + c;
-% dq = @(x) 2*a*x + b;
+% determine first derivative
+dq = diff(q);
+
+% convert symbolic function to a function handle for easier evaluation
+q = matlabFunction(q);
+dq = matlabFunction(dq);
 
 % sample the original function
 x  = linspace(-1, 1, 50);
@@ -40,14 +49,14 @@ y  = fun(x);
 yd = dfun(x);
 
 % sample the interpolant
-% iy  = q(x);
-% iyd = dq(x);
+iy  = q(x);
+iyd = dq(x);
 
 %% Plottify
 figure('Name', 'Quadratic Interpolation Test');
 
 % plot f(x)
-subplot(2,1,1);
+subplot(1,2,1);
 plot(x, y, ...
     'LineWidth', 2, ...
     'Color', [0 0 .5] ...
@@ -58,12 +67,23 @@ plot(x, iy, ...
     'Color', [1 .5 .5] ...
     );
 
+plot([x0 x1], [fun(x0), fun(x1)], 'o', ...
+    'MarkerSize', 5, ...
+    'Color', [1 .1 .1] ...
+    );
+
 xlabel('x');
-ylabel('f(x)');
+ylabel('f(x), q(x)');
 grid on;
+title('quadratic approximation q(\cdot) \approx f(\cdot)');
+legend(...
+    'f(x)', ...
+    'q(x) \approx f(x)', ...
+    'support points', ...
+    'Location', 'NorthWest');
 
 % plot f'(x)
-subplot(2,1,2);
+subplot(1,2,2);
 plot(x, yd, ...
     'LineWidth', 2, ...
     'Color', [0 0 .5] ...
@@ -74,6 +94,17 @@ plot(x, iyd, ...
     'Color', [1 .5 .5] ...
     );
 
+plot(x0, dfun(x0), 'o', ...
+    'MarkerSize', 5, ...
+    'Color', [1 .1 .1] ...
+    );
+
 xlabel('x');
-ylabel('f''(x)');
+ylabel('f''(x), q''(x)');
 grid on;
+title('derivative of f(\cdot) and g(\cdot)');
+legend(...
+    'f''(x)', ...
+    'q''(x) \approx f''(x)', ...
+    'support point', ...
+    'Location', 'NorthWest');
