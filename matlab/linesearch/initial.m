@@ -88,8 +88,8 @@ function [alpha] = initial(previousAlpha, fun, x0, direction, varargin)
             %c = (0^2*f1+R^2*f0-2*0*R*f0-0*R^2*g+0^2*R*g)/d;
             
             % find the minimizer
-            aq = -0.5 * (0^2*g-R^2*g-2*0*f0+2*0*f1)/ ...
-                         (f0-f1-0*g+R*g);
+            aq = 0.5 * (R^2*g)/(f0-f1+R*g);
+            assert( 0 <= aq );
             
             % one requirement is that the interpolant must
             % be strongly convex. Since that requires
@@ -97,7 +97,7 @@ function [alpha] = initial(previousAlpha, fun, x0, direction, varargin)
             % than zero (or any epsilon), we have
             % q''(x) = 2a > epsilon, requiring a to be
             % positive.
-            if a > 1E-5 && aq > 0
+            if a > 1E-5 % && aq > 0
                 alpha = aq;                
                 return;
             end
