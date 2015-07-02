@@ -10,8 +10,8 @@ syms a b c x_0 x_1 q(x_0) q(x_1) dq(x_0)
       a, b, c);
   
 disp('Solution for a = '); pretty(a);
-disp('Solution for c = '); pretty(b);
-disp('Solution for b = '); pretty(c);
+disp('Solution for b = '); pretty(b);
+disp('Solution for c = '); pretty(c);
 
 syms q(x)
 q(x) = simplify(a*x^2 + b*x + c);
