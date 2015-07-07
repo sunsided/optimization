@@ -42,7 +42,11 @@ namespace widemeadows.Optimization.Tests
             var lineSearch = new SecantMethod();
 
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent(lineSearch);
+            var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
+            {
+                MaxIterations = 1000,
+                ErrorTolerance = 1E-8D
+            };
             var result = gd.Minimize(problem);
 
             // assert!
