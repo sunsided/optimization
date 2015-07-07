@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
@@ -59,6 +60,9 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             // initialize the algorithm
             object state = InitializeAlgorithm(problem, theta, residuals, out direction);
 
+            // we require the direction to be normalized
+            Debug.Assert(Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+
             // determine the initial error
             var delta = residuals * residuals;
             var initialDelta = delta;
@@ -84,6 +88,9 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 // obtain the update parameter
                 var shouldContinue = UpdateDirection(state, theta, residuals, ref direction, ref delta);
 
+                // we require the direction to be normalized
+                Debug.Assert(Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+
                 // Conjugate Gradient can generate only n conjugate search directions
                 // in n-dimensional space, so we'll reset the algorithm every n steps in order
                 // to give nonlinear optimization a chance.
@@ -95,7 +102,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 {
                     // reset the search direction to point towards the current
                     // residuals (which are opposite of the gradient!)
-                    direction = residuals;
+                    direction = residuals.Normalize(2);
 
                     // reset the counter
                     iterationsUntilReset = problemDimension;

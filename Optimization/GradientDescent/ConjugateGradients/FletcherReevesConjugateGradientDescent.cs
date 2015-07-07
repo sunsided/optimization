@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
@@ -61,6 +62,9 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// <returns><see langword="true" /> if the algorithm should continue, <see langword="false" /> if the algorithm should restart.</returns>
         protected override bool UpdateDirection(object internalState, Vector<double> theta, Vector<double> residuals, ref Vector<double> direction, ref double delta)
         {
+            // we require the direction to be normalized
+            Debug.Assert(Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+
             Debug.Assert(internalState == null, "internalState == null");
 
             // calculate the new error

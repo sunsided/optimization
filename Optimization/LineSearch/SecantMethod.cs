@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
@@ -18,6 +19,9 @@ namespace widemeadows.Optimization.LineSearch
         /// <returns>The best found minimum point along the <paramref name="direction"/>.</returns>
         public override Vector<double> Minimize(IDifferentiableCostFunction<double> costFunction, Vector<double> theta, Vector<double> direction)
         {
+            // we require the direction to be normalized
+            Debug.Assert(Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+
             var maxLineSearchIteration = MaxLineSearchIterations;
             var initialStepSize = LineSearchStepSize;
             var epsilonSquare = ErrorToleranceSquared;
