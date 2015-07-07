@@ -258,13 +258,14 @@ namespace widemeadows.Optimization.Tests
             // define the line search algorithm
             var lineSearch = new SecantMethod()
             {
-                ErrorTolerance = 1E-5D
+                ErrorTolerance = 1E-6D
             };
 
             // optimize!
             var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
             {
-                ErrorTolerance = 1E-4D
+                MaxIterations = 10000,
+                ErrorTolerance = 1E-8D
             };
             var result = gd.Minimize(problem);
 
