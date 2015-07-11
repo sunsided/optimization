@@ -3,6 +3,7 @@ using System.Diagnostics;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
+// ReSharper disable InconsistentNaming
 
 namespace widemeadows.Optimization.LineSearch
 {
@@ -144,9 +145,12 @@ namespace widemeadows.Optimization.LineSearch
             var f0 = φ0;
             var Δf0 = function.Jacobian(location);
 
+            // bundle the helper
+            var values = new FunctionValues(φ, dφ, φ0, dφ0, Δf0);
+
             // find a starting point and check if that solution is already good enough
-            var c = DetermineInitialSearchPoint(previousStepWidth, φ, location, f0, Δf0, dφ0);
-            if (ShouldTerminate(φ, dφ, c, φ0, dφ0)) return c;
+            var c = DetermineInitialSearchPoint(previousStepWidth, location, ref values);
+            if (ShouldTerminate(c, ref values)) return c;
 
             throw new NotImplementedException("aww yeah");
         }
@@ -155,8 +159,10 @@ namespace widemeadows.Optimization.LineSearch
         /// Determines the initial search point.
         /// </summary>
         /// <param name="αprev">The previous α value.</param>
+        /// <param name="location">The location.</param>
+        /// <param name="values">The function values.</param>
         /// <returns>System.Double.</returns>
-        private double DetermineInitialSearchPoint(double αprev, [NotNull] Func<double, double> φ, [NotNull] Vector<double> location, double f0, [NotNull] Vector<double> Δf0, double dφ0)
+        private double DetermineInitialSearchPoint(double αprev, [NotNull] Vector<double> location, ref FunctionValues values)
         {
             // prefetch
             var ψ0 = _ψ0;
@@ -165,8 +171,12 @@ namespace widemeadows.Optimization.LineSearch
             var α0 = _α0;
             var useQuadStep = _quadStepEnabled;
 
-            // for clarity
-            var φ0 = f0;
+            // for clarity and caching
+            var φ = values.φ;
+            var φ0 = values.φ0;
+            var dφ0 = values.dφ0;
+            var f0 = values.f0;
+            var Δf0 = values.Δf0;
 
             // check if this is the first iteration
             // ReSharper disable once CompareOfFloatsByEqualityOperator
@@ -231,24 +241,20 @@ namespace widemeadows.Optimization.LineSearch
         }
 
         /// <summary>
-        /// Determines if the algorithm should terminate, given the currently selected step width <paramref name="α" />,
-        /// the starting point for the search <paramref name="φ0" /> and the local directional derivative <paramref name="dφ0" />,
-        /// as well as the functions <paramref name="φ" /> and its directional derivative <paramref name="dφ" />.
+        /// Determines if the algorithm should terminate, given the currently selected step width <paramref name="α" />
+        /// and the shared <paramref name="values"/>.
         /// </summary>
-        /// <param name="φ">The function φ(α).</param>
-        /// <param name="dφ">The function φ'(α).</param>
+        /// <param name="values">The values.</param>
         /// <param name="α">The selected step width.</param>
-        /// <param name="φ0">The function value at the starting point.</param>
-        /// <param name="dφ0">The directional derivative of the function value at the starting point.</param>
         /// <returns><see langword="true" /> if the line search should terminate, <see langword="false" /> otherwise.</returns>
-        private bool ShouldTerminate(Func<double, double> φ, Func<double, double> dφ, double α, double φ0, double dφ0)
+        private bool ShouldTerminate(double α, ref FunctionValues values)
         {
             // calculate the function values at α
-            var φα = φ(α);
-            var dφα = dφ(α);
+            var φα = values.φ(α);
+            var dφα = values.dφ(α);
 
             // delegate
-            return ShouldTerminate(α, φ0, dφ0, φα, dφα);
+            return ShouldTerminate(α, values.φ0, values.dφ0, φα, dφα);
         }
 
         /// <summary>
@@ -348,12 +354,56 @@ namespace widemeadows.Optimization.LineSearch
         }
 
         /// <summary>
-        /// Sets the iteration.
+        /// Some function values for passing around
         /// </summary>
-        /// <param name="i">The i.</param>
-        public void SetIteration(int i)
+        private struct FunctionValues
         {
-            _currentIteration = i;
+            /// <summary>
+            /// The function <c>φ(α) = f(x0+α*direction)</c>
+            /// </summary>
+            public readonly Func<double, double> φ;
+
+            /// <summary>
+            /// The directional derivative function <c>φ'(α) = Δf(x0)'*direction</c>
+            /// </summary>
+            public readonly Func<double, double> dφ;
+
+            /// <summary>
+            /// The function value <c>φ(0)</c>
+            /// </summary>
+            public readonly double φ0;
+
+            /// <summary>
+            /// The directional derivative function value <c>φ'(0)</c>
+            /// </summary>
+            public readonly double dφ0;
+
+            /// <summary>
+            /// The function value <c>f(x0)</c>
+            /// </summary>
+            public double f0 { get { return φ0; } }
+
+            /// <summary>
+            /// The gradient <c>Δf(x0)</c>
+            /// </summary>
+            public readonly Vector<double> Δf0;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="FunctionValues" /> struct.
+            /// </summary>
+            /// <param name="φ">The φ.</param>
+            /// <param name="dφ">The dφ.</param>
+            /// <param name="φ0">The φ0.</param>
+            /// <param name="dφ0">The DΦ0.</param>
+            /// <param name="Δf0">The ΔF0.</param>
+            public FunctionValues(Func<double, double> φ, Func<double, double> dφ, double φ0, double dφ0, [NotNull] Vector<double> Δf0)
+            {
+                this.φ = φ;
+                this.dφ = dφ;
+                this.φ0 = φ0;
+                this.dφ0 = dφ0;
+                this.Δf0 = Δf0;
+            }
         }
     }
 }
