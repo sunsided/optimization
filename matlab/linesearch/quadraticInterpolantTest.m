@@ -23,8 +23,12 @@ disp('Solution for q''(x) = '); pretty(dq);
 dq0(x) = solve(0 == diff(q, 'x'), 'x');
 disp('Minimizer at x = '); pretty(dq0);
 
+disp('Minimizer assuming x_0=0 at x = '); pretty(subs(dq0, 'x_0', 0));
+
 ddq(x) = simplify(diff(q, 2));
 disp('Solution for q''''(xmin) = '); pretty(ddq);
+
+disp('Solution assuming x_0=0 for q''''(xmin) = '); pretty(subs(ddq, 'x_0', 0));
 
 %% define the original function
 a = -5;

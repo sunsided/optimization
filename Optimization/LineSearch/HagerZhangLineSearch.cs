@@ -213,14 +213,15 @@ namespace widemeadows.Optimization.LineSearch
                     var a = -(φ0 - φr + φr*dφ0)/d;
 
                     // find the minimizer
-                    var rqmin = 0.5D*(d*dφ0)/(φ0 - φr + r*dφ0);
+                    var rmin = 0.5D*(d*dφ0)/(φ0 - φr + r*dφ0);
 
-                    // in order to have a valid minimizer here,
-                    // the function must be concave. This is only
-                    // the case if a is positve.
+                    // in order to have a valid minimizer here, the function must be concave.
+                    // This is only the case if a is positve.
+                    // We do not need to check the second derivative, since the second
+                    // derivative of a concave quadratic function is positive at every point.
                     if (a > 0.0D)
                     {
-                        return rqmin;
+                        return rmin;
                     }
                 }
             }
