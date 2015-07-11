@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
@@ -186,7 +187,32 @@ namespace widemeadows.Optimization.LineSearch
                 // determine the gradient at the current step length
                 var dφcj = values.dφ(cj);
 
-                // B1:
+                // B1: check for ascends
+                // since by definition, the first step is always a descent direction,
+                // this will never happen in the first loop.
+                if (dφcj >= 0)
+                {
+                    var end = cj;
+
+                    // find the most recent step selection c smaller cj that resulted
+                    // in a function value less than the starting point.
+                    // Since we just added cj, we'll just throw that away.
+                    previousC.Pop();
+                    while (previousC.Count > 0)
+                    {
+                        var c = previousC.Pop();
+                        if (values.φ(c) > φ0) continue;
+
+                        var start = c;
+                        return new Bracket(start, end);
+                    }
+
+                    // at this point there was no good starting point.
+                    // sadly, this point is not handled in the paper, so
+                    // we'll just throw out 0 as the starting point and hope for the best.
+                    Debug.WriteLine("Unable to obtain a good starting point while backtracking the bracketing.");
+                    return new Bracket(0, end);
+                }
             }
 
             return new Bracket();
