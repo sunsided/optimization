@@ -86,6 +86,9 @@ ylabel('\phi(\alpha) = f(\theta - \alpha \nablaf(\theta))');
 x = [startX; startY];
 alpha = 0;
 
+% define the directional function for the line search
+fun = @(theta) rosenbrock(theta(1), theta(2));
+
 % plot the initial alpha
 a = plot(alpha, fun(x+alpha*direction), '+r');
 
@@ -107,9 +110,6 @@ for i=1:10000
     % obtain the search direction
     gradientNorm = norm(gs);
     direction = -gs/gradientNorm;
-    
-    % define the directional function for the line search
-    fun = @(theta) rosenbrock(theta(1), theta(2));
 
     % artificially reset alpha to simulate
     % CG restarts
