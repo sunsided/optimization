@@ -67,10 +67,10 @@
     <Compile Include="IMinimzation.cs" />
     <Compile Include="IOptimizationProblem.cs" />
     <Compile Include="LineSearch\HagerZhangLineSearch.cs" />
-    <Compile Include="LineSearch\IIterationAware.cs" />
     <Compile Include="LineSearch\LineSearchBase.cs" />
     <Compile Include="LineSearch\ILineSearch.cs" />
     <Compile Include="LineSearch\SecantMethod.cs" />
+    <Compile Include="NumericExtensions.cs" />
     <Compile Include="OptimizationProblem.cs" />
     <Compile Include="IOptimizationResult.cs" />
     <Compile Include="OptimizationResult.cs" />

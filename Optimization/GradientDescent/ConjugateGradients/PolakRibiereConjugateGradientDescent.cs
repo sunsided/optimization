@@ -69,7 +69,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         protected override bool UpdateDirection(object internalState, Vector<double> theta, Vector<double> residuals, ref Vector<double> direction, ref double delta)
         {
             // we require the direction to be normalized
-            Debug.Assert(Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+            Debug.Assert(Math.Abs(direction.L2Norm() - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
 
             Debug.Assert(internalState != null, "internalState != null");
             var state = (State) internalState;

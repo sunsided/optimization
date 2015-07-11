@@ -110,7 +110,8 @@ namespace widemeadows.Optimization.LineSearch
         /// <param name="function">The cost function.</param>
         /// <param name="location">The starting point.</param>
         /// <param name="direction">The search direction.</param>
-        /// <returns>The best found minimum point along the <paramref name="direction" />.</returns>
-        public abstract Vector<TData> Minimize(TFunction function, Vector<TData> location, Vector<TData> direction);
+        /// <param name="previousStepWidth"></param>
+        /// <returns>The step size starting from <paramref name="location"/> to the best found minimum point along the <paramref name="direction" />.</returns>
+        public abstract TData Minimize(TFunction function, Vector<TData> location, Vector<TData> direction, double previousStepWidth);
     }
 }

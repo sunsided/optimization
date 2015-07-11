@@ -52,8 +52,8 @@ function [alpha] = initial(previousAlpha, fun, x0, direction, varargin)
         if ~isnan(startingPoint)
             alpha = startingPoint;
         
-        % If x0 = 0, then c = ?0||x0||? / ||g0||? and return.
-        elseif abs(max(x0)) == 0
+        % If x0 ~= 0, then c = ?0||x0||? / ||g0||? and return.
+        elseif abs(max(x0)) > 0
             alpha = psi0 * supnorm(x0) / supnorm(g0);
             
         % If f (x0) = 0, then c = ?0 |f(x0)| /||g0||2 and return.

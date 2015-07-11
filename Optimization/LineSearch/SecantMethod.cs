@@ -16,11 +16,12 @@ namespace widemeadows.Optimization.LineSearch
         /// <param name="costFunction">The cost function.</param>
         /// <param name="theta">The starting point.</param>
         /// <param name="direction">The search direction.</param>
+        /// <param name="previousStepWidth"></param>
         /// <returns>The best found minimum point along the <paramref name="direction"/>.</returns>
-        public override Vector<double> Minimize(IDifferentiableCostFunction<double> costFunction, Vector<double> theta, Vector<double> direction)
+        public override double Minimize(IDifferentiableCostFunction<double> costFunction, Vector<double> theta, Vector<double> direction, double previousStepWidth)
         {
             // we require the direction to be normalized
-            Debug.Assert(Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+            Debug.Assert(Math.Abs(direction.L2Norm() - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
 
             var maxLineSearchIteration = MaxLineSearchIterations;
             var initialStepSize = LineSearchStepSize;
@@ -68,7 +69,7 @@ namespace widemeadows.Optimization.LineSearch
                 theta += alpha*direction;
             }
 
-            return theta;
+            return alpha;
         }
     }
 }

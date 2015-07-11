@@ -61,7 +61,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             object state = InitializeAlgorithm(problem, theta, residuals, out direction);
 
             // we require the direction to be normalized
-            Debug.Assert(Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+            Debug.Assert(Math.Abs(direction.L2Norm() - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
 
             // determine the initial error
             var delta = residuals * residuals;
@@ -80,7 +80,8 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 // var cost = costFunction.CalculateCost(x);
 
                 // perform a line search to find the minimum along the given direction
-                theta = LineSearch(costFunction, theta, direction);
+                var alpha = LineSearch(costFunction, theta, direction);
+                theta += alpha*direction;
 
                 // obtain the new residuals
                 residuals = -costFunction.Jacobian(theta);
@@ -89,7 +90,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 var shouldContinue = UpdateDirection(state, theta, residuals, ref direction, ref delta);
 
                 // we require the direction to be normalized
-                Debug.Assert(Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+                Debug.Assert(Math.Abs(direction.L2Norm() - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
 
                 // Conjugate Gradient can generate only n conjugate search directions
                 // in n-dimensional space, so we'll reset the algorithm every n steps in order

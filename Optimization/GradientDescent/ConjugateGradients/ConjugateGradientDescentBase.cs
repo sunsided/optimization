@@ -72,11 +72,12 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// <param name="costFunction">The cost function.</param>
         /// <param name="theta">The starting point.</param>
         /// <param name="direction">The search direction.</param>
-        /// <returns>The best found minimum point along the <paramref name="direction"/>.</returns>
+        /// <param name="previousStepWidth"></param>
+        /// <returns>The step size starting from <paramref name="location"/> to the  best found minimum point along the <paramref name="direction"/>.</returns>
         [NotNull]
-        protected Vector<TData> LineSearch([NotNull] TCostFunction costFunction, [NotNull] Vector<TData> theta, [NotNull] Vector<TData> direction)
+        protected TData LineSearch([NotNull] TCostFunction costFunction, [NotNull] Vector<TData> theta, [NotNull] Vector<TData> direction, double previousStepWidth = 0.0D)
         {
-            return _lineSearch.Minimize(costFunction, theta, direction);
+            return _lineSearch.Minimize(costFunction, theta, direction, previousStepWidth);
         }
     }
 }
