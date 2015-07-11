@@ -145,7 +145,7 @@ namespace widemeadows.Optimization.LineSearch
             var Δf0 = function.Jacobian(location);
 
             // find a starting point and check if that solution is already good enough
-            var c = DetermineInitialSearchPoint(previousStepWidth, location, f0, Δf0);
+            var c = DetermineInitialSearchPoint(previousStepWidth, φ, location, f0, Δf0, dφ0);
             if (ShouldTerminate(φ, dφ, c, φ0, dφ0)) return c;
 
             throw new NotImplementedException("aww yeah");
@@ -156,13 +156,14 @@ namespace widemeadows.Optimization.LineSearch
         /// </summary>
         /// <param name="αprev">The previous α value.</param>
         /// <returns>System.Double.</returns>
-        private double DetermineInitialSearchPoint(double αprev, [NotNull] Func<double, double> φ, [NotNull] Vector<double> location, double f0, [NotNull] Vector<double> Δf0)
+        private double DetermineInitialSearchPoint(double αprev, [NotNull] Func<double, double> φ, [NotNull] Vector<double> location, double f0, [NotNull] Vector<double> Δf0, double dφ0)
         {
             // prefetch
             var ψ0 = _ψ0;
             var ψ1 = _ψ1;
             var ψ2 = _ψ2;
             var α0 = _α0;
+            var useQuadStep = _quadStepEnabled;
 
             // for clarity
             var φ0 = f0;
@@ -196,7 +197,7 @@ namespace widemeadows.Optimization.LineSearch
             }
 
             // check if the user wishes to use quadstep, then check if quadstep may be used
-            if (_quadStepEnabled)
+            if (useQuadStep)
             {
                 // the key idea here is to find a quadratic approximation q(α) = aα²+bα+c that
                 // fulfills the condition q(0)=φ(0), q'(0)=φ'(0) and q(ψ1αprev)=φ(ψ1*αprev).
@@ -208,7 +209,19 @@ namespace widemeadows.Optimization.LineSearch
                 var φr = φ(r);
                 if (φr <= φ0)
                 {
+                    var d = r*r;
+                    var a = -(φ0 - φr + φr*dφ0)/d;
 
+                    // find the minimizer
+                    var rqmin = 0.5D*(d*dφ0)/(φ0 - φr + r*dφ0);
+
+                    // in order to have a valid minimizer here,
+                    // the function must be concave. This is only
+                    // the case if a is positve.
+                    if (a > 0.0D)
+                    {
+                        return rqmin;
+                    }
                 }
             }
 
