@@ -9,7 +9,7 @@ namespace widemeadows.Optimization.LineSearch
     /// <summary>
     /// Implements Hager-Zhang Conjugate Gradient Descent (CG_DESCENT)
     /// </summary>
-    class HagerZhangLineSearch : ILineSearch<double, IDifferentiableCostFunction<double>>, IIterationAware
+    class HagerZhangLineSearch : ILineSearch<double, IDifferentiableCostFunction<double>>
     {
         /// <summary>
         /// delta, used in the Wolfe conditions
@@ -124,8 +124,10 @@ namespace widemeadows.Optimization.LineSearch
         /// <param name="function">The cost function.</param>
         /// <param name="location">The starting point.</param>
         /// <param name="direction">The search direction.</param>
+        /// <param name="previousStepWidth">The previous step width α. In the initial iteration, this value should be <c>0.0D</c>.</param>
         /// <returns>The best found minimum point along the <paramref name="direction" />.</returns>
-        public Vector<double> Minimize(IDifferentiableCostFunction<double> function, Vector<double> location, Vector<double> direction)
+        /// <exception cref="System.NotImplementedException">aww yeah</exception>
+        public double Minimize(IDifferentiableCostFunction<double> function, Vector<double> location, Vector<double> direction, double previousStepWidth)
         {
             Debug.Assert(Math.Abs(direction.Norm(2)) < 1E-3, "Math.Abs(direction.Norm(2)) < 1E-3");
 
@@ -133,7 +135,83 @@ namespace widemeadows.Optimization.LineSearch
             var φ = Getφ(function, location, direction);
             var dφ = GetDφ(function, location, direction);
 
+            var c = 0;
+            var shouldTerminate = ShouldTerminate();
+
             throw new NotImplementedException("aww yeah");
+        }
+
+        /// <summary>
+        /// Determines if the algorithm should terminate, given the currently selected step width <paramref name="α"/>,
+        /// the starting point for the search <paramref name="φ0"/> and the local directional derivative <paramref name="dφ0"/>,
+        /// as well as the function value at the new point <paramref name="φα"/> and its directional derivative <paramref name="dφα"/>.
+        /// </summary>
+        /// <param name="α">The selected step width.</param>
+        /// <param name="φ0">The function value at the starting point.</param>
+        /// <param name="dφ0">The directional derivative of the function value at the starting point.</param>
+        /// <param name="φα">The function value at <paramref name="α"/>.</param>
+        /// <param name="dφα">The directional derivative at <paramref name="α"/>.</param>
+        /// <returns><see langword="true" /> if the line search should terminate, <see langword="false" /> otherwise.</returns>
+        private bool ShouldTerminate(double φ0, double dφ0, double α, double φα, double dφα)
+        {
+            return OriginalWolfeConditionsFulfilled(φ0, dφ0, α, φα, dφα)
+                   || ApproximateWolfeConditionsFulfilled(φ0, dφ0, φα, dφα);
+        }
+
+        /// <summary>
+        /// Determines if the original Wolfe conditions are fulfilled, given the currently selected step width <paramref name="α"/>,
+        /// the starting point for the search <paramref name="φ0"/> and the local directional derivative <paramref name="dφ0"/>,
+        /// as well as the function value at the new point <paramref name="φα"/> and its directional derivative <paramref name="dφα"/>.
+        /// </summary>
+        /// <param name="α">The selected step width.</param>
+        /// <param name="φ0">The function value at the starting point.</param>
+        /// <param name="dφ0">The directional derivative of the function value at the starting point.</param>
+        /// <param name="φα">The function value at <paramref name="α"/>.</param>
+        /// <param name="dφα">The directional derivative at <paramref name="α"/>.</param>
+        /// <returns><see langword="true" /> if the original Wolfe conditions are fulfilled, <see langword="false" /> otherwise.</returns>
+        private bool OriginalWolfeConditionsFulfilled(double φ0, double dφ0, double α, double φα, double dφα)
+        {
+            // prefetch
+            var δ = _δ; // delta
+            var σ = _σ; // delta
+            var ɛ = _ɛ​; // epsilon
+
+            // check for sufficient decrease (Armijo rule)
+            var decreaseIsSufficient = (φα - φ0) <= (δ*α*dφ0);
+
+            // check for sufficient curvature decrease
+            var curvatureDecreaseIsSufficient = dφα >= σ*dφ0;
+
+            return decreaseIsSufficient && curvatureDecreaseIsSufficient;
+        }
+
+        /// <summary>
+        /// Determines if the original Wolfe conditions are fulfilled, given the the starting point for the search <paramref name="φ0"/>
+        /// and the local directional derivative <paramref name="dφ0"/>,
+        /// as well as the function value at the new point <paramref name="φα"/> and its directional derivative <paramref name="dφα"/>.
+        /// </summary>
+        /// <param name="φ0">The function value at the starting point.</param>
+        /// <param name="dφ0">The directional derivative of the function value at the starting point.</param>
+        /// <param name="φα">The function value at the new evaluation point.</param>
+        /// <param name="dφα">The directional derivative at the new evaluation point.</param>
+        /// <returns><see langword="true" /> if the approximate Wolfe conditions are fulfilled, <see langword="false" /> otherwise.</returns>
+        private bool ApproximateWolfeConditionsFulfilled(double φ0, double dφ0, double φα, double dφα)
+        {
+            // prefetch
+            var δ = _δ; // delta
+            var σ = _σ; // delta
+            var ɛ = _ɛ​; // epsilon
+
+            // check for sufficient decrease (qaudratic approximate)
+            var curvatureUpperBoundGood = (2*δ - 1)*dφ0 >= dφα;
+
+            // check for sufficient curvature decrease
+            var curvatureLowerBoundGood = dφα >= σ*dφ0;
+
+            // and another one for decrease
+            var isDecrease = φα <= φ0 + ɛ;
+
+            return curvatureUpperBoundGood && curvatureLowerBoundGood && isDecrease;
         }
 
         /// <summary>
