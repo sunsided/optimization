@@ -241,7 +241,49 @@ namespace widemeadows.Optimization.LineSearch
         /// <returns>Bracket.</returns>
         private Bracket DoubleSecant(Bracket bracket, ref FunctionValues values)
         {
-            throw new NotImplementedException("aww yeah");
+            // S1
+            var c = Secant(bracket, ref values);
+            var newBracket = UpdateBracketing(bracket, c, ref values);
+
+            // S2: if the midpoint is on the right edge of the bracket interval,
+            // find a new point.
+            if (c == newBracket.End)
+            {
+                // find a new midpoínt in a smaller interval
+                var start = bracket.Start;
+                var end = newBracket.End;
+                c = Secant(new Bracket(start, end), ref values);
+
+                // update the bracketing based on that
+                return UpdateBracketing(newBracket, c, ref values);
+            }
+
+            // S3: if the midpoint is on the left edge of the bracket interval,
+            // find a new point.
+            if (c == newBracket.Start)
+            {
+                // find a new midpoínt in a smaller interval
+                var start = bracket.Start;
+                var end = newBracket.Start;
+                c = Secant(new Bracket(start, end), ref values);
+
+                // update the bracketing based on that
+                return UpdateBracketing(newBracket, c, ref values);
+            }
+
+            // S4
+            return newBracket;
+        }
+
+        /// <summary>
+        /// Performs one iteration of the secant method on the <paramref name="bracket"/> interval.
+        /// </summary>
+        /// <param name="bracket">The bracket.</param>
+        /// <param name="values">The values.</param>
+        /// <returns>System.Double.</returns>
+        private double Secant(Bracket bracket, ref FunctionValues values)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
