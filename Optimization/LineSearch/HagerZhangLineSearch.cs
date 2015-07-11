@@ -180,7 +180,7 @@ namespace widemeadows.Optimization.LineSearch
                     if (ShouldTerminate(c, ref values)) return c;
 
                     // update the bracketing interval
-                    candidate = UpdateBracketingInterval(candidate, c, ref values);
+                    candidate = UpdateBracketing(candidate, c, ref values);
                 }
 
                 // L3: wrap around
@@ -198,9 +198,39 @@ namespace widemeadows.Optimization.LineSearch
         /// <param name="values">The values.</param>
         /// <returns>Bracket.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        private Bracket UpdateBracketingInterval(Bracket current, double c, ref FunctionValues values)
+        private Bracket UpdateBracketing(Bracket current, double c, ref FunctionValues values)
         {
-            throw new NotImplementedException();
+            // prefetch
+            var θ = _θ; // theta
+            var ɛ = _ɛ; // epsilon
+
+            // helpers
+            var a = current.Start;
+            var b = current.End;
+
+            // U0: if the midpoint is out of range of the current bracketing
+            // interval, stay where we are.
+            if (c<a || c > b)
+            {
+                return current;
+            }
+
+            // U1
+            var dφc = values.dφ(c);
+            if (dφc >= 0.0D)
+            {
+                return new Bracket(start: a, end: c);
+            }
+
+            // U2
+            var φc = values.φ(c);
+            if (φc <= values.φ0 + ɛ)
+            {
+                return new Bracket(start: c, end: b);
+            }
+
+            // U3
+            return UpdateBracketInRange(start: a, end: c, values: ref values);
         }
 
         /// <summary>
@@ -282,7 +312,7 @@ namespace widemeadows.Optimization.LineSearch
                 // search region.
                 if (values.φ(c) > φ0 + ɛ)
                 {
-                    return UpdateBracketInRange(values, start: 0.0D, end: c);
+                    return UpdateBracketInRange(start: 0.0D, end: c, values: ref values);
                 }
 
                 // B3: At this point, we are still descending and we did not skip
@@ -296,11 +326,11 @@ namespace widemeadows.Optimization.LineSearch
         /// <summary>
         /// Updates the bracketing in range <see cref="start" /> to <see cref="end" />.
         /// </summary>
-        /// <param name="values">The values.</param>
         /// <param name="start">The starting point.</param>
         /// <param name="end">The end point.</param>
+        /// <param name="values">The values.</param>
         /// <returns>Bracket.</returns>
-        private Bracket UpdateBracketInRange(FunctionValues values, double start, double end)
+        private Bracket UpdateBracketInRange(double start, double end, ref FunctionValues values)
         {
             // prefetch
             var θ = _θ; // theta
