@@ -111,12 +111,15 @@ namespace widemeadows.Optimization.LineSearch
         /// <summary>
         /// Determines if QuadStep is used.
         /// </summary>
-        private bool _quadStep = true;
+        private bool _quadStepEnabled = true;
 
         /// <summary>
-        /// The current iteration
+        /// alpha 0, the initial alpha value for the first iteration.
         /// </summary>
-        private int _currentIteration = 0;
+        /// <remarks>
+        /// Range (0, ∞)
+        /// </remarks>
+        private double _α0 = double.NaN;
 
         /// <summary>
         /// Minimizes the <paramref name="function" /> by performing a line search along the <paramref name="direction" />, starting from the given <paramref name="location" />.
@@ -138,12 +141,37 @@ namespace widemeadows.Optimization.LineSearch
             // determine the starting values
             var φ0 = φ(0);
             var dφ0 = dφ(0);
+            var f0 = φ0;
+            var Δf0 = function.Jacobian(location);
 
             // find a starting point and check if that solution is already good enough
-            var c = 0;
+            var c = DetermineInitialSearchPoint(previousStepWidth);
             if (ShouldTerminate(φ, dφ, c, φ0, dφ0)) return c;
 
             throw new NotImplementedException("aww yeah");
+        }
+
+        /// <summary>
+        /// Determines the initial search point.
+        /// </summary>
+        /// <param name="αprev">The previous α value.</param>
+        /// <returns>System.Double.</returns>
+        private double DetermineInitialSearchPoint(double αprev)
+        {
+            // prefetch
+            var ψ0 = _ψ0;
+            var ψ1 = _ψ1;
+            var ψ2 = _ψ2;
+            var α0 = _α0;
+
+            // check if this is the first iteration
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            var isFirstIteration = αprev == 0.0D;
+            if (isFirstIteration)
+            {
+                // if there is a user-defined starting value, then we'll use it.
+                if (α0.IsFinite()) return α0;
+            }
         }
 
         /// <summary>
