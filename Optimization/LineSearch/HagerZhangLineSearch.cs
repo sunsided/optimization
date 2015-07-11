@@ -145,7 +145,7 @@ namespace widemeadows.Optimization.LineSearch
             var Δf0 = function.Jacobian(location);
 
             // find a starting point and check if that solution is already good enough
-            var c = DetermineInitialSearchPoint(previousStepWidth);
+            var c = DetermineInitialSearchPoint(previousStepWidth, location, Δf0);
             if (ShouldTerminate(φ, dφ, c, φ0, dφ0)) return c;
 
             throw new NotImplementedException("aww yeah");
@@ -156,7 +156,7 @@ namespace widemeadows.Optimization.LineSearch
         /// </summary>
         /// <param name="αprev">The previous α value.</param>
         /// <returns>System.Double.</returns>
-        private double DetermineInitialSearchPoint(double αprev)
+        private double DetermineInitialSearchPoint(double αprev, [NotNull] Vector<double> location, [NotNull] Vector<double> gradientAtLocation)
         {
             // prefetch
             var ψ0 = _ψ0;
@@ -171,6 +171,14 @@ namespace widemeadows.Optimization.LineSearch
             {
                 // if there is a user-defined starting value, then we'll use it.
                 if (α0.IsFinite()) return α0;
+            }
+
+            // if the starting point is nonzero, calculate a better alpha
+            var supremumNormOfLocation = location.AbsoluteMaximum();
+            if (supremumNormOfLocation > 0)
+            {
+                var supremumNormOfGradientAtLocation = gradientAtLocation.AbsoluteMaximum();
+                return ψ0*supremumNormOfLocation/supremumNormOfGradientAtLocation;
             }
         }
 
