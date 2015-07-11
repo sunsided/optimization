@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
@@ -123,6 +125,11 @@ namespace widemeadows.Optimization.LineSearch
         private double _α0 = double.NaN;
 
         /// <summary>
+        /// The maximum number of bracketing iterations in <seealso cref="BracketStartingPoint"/>
+        /// </summary>
+        private int _maxBracketingIterations = Int32.MaxValue;
+
+        /// <summary>
         /// Minimizes the <paramref name="function" /> by performing a line search along the <paramref name="direction" />, starting from the given <paramref name="location" />.
         /// </summary>
         /// <param name="function">The cost function.</param>
@@ -142,7 +149,47 @@ namespace widemeadows.Optimization.LineSearch
             var c = DetermineInitialSearchPoint(previousStepWidth, location, ref values);
             if (ShouldTerminate(c, ref values)) return c;
 
+            // bracket the initial starting point
+            Bracket bracket = BracketStartingPoint(c, values);
+
             throw new NotImplementedException("aww yeah");
+        }
+
+        /// <summary>
+        /// Brackets the starting point <paramref name="α"/>.
+        /// </summary>
+        /// <param name="α">The starting point.</param>
+        /// <param name="values">The values.</param>
+        /// <returns>Bracket.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        private Bracket BracketStartingPoint(double α, FunctionValues values)
+        {
+            // prefetch
+            var ρ = _ρ; // rho
+            var θ = _θ; // theta
+            var ɛ = _ɛ; // epsilon
+
+            // B0: initialize the current step value cj and keep track of the values in a stack
+            var cj = 0;
+            var previousC = new Stack<double>();
+
+            var f0 = values.f0;
+            var φ0 = values.φ0 + ɛ;
+
+            // TODO: set a maximum iteration count
+            var maxBracketingIterations = _maxBracketingIterations;
+            for (var j = 0; j < maxBracketingIterations; ++j)
+            {
+                // register the current step value
+                previousC.Push(cj);
+
+                // determine the gradient at the current step length
+                var dφcj = values.dφ(cj);
+
+                // B1:
+            }
+
+            return new Bracket();
         }
 
         /// <summary>
@@ -161,7 +208,6 @@ namespace widemeadows.Optimization.LineSearch
             // determine the starting values
             var φ0 = φ(0);
             var dφ0 = dφ(0);
-            var f0 = φ0;
             var Δf0 = function.Jacobian(location);
 
             // bundle the helper
@@ -203,7 +249,7 @@ namespace widemeadows.Optimization.LineSearch
                 // if there is a user-defined starting value, then we'll use it.
                 if (α0.IsFinite()) return α0;
 
-                // if the starting point is nonzero, calculate a better alpha
+                // if the starting point is nonzero, calculate a better α
                 var supremumNormOfLocation = location.AbsoluteMaximum();
                 if (supremumNormOfLocation > 0.0D)
                 {
@@ -211,7 +257,7 @@ namespace widemeadows.Optimization.LineSearch
                     return ψ0*supremumNormOfLocation/supremumNormOfGradientAtLocation;
                 }
 
-                // if the function value is nonzero, calculate the next better alpha
+                // if the function value is nonzero, calculate the next better α
                 var absoluteOfValueAtLocation = Math.Abs(f0);
                 if (absoluteOfValueAtLocation > 0.0D)
                 {
@@ -420,6 +466,33 @@ namespace widemeadows.Optimization.LineSearch
                 this.φ0 = φ0;
                 this.dφ0 = dφ0;
                 this.Δf0 = Δf0;
+            }
+        }
+
+        /// <summary>
+        /// Struct Bracket
+        /// </summary>
+        private struct Bracket
+        {
+            /// <summary>
+            /// The starting value <c>a</c>
+            /// </summary>
+            public readonly double Start;
+
+            /// <summary>
+            /// The end value <c>b</c>
+            /// </summary>
+            public readonly double End;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Bracket"/> struct.
+            /// </summary>
+            /// <param name="start">The starting value.</param>
+            /// <param name="end">The end value.</param>
+            public Bracket(double start, double end)
+            {
+                Start = start;
+                End = end;
             }
         }
     }
