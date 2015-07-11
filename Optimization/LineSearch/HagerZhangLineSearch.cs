@@ -145,7 +145,7 @@ namespace widemeadows.Optimization.LineSearch
             var Δf0 = function.Jacobian(location);
 
             // find a starting point and check if that solution is already good enough
-            var c = DetermineInitialSearchPoint(previousStepWidth, location, Δf0);
+            var c = DetermineInitialSearchPoint(previousStepWidth, location, f0, Δf0);
             if (ShouldTerminate(φ, dφ, c, φ0, dφ0)) return c;
 
             throw new NotImplementedException("aww yeah");
@@ -156,7 +156,7 @@ namespace widemeadows.Optimization.LineSearch
         /// </summary>
         /// <param name="αprev">The previous α value.</param>
         /// <returns>System.Double.</returns>
-        private double DetermineInitialSearchPoint(double αprev, [NotNull] Vector<double> location, [NotNull] Vector<double> gradientAtLocation)
+        private double DetermineInitialSearchPoint(double αprev, [NotNull] Vector<double> location, double valueAtLocation, [NotNull] Vector<double> gradientAtLocation)
         {
             // prefetch
             var ψ0 = _ψ0;
@@ -171,14 +171,25 @@ namespace widemeadows.Optimization.LineSearch
             {
                 // if there is a user-defined starting value, then we'll use it.
                 if (α0.IsFinite()) return α0;
-            }
 
-            // if the starting point is nonzero, calculate a better alpha
-            var supremumNormOfLocation = location.AbsoluteMaximum();
-            if (supremumNormOfLocation > 0)
-            {
-                var supremumNormOfGradientAtLocation = gradientAtLocation.AbsoluteMaximum();
-                return ψ0*supremumNormOfLocation/supremumNormOfGradientAtLocation;
+                // if the starting point is nonzero, calculate a better alpha
+                var supremumNormOfLocation = location.AbsoluteMaximum();
+                if (supremumNormOfLocation > 0.0D)
+                {
+                    var supremumNormOfGradientAtLocation = gradientAtLocation.AbsoluteMaximum();
+                    return ψ0*supremumNormOfLocation/supremumNormOfGradientAtLocation;
+                }
+
+                // if the function value is nonzero, calculate the next better alpha
+                var absoluteOfValueAtLocation = Math.Abs(valueAtLocation);
+                if (absoluteOfValueAtLocation > 0.0D)
+                {
+                    var squaredEuclideanNormOfGradientAtLocation = gradientAtLocation*gradientAtLocation;
+                    return ψ0*absoluteOfValueAtLocation/squaredEuclideanNormOfGradientAtLocation;
+                }
+
+                // in any other case, use α = 1
+                return 1.0D;
             }
         }
 
