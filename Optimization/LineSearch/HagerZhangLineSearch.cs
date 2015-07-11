@@ -283,7 +283,14 @@ namespace widemeadows.Optimization.LineSearch
         /// <returns>System.Double.</returns>
         private double Secant(Bracket bracket, ref FunctionValues values)
         {
-            throw new NotImplementedException();
+            var a = bracket.Start;
+            var b = bracket.End;
+
+            var dφa = values.dφ(a);
+            var dφb = values.dφ(b);
+
+            var c = (a*dφb - b*dφa)/(dφb - dφa);
+            return c;
         }
 
         /// <summary>
