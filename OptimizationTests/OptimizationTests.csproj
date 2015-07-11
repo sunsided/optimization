@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HagerZhangLineSearchTests.cs" />
     <Compile Include="Hypotheses\DualLinearHypothesis.cs" />
     <Compile Include="LinearHypothesisTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

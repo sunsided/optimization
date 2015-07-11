@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
@@ -13,7 +11,7 @@ namespace widemeadows.Optimization.LineSearch
     /// <summary>
     /// Implements Hager-Zhang Conjugate Gradient Descent (CG_DESCENT)
     /// </summary>
-    class HagerZhangLineSearch : ILineSearch<double, IDifferentiableCostFunction<double>>
+    public class HagerZhangLineSearch : ILineSearch<double, IDifferentiableCostFunction<double>>
     {
         /// <summary>
         /// delta, used in the Wolfe conditions
@@ -40,7 +38,7 @@ namespace widemeadows.Optimization.LineSearch
         private double _ε = 1E-6D;
 
         /// <summary>
-        /// omega, used in switching fromWolfe to approximateWolfe conditions
+        /// omega, used in switching from ;Wolfe to approximate Wolfe conditions
         /// </summary>
         /// <remarks>
         /// Range [0, 1]
@@ -146,7 +144,7 @@ namespace widemeadows.Optimization.LineSearch
         /// <exception cref="System.NotImplementedException">aww yeah</exception>
         public double Minimize(IDifferentiableCostFunction<double> function, Vector<double> location, Vector<double> direction, double previousStepWidth)
         {
-            Debug.Assert(Math.Abs(direction.L2Norm()) < 1E-3, "Math.Abs(direction.Norm(2)) < 1E-3");
+            Debug.Assert(1.0D - Math.Abs(direction.L2Norm()) < 1E-3, "Math.Abs(direction.Norm(2)) < 1E-3");
 
             // prefetch
             var γ = _γ;
