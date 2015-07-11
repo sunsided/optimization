@@ -129,16 +129,42 @@ namespace widemeadows.Optimization.LineSearch
         /// <exception cref="System.NotImplementedException">aww yeah</exception>
         public double Minimize(IDifferentiableCostFunction<double> function, Vector<double> location, Vector<double> direction, double previousStepWidth)
         {
-            Debug.Assert(Math.Abs(direction.Norm(2)) < 1E-3, "Math.Abs(direction.Norm(2)) < 1E-3");
+            Debug.Assert(Math.Abs(direction.L2Norm()) < 1E-3, "Math.Abs(direction.Norm(2)) < 1E-3");
 
             // convenience function for the evaluation
             var φ = Getφ(function, location, direction);
             var dφ = GetDφ(function, location, direction);
 
+            // determine the starting values
+            var φ0 = φ(0);
+            var dφ0 = dφ(0);
+
+            // find a starting point and check if that solution is already good enough
             var c = 0;
-            var shouldTerminate = ShouldTerminate();
+            if (ShouldTerminate(φ, dφ, c, φ0, dφ0)) return c;
 
             throw new NotImplementedException("aww yeah");
+        }
+
+        /// <summary>
+        /// Determines if the algorithm should terminate, given the currently selected step width <paramref name="α" />,
+        /// the starting point for the search <paramref name="φ0" /> and the local directional derivative <paramref name="dφ0" />,
+        /// as well as the functions <paramref name="φ" /> and its directional derivative <paramref name="dφ" />.
+        /// </summary>
+        /// <param name="φ">The function φ(α).</param>
+        /// <param name="dφ">The function φ'(α).</param>
+        /// <param name="α">The selected step width.</param>
+        /// <param name="φ0">The function value at the starting point.</param>
+        /// <param name="dφ0">The directional derivative of the function value at the starting point.</param>
+        /// <returns><see langword="true" /> if the line search should terminate, <see langword="false" /> otherwise.</returns>
+        private bool ShouldTerminate(Func<double, double> φ, Func<double, double> dφ, double α, double φ0, double dφ0)
+        {
+            // calculate the function values at α
+            var φα = φ(α);
+            var dφα = dφ(α);
+
+            // delegate
+            return ShouldTerminate(α, φ0, dφ0, φα, dφα);
         }
 
         /// <summary>
@@ -152,9 +178,9 @@ namespace widemeadows.Optimization.LineSearch
         /// <param name="φα">The function value at <paramref name="α"/>.</param>
         /// <param name="dφα">The directional derivative at <paramref name="α"/>.</param>
         /// <returns><see langword="true" /> if the line search should terminate, <see langword="false" /> otherwise.</returns>
-        private bool ShouldTerminate(double φ0, double dφ0, double α, double φα, double dφα)
+        private bool ShouldTerminate(double α, double φ0, double dφ0, double φα, double dφα)
         {
-            return OriginalWolfeConditionsFulfilled(φ0, dφ0, α, φα, dφα)
+            return OriginalWolfeConditionsFulfilled(α, φ0, dφ0, φα, dφα)
                    || ApproximateWolfeConditionsFulfilled(φ0, dφ0, φα, dφα);
         }
 
@@ -169,12 +195,11 @@ namespace widemeadows.Optimization.LineSearch
         /// <param name="φα">The function value at <paramref name="α"/>.</param>
         /// <param name="dφα">The directional derivative at <paramref name="α"/>.</param>
         /// <returns><see langword="true" /> if the original Wolfe conditions are fulfilled, <see langword="false" /> otherwise.</returns>
-        private bool OriginalWolfeConditionsFulfilled(double φ0, double dφ0, double α, double φα, double dφα)
+        private bool OriginalWolfeConditionsFulfilled(double α, double φ0, double dφ0, double φα, double dφα)
         {
             // prefetch
             var δ = _δ; // delta
             var σ = _σ; // delta
-            var ɛ = _ɛ​; // epsilon
 
             // check for sufficient decrease (Armijo rule)
             var decreaseIsSufficient = (φα - φ0) <= (δ*α*dφ0);
