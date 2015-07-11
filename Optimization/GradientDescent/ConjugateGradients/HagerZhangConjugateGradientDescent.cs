@@ -1,105 +1,66 @@
-﻿namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
+﻿using System;
+using widemeadows.Optimization.Cost;
+using widemeadows.Optimization.LineSearch;
+
+namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 {
     /// <summary>
     /// Implements Hager-Zhang Conjugate Gradient Descent (CG_DESCENT)
     /// </summary>
-    class HagerZhangConjugateGradientDescent
+    class HagerZhangConjugateGradientDescent : IGradientDescent, IMinimization<double, IDifferentiableCostFunction<double>>
     {
         /// <summary>
-        /// delta, used in the Wolfe conditions
+        /// The line search
         /// </summary>
-        /// <remarks>
-        /// Range (0, 0.5)
-        /// </remarks>
-        private double _δ = .1D;
+        private readonly HagerZhangLineSearch _lineSearch = new HagerZhangLineSearch();
 
         /// <summary>
-        /// sigma, used in the Wolfe conditions
+        /// The maximum number of iterations
         /// </summary>
-        /// <remarks>
-        /// Range [<see cref="_δ"/>, 1)
-        /// </remarks>
-        private double _σ = .9D;
+        private int _maxIterations = 10000;
 
         /// <summary>
-        /// epsilon, used in the approximate Wolfe termination
+        /// The error tolerance
         /// </summary>
-        /// <remarks>
-        /// Range [0, ∞)
-        /// </remarks>
-        private double _ɛ​ = 1E-6D;
+        private double _errorTolerance = 1E-6D;
 
         /// <summary>
-        /// omega, used in switching fromWolfe to approximateWolfe conditions
+        /// Gets or sets the maximum number of iterations.
         /// </summary>
-        /// <remarks>
-        /// Range [0, 1]
-        /// </remarks>
-        private double _ω = 1E-3D;
+        /// <value>The maximum iterations.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">value;Maximum number of iterations must be positive.</exception>
+        public int MaxIterations
+        {
+            get
+            {
+                return _maxIterations;
+            }
+            set
+            {
+                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "Maximum number of iterations must be positive.");
+                _maxIterations = value;
+            }
+        }
 
         /// <summary>
-        /// Delta, decay factor for Qk in the recurrence
+        /// Gets or sets the cost change threshold. If the cost change
+        /// is less than the given threshold, iteration stops immediately.
         /// </summary>
-        /// <remarks>
-        /// Range [0, 1]
-        /// </remarks>
-        private double _Δ = .7D;
+        /// <value>The cost change threshold.</value>
+        public double ErrorTolerance
+        {
+            get { return _errorTolerance; }
+            set { _errorTolerance = value; }
+        }
 
         /// <summary>
-        /// theta, used in the update rules when the potential intervals [a, c] 
-        /// or [c, b] violate the opposite slope condition contained in
+        /// Minimizes the specified problem.
         /// </summary>
-        /// <remarks>
-        /// Range (0, 1)
-        /// </remarks>
-        private double _θ = .5D;
-
-        /// <summary>
-        /// gamma, determines when a bisection step is performed
-        /// </summary>
-        /// <remarks>
-        /// Range (0, 1)
-        /// </remarks>
-        private double _γ = .66D;
-
-        /// <summary>
-        /// eta, enters into the lower bound for βNk through ηk
-        /// </summary>
-        /// <remarks>
-        /// Range (0, ∞)
-        /// </remarks>
-        private double _η = .01D;
-
-        /// <summary>
-        /// rho, expansion factor used in the bracket rule
-        /// </summary>
-        /// <remarks>
-        /// Range (1, ∞)
-        /// </remarks>
-        private double _ρ = 5;
-
-        /// <summary>
-        /// psi 0, small factor used in starting guess
-        /// </summary>
-        /// <remarks>
-        /// Range (0, 1)
-        /// </remarks>
-        private double _ψ0 = .01D;
-
-        /// <summary>
-        /// psi 1, small factor
-        /// </summary>
-        /// <remarks>
-        /// Range (0, 1)
-        /// </remarks>
-        private double _ψ1 = .1D;
-
-        /// <summary>
-        /// psi 2, factor multiplying previous step α(k−1)
-        /// </summary>
-        /// <remarks>
-        /// Range (1, ∞)
-        /// </remarks>
-        private double _ψ2 = 2;
+        /// <param name="problem">The problem.</param>
+        /// <returns>IOptimizationResult&lt;TData&gt;.</returns>
+        public IOptimizationResult<double> Minimize(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
