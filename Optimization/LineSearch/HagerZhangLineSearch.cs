@@ -170,11 +170,13 @@ namespace widemeadows.Optimization.LineSearch
             var θ = _θ; // theta
             var ɛ = _ɛ; // epsilon
 
-            // B0: initialize the current step value cj and keep track of the values in a stack
-            var cj = 0;
-            var previousC = new Stack<double>();
+            // make sure the parameters are in range
+            Debug.Assert(ρ > 1, "ρ > 1");
+            Debug.Assert(θ > 0 && θ < 1, "θ > 0 && θ < 1");
 
-            var f0 = values.f0;
+            // B0: initialize the current step value cj and keep track of the values in a stack
+            var c = α;
+            var previousC = new Stack<double>();
             var φ0 = values.φ0 + ɛ;
 
             // TODO: set a maximum iteration count
@@ -182,17 +184,18 @@ namespace widemeadows.Optimization.LineSearch
             for (var j = 0; j < maxBracketingIterations; ++j)
             {
                 // register the current step value
-                previousC.Push(cj);
+                previousC.Push(c);
 
                 // determine the gradient at the current step length
-                var dφcj = values.dφ(cj);
+                var dφc = values.dφ(c);
 
-                // B1: check for ascends
-                // since by definition, the first step is always a descent direction,
-                // this will never happen in the first loop.
-                if (dφcj >= 0)
+                // B1: if we find our currently selected end value to be ascending,
+                // then backtrack the starting value to the last descend.
+                // Since by definition, the first step is always a descent direction,
+                // this will never happen in the first loop iteration.
+                if (dφc >= 0)
                 {
-                    var end = cj;
+                    var end = c;
 
                     // find the most recent step selection c smaller cj that resulted
                     // in a function value less than the starting point.
@@ -200,7 +203,7 @@ namespace widemeadows.Optimization.LineSearch
                     previousC.Pop();
                     while (previousC.Count > 0)
                     {
-                        var c = previousC.Pop();
+                        c = previousC.Pop();
                         if (values.φ(c) > φ0) continue;
 
                         var start = c;
@@ -213,6 +216,43 @@ namespace widemeadows.Optimization.LineSearch
                     Debug.WriteLine("Unable to obtain a good starting point while backtracking the bracketing.");
                     return new Bracket(0, end);
                 }
+
+                // B2: If, for some reason, we are on a descending direction, yet the
+                // current function value is larger than what we started with, then
+                // we know a minimum must exist between the current point and the start.
+                // By using the secant method, we zoom in the range until we find a valid
+                // search region.
+                if (values.φ(c) > φ0)
+                {
+                    var current_start = 0.0D;
+                    var current_end = c;
+
+                    while (true) // TODO: bug in disguise?
+                    {
+                        // U3a
+                        var d = (1 - θ)*current_start + θ*current_end;
+                        if (values.dφ(d) >= 0.0D)
+                        {
+                            var start = current_start;
+                            var end = d;
+                            return new Bracket(start, end);
+                        }
+
+                        // U3b: close in from the left
+                        if (values.φ(d) <= φ0)
+                        {
+                            current_start = d;
+                            continue;
+                        }
+
+                        // U3c: close in from the right
+                        current_end = d;
+                    }
+                }
+
+                // B3: At this point, we are still descending and we did not skip
+                // any minima as far as we know, so we'll increase our step size.
+                c = ρ*c;
             }
 
             return new Bracket();
