@@ -151,7 +151,9 @@ namespace widemeadows.Optimization.LineSearch
             if (ShouldTerminate(c, ref values)) return c;
 
             // bracket the initial starting point
-            Bracket bracket = BracketStartingPoint(c, values);
+            var bracket = BracketStartingPoint(c, values);
+            if (ShouldTerminate(bracket.Start, ref values)) return bracket.Start;
+            if (ShouldTerminate(bracket.End, ref values)) return bracket.End;
 
             throw new NotImplementedException("aww yeah");
         }
