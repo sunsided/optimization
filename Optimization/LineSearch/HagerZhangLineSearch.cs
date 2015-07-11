@@ -191,6 +191,15 @@ namespace widemeadows.Optimization.LineSearch
                 // in any other case, use α = 1
                 return 1.0D;
             }
+
+            // check if the user wishes to use quadstep, then check if quadstep may be used
+            if (_quadStepEnabled)
+            {
+                throw new NotImplementedException();
+            }
+
+            // in any other case, simply use a smaller step width than before
+            return ψ2*αprev;
         }
 
         /// <summary>
