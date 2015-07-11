@@ -156,13 +156,16 @@ namespace widemeadows.Optimization.LineSearch
         /// </summary>
         /// <param name="αprev">The previous α value.</param>
         /// <returns>System.Double.</returns>
-        private double DetermineInitialSearchPoint(double αprev, [NotNull] Vector<double> location, double valueAtLocation, [NotNull] Vector<double> gradientAtLocation)
+        private double DetermineInitialSearchPoint(double αprev, [NotNull] Func<double, double> φ, [NotNull] Vector<double> location, double f0, [NotNull] Vector<double> Δf0)
         {
             // prefetch
             var ψ0 = _ψ0;
             var ψ1 = _ψ1;
             var ψ2 = _ψ2;
             var α0 = _α0;
+
+            // for clarity
+            var φ0 = f0;
 
             // check if this is the first iteration
             // ReSharper disable once CompareOfFloatsByEqualityOperator
@@ -176,15 +179,15 @@ namespace widemeadows.Optimization.LineSearch
                 var supremumNormOfLocation = location.AbsoluteMaximum();
                 if (supremumNormOfLocation > 0.0D)
                 {
-                    var supremumNormOfGradientAtLocation = gradientAtLocation.AbsoluteMaximum();
+                    var supremumNormOfGradientAtLocation = Δf0.AbsoluteMaximum();
                     return ψ0*supremumNormOfLocation/supremumNormOfGradientAtLocation;
                 }
 
                 // if the function value is nonzero, calculate the next better alpha
-                var absoluteOfValueAtLocation = Math.Abs(valueAtLocation);
+                var absoluteOfValueAtLocation = Math.Abs(f0);
                 if (absoluteOfValueAtLocation > 0.0D)
                 {
-                    var squaredEuclideanNormOfGradientAtLocation = gradientAtLocation*gradientAtLocation;
+                    var squaredEuclideanNormOfGradientAtLocation = Δf0*Δf0;
                     return ψ0*absoluteOfValueAtLocation/squaredEuclideanNormOfGradientAtLocation;
                 }
 
@@ -195,7 +198,18 @@ namespace widemeadows.Optimization.LineSearch
             // check if the user wishes to use quadstep, then check if quadstep may be used
             if (_quadStepEnabled)
             {
-                throw new NotImplementedException();
+                // the key idea here is to find a quadratic approximation q(α) = aα²+bα+c that
+                // fulfills the condition q(0)=φ(0), q'(0)=φ'(0) and q(ψ1αprev)=φ(ψ1*αprev).
+
+                // only if the function value at the new position r=ψ1*αprev is actually
+                // smaller than the value at the starting position, we'll attempt to
+                // interpolate through the starting position and the value at r.
+                var r = ψ1*αprev;
+                var φr = φ(r);
+                if (φr <= φ0)
+                {
+
+                }
             }
 
             // in any other case, simply use a smaller step width than before
