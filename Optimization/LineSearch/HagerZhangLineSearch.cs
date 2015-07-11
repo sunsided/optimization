@@ -235,7 +235,7 @@ namespace widemeadows.Optimization.LineSearch
             // B0: initialize the current step value cj and keep track of the values in a stack
             var c = α;
             var previousC = new Stack<double>();
-            var φ0 = values.φ0 + ɛ;
+            var φ0 = values.φ0;
 
             // TODO: set a maximum iteration count
             var maxBracketingIterations = _maxBracketingIterations;
@@ -262,7 +262,7 @@ namespace widemeadows.Optimization.LineSearch
                     while (previousC.Count > 0)
                     {
                         c = previousC.Pop();
-                        if (values.φ(c) > φ0) continue;
+                        if (values.φ(c) > φ0 + ɛ) continue;
 
                         var start = c;
                         return new Bracket(start, end);
@@ -280,32 +280,9 @@ namespace widemeadows.Optimization.LineSearch
                 // we know a minimum must exist between the current point and the start.
                 // By using the secant method, we zoom in the range until we find a valid
                 // search region.
-                if (values.φ(c) > φ0)
+                if (values.φ(c) > φ0 + ɛ)
                 {
-                    var current_start = 0.0D;
-                    var current_end = c;
-
-                    while (true) // TODO: bug in disguise?
-                    {
-                        // U3a
-                        var d = (1 - θ)*current_start + θ*current_end;
-                        if (values.dφ(d) >= 0.0D)
-                        {
-                            var start = current_start;
-                            var end = d;
-                            return new Bracket(start, end);
-                        }
-
-                        // U3b: close in from the left
-                        if (values.φ(d) <= φ0)
-                        {
-                            current_start = d;
-                            continue;
-                        }
-
-                        // U3c: close in from the right
-                        current_end = d;
-                    }
+                    return UpdateBracketInRange(values, start: 0.0D, end: c);
                 }
 
                 // B3: At this point, we are still descending and we did not skip
@@ -314,6 +291,44 @@ namespace widemeadows.Optimization.LineSearch
             }
 
             return new Bracket();
+        }
+
+        /// <summary>
+        /// Updates the bracketing in range <see cref="start" /> to <see cref="end" />.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        /// <param name="start">The starting point.</param>
+        /// <param name="end">The end point.</param>
+        /// <returns>Bracket.</returns>
+        private Bracket UpdateBracketInRange(FunctionValues values, double start, double end)
+        {
+            // prefetch
+            var θ = _θ; // theta
+            var ɛ = _ɛ; // epsilon
+            var φ0 = values.φ0;
+
+            var currentStart = start;
+            var currentEnd = end;
+
+            while (true) // TODO: bug in disguise?
+            {
+                // U3a
+                var d = (1 - θ)*currentStart + θ*currentEnd;
+                if (values.dφ(d) >= 0.0D)
+                {
+                    return new Bracket(start:currentStart, end:d);
+                }
+
+                // U3b: close in from the left
+                if (values.φ(d) <= φ0 + ɛ)
+                {
+                    currentStart = d;
+                    continue;
+                }
+
+                // U3c: close in from the right
+                currentEnd = d;
+            }
         }
 
         /// <summary>
