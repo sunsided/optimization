@@ -126,9 +126,14 @@ namespace widemeadows.Optimization.LineSearch
         private double _α0 = double.NaN;
 
         /// <summary>
-        /// The maximum number of bracketing iterations in <seealso cref="BracketStartingPoint"/>
+        /// The maximum number of bracketing iterations in <seealso cref="BracketStartingPoint"/>.
         /// </summary>
         private int _maxBracketingIterations = Int32.MaxValue;
+
+        /// <summary>
+        /// The maximum number of line search iterations.
+        /// </summary>
+        private int _maxIterations = Int32.MaxValue;
 
         /// <summary>
         /// Minimizes the <paramref name="function" /> by performing a line search along the <paramref name="direction" />, starting from the given <paramref name="location" />.
@@ -143,6 +148,9 @@ namespace widemeadows.Optimization.LineSearch
         {
             Debug.Assert(Math.Abs(direction.L2Norm()) < 1E-3, "Math.Abs(direction.Norm(2)) < 1E-3");
 
+            // prefetch
+            var γ = _γ;
+
             // convenience function for the evaluation
             var values = GetFunctionValues(function, location, direction);
 
@@ -155,6 +163,54 @@ namespace widemeadows.Optimization.LineSearch
             if (ShouldTerminate(bracket.Start, ref values)) return bracket.Start;
             if (ShouldTerminate(bracket.End, ref values)) return bracket.End;
 
+            // iterate along the line
+            var maxIterations = _maxIterations;
+            for (var i = 0; i < maxIterations; ++i)
+            {
+                // L1: perform a double secant step to optimize the search interval
+                var candidate = DoubleSecant(bracket, ref values);
+                if (ShouldTerminate(candidate.Start, ref values)) return candidate.Start;
+                if (ShouldTerminate(candidate.End, ref values)) return candidate.End;
+
+                // L2
+                if ((candidate.End - candidate.Start) > γ*(bracket.End - bracket.Start))
+                {
+                    // find a new midpoint
+                    c = (candidate.Start + candidate.End)/2;
+                    if (ShouldTerminate(c, ref values)) return c;
+
+                    // update the bracketing interval
+                    candidate = UpdateBracketingInterval(candidate, c, ref values);
+                }
+
+                // L3: wrap around
+                bracket = candidate;
+            }
+
+            throw new NotImplementedException("aww yeah");
+        }
+
+        /// <summary>
+        /// Updates the <paramref name="current" /> bracketing interval around the midpoint <paramref name="c" />.
+        /// </summary>
+        /// <param name="current">The current bracketing interval.</param>
+        /// <param name="c">The midpoint.</param>
+        /// <param name="values">The values.</param>
+        /// <returns>Bracket.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        private Bracket UpdateBracketingInterval(Bracket current, double c, ref FunctionValues values)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Perform a double secant step on the <paramref name="bracket"/> interval.
+        /// </summary>
+        /// <param name="bracket">The search interval.</param>
+        /// <param name="values">The values.</param>
+        /// <returns>Bracket.</returns>
+        private Bracket DoubleSecant(Bracket bracket, ref FunctionValues values)
+        {
             throw new NotImplementedException("aww yeah");
         }
 
