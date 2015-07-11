@@ -41,6 +41,9 @@ namespace widemeadows.Optimization.LineSearch
             // this parameter will be adapted during search according to the change in gradient.
             var alpha = -initialStepSize;
 
+            // welp
+            var cumulativeAlpha = 0.0D;
+
             // iteratively find the minimum along the search direction
             for (var j = 0; j < maxLineSearchIteration; ++j)
             {
@@ -67,9 +70,10 @@ namespace widemeadows.Optimization.LineSearch
 
                 // step to the new location along the line
                 theta += alpha*direction;
+                cumulativeAlpha += alpha;
             }
 
-            return alpha;
+            return cumulativeAlpha;
         }
     }
 }
