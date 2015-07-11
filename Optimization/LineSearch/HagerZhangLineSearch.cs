@@ -37,7 +37,7 @@ namespace widemeadows.Optimization.LineSearch
         /// <remarks>
         /// Range [0, ∞)
         /// </remarks>
-        private double _ɛ​ = 1E-6D;
+        private double _ε = 1E-6D;
 
         /// <summary>
         /// omega, used in switching fromWolfe to approximateWolfe conditions
@@ -202,7 +202,7 @@ namespace widemeadows.Optimization.LineSearch
         {
             // prefetch
             var θ = _θ; // theta
-            var ɛ = _ɛ; // epsilon
+            var ε = _ε; // epsilon
 
             // helpers
             var a = current.Start;
@@ -224,7 +224,7 @@ namespace widemeadows.Optimization.LineSearch
 
             // U2
             var φc = values.φ(c);
-            if (φc <= values.φ0 + ɛ)
+            if (φc <= values.φ0 + ε)
             {
                 return new Bracket(start: c, end: b);
             }
@@ -256,7 +256,7 @@ namespace widemeadows.Optimization.LineSearch
             // prefetch
             var ρ = _ρ; // rho
             var θ = _θ; // theta
-            var ɛ = _ɛ; // epsilon
+            var ε = _ε; // epsilon
 
             // make sure the parameters are in range
             Debug.Assert(ρ > 1, "ρ > 1");
@@ -292,7 +292,7 @@ namespace widemeadows.Optimization.LineSearch
                     while (previousC.Count > 0)
                     {
                         c = previousC.Pop();
-                        if (values.φ(c) > φ0 + ɛ) continue;
+                        if (values.φ(c) > φ0 + ε) continue;
 
                         var start = c;
                         return new Bracket(start, end);
@@ -310,7 +310,7 @@ namespace widemeadows.Optimization.LineSearch
                 // we know a minimum must exist between the current point and the start.
                 // By using the secant method, we zoom in the range until we find a valid
                 // search region.
-                if (values.φ(c) > φ0 + ɛ)
+                if (values.φ(c) > φ0 + ε)
                 {
                     return UpdateBracketInRange(start: 0.0D, end: c, values: ref values);
                 }
@@ -334,7 +334,7 @@ namespace widemeadows.Optimization.LineSearch
         {
             // prefetch
             var θ = _θ; // theta
-            var ɛ = _ɛ; // epsilon
+            var ɛ = _ε; // epsilon
             var φ0 = values.φ0;
 
             var currentStart = start;
@@ -547,7 +547,7 @@ namespace widemeadows.Optimization.LineSearch
             // prefetch
             var δ = _δ; // delta
             var σ = _σ; // delta
-            var ɛ = _ɛ​; // epsilon
+            var ɛ = _ε; // epsilon
 
             // check for sufficient decrease (qaudratic approximate)
             var curvatureUpperBoundGood = (2*δ - 1)*dφ0 >= dφα;
