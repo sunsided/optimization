@@ -136,6 +136,25 @@ namespace widemeadows.Optimization.LineSearch
             Debug.Assert(Math.Abs(direction.L2Norm()) < 1E-3, "Math.Abs(direction.Norm(2)) < 1E-3");
 
             // convenience function for the evaluation
+            var values = GetFunctionValues(function, location, direction);
+
+            // find a starting point and check if that solution is already good enough
+            var c = DetermineInitialSearchPoint(previousStepWidth, location, ref values);
+            if (ShouldTerminate(c, ref values)) return c;
+
+            throw new NotImplementedException("aww yeah");
+        }
+
+        /// <summary>
+        /// Convenience function to obtain often-used function values.
+        /// </summary>
+        /// <param name="function">The function.</param>
+        /// <param name="location">The location.</param>
+        /// <param name="direction">The direction.</param>
+        /// <returns>FunctionValues.</returns>
+        private static FunctionValues GetFunctionValues(IDifferentiableCostFunction<double> function, Vector<double> location, Vector<double> direction)
+        {
+            // define the functions
             var φ = Getφ(function, location, direction);
             var dφ = GetDφ(function, location, direction);
 
@@ -146,13 +165,11 @@ namespace widemeadows.Optimization.LineSearch
             var Δf0 = function.Jacobian(location);
 
             // bundle the helper
-            var values = new FunctionValues(φ, dφ, φ0, dφ0, Δf0);
-
-            // find a starting point and check if that solution is already good enough
-            var c = DetermineInitialSearchPoint(previousStepWidth, location, ref values);
-            if (ShouldTerminate(c, ref values)) return c;
-
-            throw new NotImplementedException("aww yeah");
+            var values = new FunctionValues(
+                φ: φ, dφ: dφ,
+                φ0: φ0, dφ0: dφ0,
+                Δf0: Δf0);
+            return values;
         }
 
         /// <summary>
