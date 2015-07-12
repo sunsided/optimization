@@ -42,7 +42,7 @@ namespace widemeadows.Optimization.Tests
             var lineSearch = new SecantMethod();
 
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
+            var gd = new FletcherReevesCG(lineSearch)
             {
                 MaxIterations = 1000,
                 ErrorTolerance = 1E-8D
@@ -85,7 +85,7 @@ namespace widemeadows.Optimization.Tests
             };
 
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
+            var gd = new FletcherReevesCG(lineSearch)
             {
                 ErrorTolerance = 1E-7
             };
@@ -130,7 +130,7 @@ namespace widemeadows.Optimization.Tests
             var lineSearch = new SecantMethod();
 
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
+            var gd = new FletcherReevesCG(lineSearch)
             {
                 ErrorTolerance = 1E-8D
             };
@@ -175,7 +175,7 @@ namespace widemeadows.Optimization.Tests
             var lineSearch = new SecantMethod();
 
             // optimize!
-            var gd = new PolakRibiereConjugateGradientDescent(lineSearch)
+            var gd = new PolakRibiereCG(lineSearch)
                      {
                          ErrorTolerance = 1E-8D
                      };
@@ -224,7 +224,7 @@ namespace widemeadows.Optimization.Tests
                              };
 
             // optimize!
-            var gd = new PolakRibiereConjugateGradientDescent(lineSearch)
+            var gd = new PolakRibiereCG(lineSearch)
                      {
 
                          MaxIterations = 10000,
@@ -262,7 +262,7 @@ namespace widemeadows.Optimization.Tests
             };
 
             // optimize!
-            var gd = new FletcherReevesConjugateGradientDescent(lineSearch)
+            var gd = new FletcherReevesCG(lineSearch)
             {
                 MaxIterations = 10000,
                 ErrorTolerance = 1E-8D
@@ -298,7 +298,7 @@ namespace widemeadows.Optimization.Tests
             };
 
             // optimize!
-            var gd = new PolakRibiereConjugateGradientDescent(lineSearch)
+            var gd = new PolakRibiereCG(lineSearch)
                      {
                          ErrorTolerance = 1E-8D,
                          MaxIterations = 15000

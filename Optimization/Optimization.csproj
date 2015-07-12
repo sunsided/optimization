@@ -50,10 +50,10 @@
     <Compile Include="Cost\ResidualSumOfSquaresCostFunction.cs" />
     <Compile Include="DataPoint.cs" />
     <Compile Include="GradientDescent\ConjugateGradients\ConjugateGradientDescentBase.cs" />
-    <Compile Include="GradientDescent\ConjugateGradients\DoublePrecisionConjugateGradientDescentBase.cs" />
-    <Compile Include="GradientDescent\ConjugateGradients\HagerZhangConjugateGradientDescent.cs" />
-    <Compile Include="GradientDescent\ConjugateGradients\PolakRibiereConjugateGradientDescent.cs" />
-    <Compile Include="GradientDescent\ConjugateGradients\FletcherReevesConjugateGradientDescent.cs" />
+    <Compile Include="GradientDescent\ConjugateGradients\DoublePrecisionCGBase.cs" />
+    <Compile Include="GradientDescent\ConjugateGradients\HagerZhangCG.cs" />
+    <Compile Include="GradientDescent\ConjugateGradients\PolakRibiereCG.cs" />
+    <Compile Include="GradientDescent\ConjugateGradients\FletcherReevesCG.cs" />
     <Compile Include="GradientDescent\Regular\GradientDescentBase.cs" />
     <Compile Include="GradientDescent\IGradientDescent.cs" />
     <Compile Include="GradientDescent\Regular\ResilientErrorGradientDescent.cs" />

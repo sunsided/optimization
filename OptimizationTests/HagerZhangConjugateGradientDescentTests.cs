@@ -27,7 +27,7 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // optimize!
-            var gd = new HagerZhangConjugateGradientDescent()
+            var gd = new HagerZhangCG()
             {
                 MaxIterations = 10000,
                 ErrorTolerance = 1E-8D

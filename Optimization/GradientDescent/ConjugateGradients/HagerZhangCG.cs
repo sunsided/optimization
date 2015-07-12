@@ -10,7 +10,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
     /// <summary>
     /// Implements Hager-Zhang Conjugate Gradient Descent (CG_DESCENT)
     /// </summary>
-    public class HagerZhangConjugateGradientDescent : DoublePrecisionConjugateGradientDescentBase<IDifferentiableCostFunction<double>>, IHagerZhangLineSearchParameters
+    public class HagerZhangCG : DoublePrecisionConjugateGradientDescentBase<IDifferentiableCostFunction<double>>, IHagerZhangLineSearchParameters
     {
         /// <summary>
         /// eta, enters into the lower bound for βNk through ηk
@@ -139,9 +139,9 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HagerZhangConjugateGradientDescent"/> class.
+        /// Initializes a new instance of the <see cref="HagerZhangCG"/> class.
         /// </summary>
-        public HagerZhangConjugateGradientDescent()
+        public HagerZhangCG()
             : base(new HagerZhangLineSearch())
         {
         }

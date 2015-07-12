@@ -22,13 +22,13 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
     /// }
     /// </code>
     /// </remarks>
-    public sealed class FletcherReevesConjugateGradientDescent : DoublePrecisionConjugateGradientDescentBase<IDifferentiableCostFunction<double>>
+    public sealed class FletcherReevesCG : DoublePrecisionConjugateGradientDescentBase<IDifferentiableCostFunction<double>>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FletcherReevesConjugateGradientDescent"/> class.
+        /// Initializes a new instance of the <see cref="FletcherReevesCG"/> class.
         /// </summary>
         /// <param name="lineSearch">The line search.</param>
-        public FletcherReevesConjugateGradientDescent([NotNull] ILineSearch<double, IDifferentiableCostFunction<double>> lineSearch)
+        public FletcherReevesCG([NotNull] ILineSearch<double, IDifferentiableCostFunction<double>> lineSearch)
             : base(lineSearch)
         {
         }
