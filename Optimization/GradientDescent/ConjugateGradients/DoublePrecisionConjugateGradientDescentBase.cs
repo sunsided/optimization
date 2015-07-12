@@ -78,7 +78,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 // var cost = costFunction.CalculateCost(x);
 
                 // perform a line search to find the minimum along the given direction
-                var alpha = LineSearch(costFunction, location, direction, previousAlpha);
+                var alpha = PerformLineSearch(costFunction, location, direction, previousAlpha);
                 previousAlpha = alpha;
                 location += alpha*direction;
 

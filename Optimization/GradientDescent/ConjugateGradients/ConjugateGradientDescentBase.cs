@@ -28,6 +28,16 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         private readonly ILineSearch<TData, TCostFunction> _lineSearch;
 
         /// <summary>
+        /// Gets the line search.
+        /// </summary>
+        /// <value>The line search.</value>
+        [NotNull]
+        protected ILineSearch<TData, TCostFunction> LineSearch
+        {
+            get { return _lineSearch; }
+        }
+
+        /// <summary>
         /// Gets the squared error tolerance.
         /// </summary>
         /// <value>The error tolerance squared.</value>
@@ -75,7 +85,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// <param name="previousStepWidth"></param>
         /// <returns>The step size starting from <paramref name="location"/> to the  best found minimum point along the <paramref name="direction"/>.</returns>
         [NotNull]
-        protected TData LineSearch([NotNull] TCostFunction costFunction, [NotNull] Vector<TData> theta, [NotNull] Vector<TData> direction, double previousStepWidth = 0.0D)
+        protected TData PerformLineSearch([NotNull] TCostFunction costFunction, [NotNull] Vector<TData> theta, [NotNull] Vector<TData> direction, double previousStepWidth = 0.0D)
         {
             return _lineSearch.Minimize(costFunction, theta, direction, previousStepWidth);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
 using widemeadows.Optimization.LineSearch;
@@ -9,7 +10,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
     /// <summary>
     /// Implements Hager-Zhang Conjugate Gradient Descent (CG_DESCENT)
     /// </summary>
-    public class HagerZhangConjugateGradientDescent : DoublePrecisionConjugateGradientDescentBase<IDifferentiableCostFunction<double>>
+    public class HagerZhangConjugateGradientDescent : DoublePrecisionConjugateGradientDescentBase<IDifferentiableCostFunction<double>>, IHagerZhangLineSearchParameters
     {
         /// <summary>
         /// eta, enters into the lower bound for βNk through ηk
@@ -18,6 +19,124 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// Range (0, ∞)
         /// </remarks>
         private double _η = .01D;
+
+        /// <summary>
+        /// eta, enters into the lower bound for βNk through ηk
+        /// </summary>
+        /// <value>The η.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be positive.</exception>
+        public double η
+        {
+            get { return _η; }
+            set
+            {
+                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "Value must be positive.");
+                _η = value;
+            }
+        }
+
+        #region Line search parameters
+
+        /// <summary>
+        /// Gets the line search.
+        /// </summary>
+        /// <value>The line search.</value>
+        [NotNull]
+        private new HagerZhangLineSearch LineSearch
+        {
+            get { return (HagerZhangLineSearch)base.LineSearch; }
+        }
+
+        /// <summary>
+        /// delta, used in the Wolfe conditions
+        /// </summary>
+        /// <value>The δ.</value>
+        public double δ { get { return LineSearch.δ; } set { LineSearch.δ = value; } }
+
+        /// <summary>
+        /// sigma, used in the Wolfe conditions
+        /// </summary>
+        /// <value>The σ.</value>
+        public double σ { get { return LineSearch.σ; } set { LineSearch.σ = value; } }
+
+        /// <summary>
+        /// epsilon, used in the approximate Wolfe termination
+        /// </summary>
+        /// <value>The ε.</value>
+        /// <remarks>Range [0, ∞)</remarks>
+        public double ε { get { return LineSearch.ε; } set { LineSearch.ε = value; } }
+
+        /// <summary>
+        /// omega, used in switching from Wolfe to approximate Wolfe conditions
+        /// </summary>
+        /// <value>The ω.</value>
+        /// <remarks>Range [0, 1]</remarks>
+        public double ω { get { return LineSearch.ω; } set { LineSearch.ω = value; } }
+
+        /// <summary>
+        /// Delta, decay factor for Qk in the recurrence
+        /// </summary>
+        /// <value>The δ.</value>
+        public double Δ { get { return LineSearch.Δ; } set { LineSearch.Δ = value; } }
+
+        /// <summary>
+        /// theta, used in the update rules when the potential intervals [a, c]
+        /// or [c, b] violate the opposite slope condition contained in
+        /// </summary>
+        /// <value>The θ.</value>
+        public double θ { get { return LineSearch.θ; } set { LineSearch.θ = value; } }
+
+        /// <summary>
+        /// gamma, determines when a bisection step is performed
+        /// </summary>
+        /// <value>The γ.</value>
+        public double γ { get { return LineSearch.γ; } set { LineSearch.γ = value; } }
+
+        /// <summary>
+        /// rho, expansion factor used in the bracket rule
+        /// </summary>
+        /// <value>The ρ.</value>
+        /// <remarks>Range (1, ∞)</remarks>
+        public double ρ { get { return LineSearch.ρ; } set { LineSearch.ρ = value; } }
+
+        /// <summary>
+        /// psi 0, small factor used in starting guess
+        /// </summary>
+        /// <value>The ψ0.</value>
+        public double ψ0 { get { return LineSearch.ψ0; } set { LineSearch.ψ0 = value; } }
+
+        /// <summary>
+        /// psi 1, small factor
+        /// </summary>
+        /// <value>The ψ1.</value>
+        public double ψ1 { get { return LineSearch.ψ1; } set { LineSearch.ψ1 = value; } }
+
+        /// <summary>
+        /// psi 2, factor multiplying previous step α(k−1)
+        /// </summary>
+        /// <value>The ψ2.</value>
+        public double ψ2 { get { return LineSearch.ψ2; } set { LineSearch.ψ2 = value; } }
+
+        /// <summary>
+        /// Determines if QuadStep is used.
+        /// </summary>
+        /// <value><see langword="true" /> if [quad step]; otherwise, <see langword="false" />.</value>
+        public bool QuadStep { get { return LineSearch.QuadStep; } set { LineSearch.QuadStep = value; } }
+
+        /// <summary>
+        /// alpha 0, the initial alpha value for the first iteration.
+        /// </summary>
+        /// <value>The α0.</value>
+        /// <remarks>Range (0, ∞)</remarks>
+        public double α0 { get { return LineSearch.α0; } set { LineSearch.α0 = value; } }
+
+        /// <summary>
+        /// Gets or sets the maximum number of bracketing iterations.
+        /// </summary>
+        /// <value>The maximum bracketing iterations.</value>
+        public int MaxBracketingIterations { get { return LineSearch.MaxBracketingIterations; } set { LineSearch.MaxBracketingIterations = value; } }
+
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HagerZhangConjugateGradientDescent"/> class.
