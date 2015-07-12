@@ -128,134 +128,170 @@ namespace widemeadows.Optimization.LineSearch
         /// <summary>
         /// delta, used in the Wolfe conditions
         /// </summary>
-        /// <remarks>
-        /// Range (0, 0.5)
-        /// </remarks>
+        /// <value>The δ.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be in range (0, 0.5).</exception>
         public double δ
         {
             get { return _δ; }
-            set { _δ = value; }
+            set
+            {
+                if (value <= 0 || value >= 0.5) throw new ArgumentOutOfRangeException("value", value, "Value must be in range (0, 0.5).");
+                _δ = value;
+            }
         }
 
         /// <summary>
         /// sigma, used in the Wolfe conditions
         /// </summary>
-        /// <remarks>
-        /// Range [<see cref="_δ"/>, 1)
-        /// </remarks>
+        /// <value>The σ.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">value;Value must be in range (<seealso cref="δ"/>, 1).</exception>
         public double σ
         {
             get { return _σ; }
-            set { _σ = value; }
+            set
+            {
+                if (value <= δ || value >= 1) throw new ArgumentOutOfRangeException("value", value, "Value must be in range (δ, 1).");
+                _σ = value;
+            }
         }
 
         /// <summary>
         /// epsilon, used in the approximate Wolfe termination
         /// </summary>
-        /// <remarks>
-        /// Range [0, ∞)
-        /// </remarks>
+        /// <value>The ε.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be positive.</exception>
+        /// <remarks>Range [0, ∞)</remarks>
         public double ε
         {
             get { return _ε; }
-            set { _ε = value; }
+            set
+            {
+                if (value < 0) throw new ArgumentOutOfRangeException("value", value, "Value must be positive.");
+                _ε = value;
+            }
         }
 
         /// <summary>
         /// omega, used in switching from Wolfe to approximate Wolfe conditions
         /// </summary>
-        /// <remarks>
-        /// Range [0, 1]
-        /// </remarks>
+        /// <value>The ω.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be in range [0, 1].</exception>
+        /// <remarks>Range [0, 1]</remarks>
         public double ω
         {
             get { return _ω; }
-            set { _ω = value; }
+            set
+            {
+                if (value < 0 || value > 1) throw new ArgumentOutOfRangeException("value", value, "Value must be in range [0, 1].");
+                _ω = value;
+            }
         }
 
         /// <summary>
         /// Delta, decay factor for Qk in the recurrence
         /// </summary>
-        /// <remarks>
-        /// Range [0, 1]
-        /// </remarks>
+        /// <value>The δ.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be in range [0, 1].</exception>
         public double Δ
         {
             get { return _Δ; }
-            set { _Δ = value; }
+            set
+            {
+                if (value < 0 || value > 1) throw new ArgumentOutOfRangeException("value", value, "Value must be in range [0, 1].");
+                _Δ = value;
+            }
         }
 
         /// <summary>
         /// theta, used in the update rules when the potential intervals [a, c]
         /// or [c, b] violate the opposite slope condition contained in
         /// </summary>
-        /// <remarks>
-        /// Range (0, 1)
-        /// </remarks>
+        /// <value>The θ.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be in range (0, 1).</exception>
         public double θ
         {
             get { return _θ; }
-            set { _θ = value; }
+            set
+            {
+                if (value <= 0 || value >= 1) throw new ArgumentOutOfRangeException("value", value, "Value must be in range (0, 1).");
+                _θ = value;
+            }
         }
 
         /// <summary>
         /// gamma, determines when a bisection step is performed
         /// </summary>
-        /// <remarks>
-        /// Range (0, 1)
-        /// </remarks>
+        /// <value>The γ.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">value;Value must be in range (0, 1).</exception>
         public double γ
         {
             get { return _γ; }
-            set { _γ = value; }
+            set
+            {
+                if (value <= 0 || value >= 1) throw new ArgumentOutOfRangeException("value", value, "Value must be in range (0, 1).");
+                _γ = value;
+            }
         }
 
         /// <summary>
         /// rho, expansion factor used in the bracket rule
         /// </summary>
-        /// <remarks>
-        /// Range (1, ∞)
-        /// </remarks>
+        /// <value>The ρ.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be in greater than 1.</exception>
+        /// <remarks>Range (1, ∞)</remarks>
         public double ρ
         {
             get { return _ρ; }
-            set { _ρ = value; }
+            set
+            {
+                if (value <= 1) throw new ArgumentOutOfRangeException("value", value, "Value must be in greater than 1.");
+                _ρ = value;
+            }
         }
 
         /// <summary>
         /// psi 0, small factor used in starting guess
         /// </summary>
-        /// <remarks>
-        /// Range (0, 1)
-        /// </remarks>
+        /// <value>The ψ0.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be in range (0, 1).</exception>
         public double ψ0
         {
             get { return _ψ0; }
-            set { _ψ0 = value; }
+            set
+            {
+                if (value <= 0 || value >= 1) throw new ArgumentOutOfRangeException("value", value, "Value must be in range (0, 1).");
+                _ψ0 = value;
+            }
         }
 
         /// <summary>
         /// psi 1, small factor
         /// </summary>
-        /// <remarks>
-        /// Range (0, 1)
-        /// </remarks>
+        /// <value>The ψ1.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be in range (0, 1).</exception>
         public double ψ1
         {
             get { return _ψ1; }
-            set { _ψ1 = value; }
+            set
+            {
+                if (value <= 0 || value >= 1) throw new ArgumentOutOfRangeException("value", value, "Value must be in range (0, 1).");
+                _ψ1 = value;
+            }
         }
 
         /// <summary>
         /// psi 2, factor multiplying previous step α(k−1)
         /// </summary>
-        /// <remarks>
-        /// Range (1, ∞)
-        /// </remarks>
+        /// <value>The ψ2.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be in greater than 1.</exception>
         public double ψ2
         {
             get { return _ψ2; }
-            set { _ψ2 = value; }
+            set
+            {
+                if (value <= 1) throw new ArgumentOutOfRangeException("value", value, "Value must be in greater than 1.");
+                _ψ2 = value;
+            }
         }
 
         /// <summary>
@@ -270,31 +306,47 @@ namespace widemeadows.Optimization.LineSearch
         /// <summary>
         /// alpha 0, the initial alpha value for the first iteration.
         /// </summary>
-        /// <remarks>
-        /// Range (0, ∞)
-        /// </remarks>
+        /// <value>The α0.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be positive.</exception>
+        /// <remarks>Range (0, ∞)</remarks>
         public double α0
         {
             get { return _α0; }
-            set { _α0 = value; }
+            set
+            {
+                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "Value must be positive.");
+                _α0 = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the maximum number of bracketing iterations.
         /// </summary>
+        /// <value>The maximum bracketing iterations.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be positive.</exception>
         public int MaxBracketingIterations
         {
             get { return _maxBracketingIterations; }
-            set { _maxBracketingIterations = value; }
+            set
+            {
+                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "Value must be positive.");
+                _maxBracketingIterations = value;
+            }
         }
 
         /// <summary>
         /// Gets or sets the maximum number of line search iterations.
         /// </summary>
+        /// <value>The maximum iterations.</value>
+        /// <exception cref="System.ArgumentOutOfRangeException">Value must be positive.</exception>
         public int MaxIterations
         {
             get { return _maxIterations; }
-            set { _maxIterations = value; }
+            set
+            {
+                if (value <= 0) throw new ArgumentOutOfRangeException("value", value, "Value must be positive.");
+                _maxIterations = value;
+            }
         }
 
         /// <summary>
