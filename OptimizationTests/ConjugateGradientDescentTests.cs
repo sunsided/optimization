@@ -5,7 +5,7 @@ using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 using widemeadows.Optimization.Cost;
-using widemeadows.Optimization.GradientDescent.ConjugateGradients;
+using widemeadows.Optimization.GradientDescent.Conjugate;
 using widemeadows.Optimization.Hypotheses;
 using widemeadows.Optimization.LineSearch;
 using widemeadows.Optimization.Tests.Hypotheses;

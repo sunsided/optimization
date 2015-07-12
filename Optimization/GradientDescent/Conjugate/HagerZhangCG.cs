@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
 using widemeadows.Optimization.LineSearch;
 
-namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
+namespace widemeadows.Optimization.GradientDescent.Conjugate
 {
     /// <summary>
     /// Implements Hager-Zhang Conjugate Gradient Descent (CG_DESCENT)

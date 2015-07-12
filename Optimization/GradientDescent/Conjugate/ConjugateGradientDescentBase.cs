@@ -5,7 +5,7 @@ using widemeadows.Optimization.Cost;
 using widemeadows.Optimization.GradientDescent.Regular;
 using widemeadows.Optimization.LineSearch;
 
-namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
+namespace widemeadows.Optimization.GradientDescent.Conjugate
 {
     /// <summary>
     /// Class ConjugateGradientDescentBase.
