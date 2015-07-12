@@ -38,8 +38,8 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             var epsilonSquare = ErrorToleranceSquared;
 
             // fetch a starting point and obtain the problem size
-            var theta = problem.GetInitialCoefficients();
-            var problemDimension = theta.Count;
+            var location = problem.GetInitialCoefficients();
+            var problemDimension = location.Count;
 
             // we want to restart nonlinear CG at least every n steps,
             // and use this variable as a counter.
@@ -48,7 +48,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             // now we determine the initial residuals, which are defined to
             // be the opposite gradient direction
             var costFunction = problem.CostFunction;
-            var residuals = -costFunction.Jacobian(theta);
+            var residuals = -costFunction.Jacobian(location);
 
             // the initial search direction is along the residuals,
             // which makes the initial step a regular gradient descent.
@@ -58,10 +58,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             Vector<double> direction; // = residuals
 
             // initialize the algorithm
-            object state = InitializeAlgorithm(problem, theta, residuals, out direction);
-
-            // we require the direction to be normalized
-            Debug.Assert(Math.Abs(direction.L2Norm() - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+            object state = InitializeAlgorithm(problem, location, residuals, out direction);
 
             // determine the initial error
             var delta = residuals * residuals;
@@ -80,17 +77,14 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 // var cost = costFunction.CalculateCost(x);
 
                 // perform a line search to find the minimum along the given direction
-                var alpha = LineSearch(costFunction, theta, direction);
-                theta += alpha*direction;
+                var alpha = LineSearch(costFunction, location, direction);
+                location += alpha*direction;
 
                 // obtain the new residuals
-                residuals = -costFunction.Jacobian(theta);
+                residuals = -costFunction.Jacobian(location);
 
                 // obtain the update parameter
-                var shouldContinue = UpdateDirection(state, theta, residuals, ref direction, ref delta);
-
-                // we require the direction to be normalized
-                Debug.Assert(Math.Abs(direction.L2Norm() - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
+                var shouldContinue = UpdateDirection(state, location, residuals, ref direction, ref delta);
 
                 // Conjugate Gradient can generate only n conjugate search directions
                 // in n-dimensional space, so we'll reset the algorithm every n steps in order
@@ -111,28 +105,29 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             }
 
             // that's it.
-            var cost = costFunction.CalculateCost(theta);
-            return new OptimizationResult<double>(cost, theta);
+            var cost = costFunction.CalculateCost(location);
+            return new OptimizationResult<double>(cost, location);
         }
 
         /// <summary>
         /// Initializes the algorithm.
         /// </summary>
         /// <param name="problem">The problem.</param>
+        /// <param name="location">The location.</param>
         /// <param name="residuals">The initial residuals.</param>
         /// <param name="searchDirection">The initial search direction.</param>
         /// <returns>The state to be passed to the <see cref="UpdateDirection" /> function.</returns>
-        protected abstract object InitializeAlgorithm([NotNull] IOptimizationProblem<double, TCostFunction> problem, Vector<double> theta, Vector<double> residuals, out Vector<double> searchDirection);
+        protected abstract object InitializeAlgorithm([NotNull] IOptimizationProblem<double, TCostFunction> problem, Vector<double> location, Vector<double> residuals, out Vector<double> searchDirection);
 
         /// <summary>
         /// Determines the beta coefficient used to update the direction.
         /// </summary>
         /// <param name="internalState">The algorithm's internal state.</param>
-        /// <param name="theta">The theta.</param>
+        /// <param name="location">The theta.</param>
         /// <param name="residuals">The residuals.</param>
         /// <param name="direction">The search direction.</param>
         /// <param name="delta">The squared norm of the residuals.</param>
         /// <returns><see langword="true" /> if the algorithm should continue, <see langword="false" /> if the algorithm should restart.</returns>
-        protected abstract bool UpdateDirection([CanBeNull] object internalState, [NotNull] Vector<double> theta, [NotNull] Vector<double> residuals, ref Vector<double> direction, ref double delta);
+        protected abstract bool UpdateDirection([CanBeNull] object internalState, [NotNull] Vector<double> location, [NotNull] Vector<double> residuals, ref Vector<double> direction, ref double delta);
     }
 }

@@ -37,21 +37,21 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// Initializes the algorithm.
         /// </summary>
         /// <param name="problem">The problem.</param>
-        /// <param name="theta">The theta.</param>
+        /// <param name="location">The theta.</param>
         /// <param name="residuals">The initial residuals.</param>
         /// <param name="searchDirection">The initial search direction.</param>
         /// <returns>The state to be passed to the <see cref="UpdateDirection" /> function.</returns>
-        protected override object InitializeAlgorithm(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem, Vector<double> theta, Vector<double> residuals, out Vector<double> searchDirection)
+        protected override object InitializeAlgorithm(IOptimizationProblem<double, IDifferentiableCostFunction<double>> problem, Vector<double> location, Vector<double> residuals, out Vector<double> searchDirection)
         {
             // determine a preconditioner
-            var preconditioner = GetPreconditioner(problem, theta);
+            var preconditioner = GetPreconditioner(problem, location);
 
             // get the preconditioned residuals
             var preconditionedResiduals = preconditioner.Inverse() * residuals;
 
             // the initial search direction is along the residuals,
             // which makes the initial step a regular gradient descent.
-            searchDirection = preconditionedResiduals.Normalize(2);
+            searchDirection = preconditionedResiduals;
 
             // return some state information
             return new State(problem, preconditionedResiduals);
@@ -61,16 +61,13 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
         /// Determines the beta coefficient used to update the direction.
         /// </summary>
         /// <param name="internalState">The algorithm's internal state.</param>
-        /// <param name="theta">The theta.</param>
+        /// <param name="location">The theta.</param>
         /// <param name="residuals">The residuals.</param>
         /// <param name="direction">The search direction.</param>
         /// <param name="delta">The squared norm of the residuals.</param>
         /// <returns><see langword="true" /> if the algorithm should continue, <see langword="false" /> if the algorithm should restart.</returns>
-        protected override bool UpdateDirection(object internalState, Vector<double> theta, Vector<double> residuals, ref Vector<double> direction, ref double delta)
+        protected override bool UpdateDirection(object internalState, Vector<double> location, Vector<double> residuals, ref Vector<double> direction, ref double delta)
         {
-            // we require the direction to be normalized
-            Debug.Assert(Math.Abs(direction.L2Norm() - 1.0D) < 1E-5D, "Math.Abs(direction.Norm(2) - 1.0D) < 1E-5D");
-
             Debug.Assert(internalState != null, "internalState != null");
             var state = (State) internalState;
 
@@ -82,7 +79,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             var previousDelta = delta;
             var midDelta = residuals * preconditionedResiduals;
 
-            var preconditioner = GetPreconditioner(problem, theta);
+            var preconditioner = GetPreconditioner(problem, location);
             preconditionedResiduals = preconditioner.Inverse() * residuals;
 
             delta = residuals * preconditionedResiduals;
@@ -96,7 +93,6 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 
             // update the direction
             direction = residuals + beta * direction;
-            direction = direction.Normalize(2);
             return true;
         }
 
