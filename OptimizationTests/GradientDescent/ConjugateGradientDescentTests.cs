@@ -10,7 +10,7 @@ using widemeadows.Optimization.Hypotheses;
 using widemeadows.Optimization.LineSearch;
 using widemeadows.Optimization.Tests.Hypotheses;
 
-namespace widemeadows.Optimization.Tests
+namespace widemeadows.Optimization.Tests.GradientDescent
 {
     [TestFixture]
     public class ConjugateGradientDescentTests

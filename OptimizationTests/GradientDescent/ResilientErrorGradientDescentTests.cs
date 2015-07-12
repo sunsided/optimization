@@ -5,12 +5,11 @@ using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 using widemeadows.Optimization.Cost;
-using widemeadows.Optimization.GradientDescent;
 using widemeadows.Optimization.GradientDescent.Regular;
 using widemeadows.Optimization.Hypotheses;
 using widemeadows.Optimization.Tests.Hypotheses;
 
-namespace widemeadows.Optimization.Tests
+namespace widemeadows.Optimization.Tests.GradientDescent
 {
     [TestFixture]
     public class ResilientErrorGradientDescentTests

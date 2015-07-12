@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using MathNet.Numerics.Interpolation;
+﻿using FluentAssertions;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
 using NUnit.Framework;
 using widemeadows.Optimization.Cost;
 using widemeadows.Optimization.Hypotheses;
 using widemeadows.Optimization.LineSearch;
 
-namespace widemeadows.Optimization.Tests
+namespace widemeadows.Optimization.Tests.LineSearch
 {
     /// <summary>
     /// Class HagerZhangLineSearchTests.

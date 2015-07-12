@@ -3,9 +3,8 @@ using FluentAssertions;
 using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 using widemeadows.Optimization.Hypotheses;
-using widemeadows.Optimization.Tests.Hypotheses;
 
-namespace widemeadows.Optimization.Tests
+namespace widemeadows.Optimization.Tests.Hypotheses
 {
     [TestFixture]
     public class LinearHypothesisTests

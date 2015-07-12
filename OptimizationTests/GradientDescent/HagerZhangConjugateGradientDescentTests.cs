@@ -6,10 +6,9 @@ using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 using widemeadows.Optimization.Cost;
 using widemeadows.Optimization.GradientDescent.Conjugate;
-using widemeadows.Optimization.GradientDescent.Regular;
 using widemeadows.Optimization.Hypotheses;
 
-namespace widemeadows.Optimization.Tests
+namespace widemeadows.Optimization.Tests.GradientDescent
 {
     class HagerZhangConjugateGradientDescentTests
     {
