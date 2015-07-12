@@ -71,14 +71,6 @@ namespace widemeadows.Optimization.LineSearch
         private double _γ = .66D;
 
         /// <summary>
-        /// eta, enters into the lower bound for βNk through ηk
-        /// </summary>
-        /// <remarks>
-        /// Range (0, ∞)
-        /// </remarks>
-        private double _η = .01D;
-
-        /// <summary>
         /// rho, expansion factor used in the bracket rule
         /// </summary>
         /// <remarks>
@@ -144,8 +136,6 @@ namespace widemeadows.Optimization.LineSearch
         /// <exception cref="System.NotImplementedException">aww yeah</exception>
         public double Minimize(IDifferentiableCostFunction<double> function, Vector<double> location, Vector<double> direction, double previousStepWidth)
         {
-            Debug.Assert(1.0D - Math.Abs(direction.L2Norm()) < 1E-3, "Math.Abs(direction.Norm(2)) < 1E-3");
-
             // prefetch
             var γ = _γ;
 
@@ -198,6 +188,8 @@ namespace widemeadows.Optimization.LineSearch
         /// <exception cref="System.NotImplementedException"></exception>
         private Bracket UpdateBracketing(Bracket current, double c, ref FunctionValues values)
         {
+            Debug.Assert(c.IsFinite(), "c.IsFinite()");
+
             // prefetch
             var θ = _θ; // theta
             var ε = _ε; // epsilon
@@ -241,6 +233,8 @@ namespace widemeadows.Optimization.LineSearch
         {
             // S1
             var c = Secant(bracket, ref values);
+            Debug.Assert(c.IsFinite(), "c.IsFinite()");
+
             var newBracket = UpdateBracketing(bracket, c, ref values);
 
             // S2: if the midpoint is on the right edge of the bracket interval,
@@ -251,6 +245,7 @@ namespace widemeadows.Optimization.LineSearch
                 var start = bracket.Start;
                 var end = newBracket.End;
                 c = Secant(new Bracket(start, end), ref values);
+                Debug.Assert(c.IsFinite(), "c.IsFinite()");
 
                 // update the bracketing based on that
                 return UpdateBracketing(newBracket, c, ref values);
@@ -264,6 +259,7 @@ namespace widemeadows.Optimization.LineSearch
                 var start = bracket.Start;
                 var end = newBracket.Start;
                 c = Secant(new Bracket(start, end), ref values);
+                Debug.Assert(c.IsFinite(), "c.IsFinite()");
 
                 // update the bracketing based on that
                 return UpdateBracketing(newBracket, c, ref values);
@@ -379,6 +375,9 @@ namespace widemeadows.Optimization.LineSearch
         /// <returns>Bracket.</returns>
         private Bracket UpdateBracketInRange(double start, double end, ref FunctionValues values)
         {
+            Debug.Assert(start.IsFinite(), "start.IsFinite()");
+            Debug.Assert(end.IsFinite(), "end.IsFinite()");
+
             // prefetch
             var θ = _θ; // theta
             var ɛ = _ε; // epsilon
