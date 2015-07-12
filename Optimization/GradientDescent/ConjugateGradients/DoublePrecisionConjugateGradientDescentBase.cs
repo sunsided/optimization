@@ -63,6 +63,7 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
             // determine the initial error
             var delta = residuals * residuals;
             var initialDelta = delta;
+            var previousAlpha = 0.0D;
 
             // loop for the maximum iteration count
             for (var i = 0; i < maxIterations; ++i)
@@ -77,7 +78,8 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
                 // var cost = costFunction.CalculateCost(x);
 
                 // perform a line search to find the minimum along the given direction
-                var alpha = LineSearch(costFunction, location, direction);
+                var alpha = LineSearch(costFunction, location, direction, previousAlpha);
+                previousAlpha = alpha;
                 location += alpha*direction;
 
                 // obtain the new residuals
@@ -101,6 +103,9 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 
                     // reset the counter
                     iterationsUntilReset = problemDimension;
+
+                    // reset the previous alpha
+                    previousAlpha = 0.0D;
                 }
             }
 

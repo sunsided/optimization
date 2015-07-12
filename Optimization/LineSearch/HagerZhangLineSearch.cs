@@ -118,12 +118,12 @@ namespace widemeadows.Optimization.LineSearch
         /// <summary>
         /// The maximum number of bracketing iterations in <seealso cref="BracketStartingPoint"/>.
         /// </summary>
-        private int _maxBracketingIterations = Int32.MaxValue;
+        private int _maxBracketingIterations = 50;
 
         /// <summary>
         /// The maximum number of line search iterations.
         /// </summary>
-        private int _maxIterations = Int32.MaxValue;
+        private int _maxIterations = 250;
 
         /// <summary>
         /// Minimizes the <paramref name="function" /> by performing a line search along the <paramref name="direction" />, starting from the given <paramref name="location" />.
@@ -175,7 +175,8 @@ namespace widemeadows.Optimization.LineSearch
                 bracket = candidate;
             }
 
-            throw new NotImplementedException("aww yeah");
+            // welp
+            return c;
         }
 
         /// <summary>
@@ -188,7 +189,8 @@ namespace widemeadows.Optimization.LineSearch
         /// <exception cref="System.NotImplementedException"></exception>
         private Bracket UpdateBracketing(Bracket current, double c, ref FunctionValues values)
         {
-            Debug.Assert(c.IsFinite(), "c.IsFinite()");
+            // we do not check for infinity here, as this will be handled in U0
+            Debug.Assert(!Double.IsNaN(c), "!Double.IsNaN(c)");
 
             // prefetch
             var θ = _θ; // theta
@@ -245,7 +247,6 @@ namespace widemeadows.Optimization.LineSearch
                 var start = bracket.Start;
                 var end = newBracket.End;
                 c = Secant(new Bracket(start, end), ref values);
-                Debug.Assert(c.IsFinite(), "c.IsFinite()");
 
                 // update the bracketing based on that
                 return UpdateBracketing(newBracket, c, ref values);
@@ -259,7 +260,6 @@ namespace widemeadows.Optimization.LineSearch
                 var start = bracket.Start;
                 var end = newBracket.Start;
                 c = Secant(new Bracket(start, end), ref values);
-                Debug.Assert(c.IsFinite(), "c.IsFinite()");
 
                 // update the bracketing based on that
                 return UpdateBracketing(newBracket, c, ref values);
@@ -304,6 +304,7 @@ namespace widemeadows.Optimization.LineSearch
             // make sure the parameters are in range
             Debug.Assert(ρ > 1, "ρ > 1");
             Debug.Assert(θ > 0 && θ < 1, "θ > 0 && θ < 1");
+            Debug.Assert(α >= 0, "α >= 0");
 
             // B0: initialize the current step value cj and keep track of the values in a stack
             var c = α;
@@ -322,8 +323,8 @@ namespace widemeadows.Optimization.LineSearch
 
                 // B1: if we find our currently selected end value to be ascending,
                 // then backtrack the starting value to the last descend.
-                // Since by definition, the first step is always a descent direction,
-                // this will never happen in the first loop iteration.
+                // Note that we may end up here in the first iteration also
+                // if the start point generation yields a problematic result.
                 if (dφc >= 0)
                 {
                     var end = c;
@@ -344,7 +345,6 @@ namespace widemeadows.Optimization.LineSearch
                     // at this point there was no good starting point.
                     // sadly, this point is not handled in the paper, so
                     // we'll just throw out 0 as the starting point and hope for the best.
-                    Debug.WriteLine("Unable to obtain a good starting point while backtracking the bracketing.");
                     return new Bracket(0, end);
                 }
 
@@ -363,7 +363,8 @@ namespace widemeadows.Optimization.LineSearch
                 c = ρ*c;
             }
 
-            return new Bracket();
+            // welp
+            return new Bracket(0, c);
         }
 
         /// <summary>
@@ -507,7 +508,7 @@ namespace widemeadows.Optimization.LineSearch
                     // This is only the case if a is positve.
                     // We do not need to check the second derivative, since the second
                     // derivative of a concave quadratic function is positive at every point.
-                    if (a > 0.0D)
+                    if (a > 0.0D && rmin >= 0)
                     {
                         return rmin;
                     }
@@ -567,7 +568,7 @@ namespace widemeadows.Optimization.LineSearch
         {
             // prefetch
             var δ = _δ; // delta
-            var σ = _σ; // delta
+            var σ = _σ; // sigma
 
             // check for sufficient decrease (Armijo rule)
             var decreaseIsSufficient = (φα - φ0) <= (δ*α*dφ0);
@@ -592,7 +593,7 @@ namespace widemeadows.Optimization.LineSearch
         {
             // prefetch
             var δ = _δ; // delta
-            var σ = _σ; // delta
+            var σ = _σ; // sigma
             var ɛ = _ε; // epsilon
 
             // check for sufficient decrease (qaudratic approximate)

@@ -83,6 +83,11 @@ namespace widemeadows.Optimization.GradientDescent.ConjugateGradients
 
             // update the direction
             direction = -g + beta*direction;
+
+            // calculate delta (we'll use the gradient instead of the residuals here,
+            // since it's just a metter of sign)
+            delta = g*g;
+
             return true;
         }
 
