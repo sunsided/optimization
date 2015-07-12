@@ -725,10 +725,15 @@ namespace widemeadows.Optimization.LineSearch
             var currentStart = start;
             var currentEnd = end;
 
+            var previousD = double.NaN;
+
             while (true) // TODO: bug in disguise?
             {
                 // U3a
                 var d = (1 - θ)*currentStart + θ*currentEnd;
+                Debug.Assert(d != previousD, "d != previousD"); // NOTE that this case is not in the paper
+                previousD = d;
+
                 if (values.dφ(d) >= 0.0D)
                 {
                     return new Bracket(start:currentStart, end:d);
