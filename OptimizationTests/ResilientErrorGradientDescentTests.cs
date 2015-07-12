@@ -39,7 +39,7 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialCoefficients);
 
             // optimize!
-            var gd = new ResilientErrorGradientDescent
+            var gd = new ResilientErrorGD
             {
                 ErrorTolerance = 0.0D
             };
@@ -75,7 +75,7 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialCoefficients);
 
             // optimize!
-            var gd = new ResilientErrorGradientDescent
+            var gd = new ResilientErrorGD
             {
                 ErrorTolerance = 0.0D
             };
@@ -117,7 +117,7 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // optimize!
-            var gd = new ResilientErrorGradientDescent
+            var gd = new ResilientErrorGD
             {
                 ErrorTolerance = 0.0D // TODO: actually use it
             };
@@ -146,7 +146,7 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // optimize!
-            var gd = new ResilientErrorGradientDescent
+            var gd = new ResilientErrorGD
             {
                 MaxIterations = 50000,
                 ErrorTolerance = 1E-20D
@@ -188,7 +188,7 @@ namespace widemeadows.Optimization.Tests
             var problem = new OptimizationProblem<double, IDifferentiableCostFunction<double>>(costFunction, initialTheta);
 
             // optimize!
-            var gd = new ResilientErrorGradientDescent();
+            var gd = new ResilientErrorGD();
             var result = gd.Minimize(problem);
 
             // assert!

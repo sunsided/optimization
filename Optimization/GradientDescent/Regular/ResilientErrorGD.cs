@@ -8,7 +8,7 @@ namespace widemeadows.Optimization.GradientDescent.Regular
     /// <summary>
     /// Resilient Error Gradient Descent.
     /// </summary>
-    public sealed class ResilientErrorGradientDescent : GradientDescentBase<double, IDifferentiableCostFunction<double>>
+    public sealed class ResilientErrorGD : GradientDescentBase<double, IDifferentiableCostFunction<double>>
     {
         /// <summary>
         /// The initial step width
