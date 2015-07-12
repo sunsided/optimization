@@ -223,7 +223,7 @@ namespace widemeadows.Optimization.GradientDescent.Conjugate
             /// <summary>
             /// The previous gradient
             /// </summary>
-            public Vector<double> PreviousGradient;
+            public readonly Vector<double> PreviousGradient;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="State"/> class.
