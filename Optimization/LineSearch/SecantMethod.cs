@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
 using widemeadows.Optimization.Cost;
@@ -63,7 +62,7 @@ namespace widemeadows.Optimization.LineSearch
 
                 // adjust the step size
                 alpha = alpha * eta / etaChange;
-                Debug.Assert(!double.IsNaN(alpha) && !double.IsInfinity(alpha), "!double.IsNaN(alpha) && !double.IsInfinity(alpha)");
+                Debug.Assert(alpha.IsFinite(), "alpha.IsFinite()");
 
                 // step to the new location along the line
                 theta += alpha*direction;
