@@ -13,6 +13,10 @@ This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Removed support for .NET 4.5.
 
+### Changed
+
+- Namespaces were changed from `widemeadows.Optimization` to `WideMeadows.Optimization`.
+
 ## 0.1.0-alpha - 2015-07-13
 
 ### Added
