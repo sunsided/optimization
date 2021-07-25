@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net5.0;netstandard2.1</TargetFrameworks>
+    <RootNamespace>WideMeadows.Optimization</RootNamespace>
+    <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyTitle>Optimization</AssemblyTitle>
+    <Title>(Nonlinear) Optimization Alogrithms</Title>
+    <Description>This library aims to implement different mathematical optimization algorithms, such as regular and conjugate gradient descent.</Description>
+    <Copyright>Copyright © Markus Mayer 2015-2021</Copyright>
+    <Authors>Markus Mayer</Authors>
+    <PackageTags>optimization;nonlinear;gradient descent</PackageTags>
+    <PackageLicenseUrl>https://github.com/sunsided/optimization/blob/main/LICENSE.md</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/sunsided/optimization</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MathNet.Numerics" Version="[4.15.0,5.0.0)" />
+  </ItemGroup>
+
+</Project>
