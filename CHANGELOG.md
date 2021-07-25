@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.1.0 - 2021-06-25
+## 0.1.0 - 2021-07-25
 
 ### Added
 
