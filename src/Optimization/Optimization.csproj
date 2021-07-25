@@ -13,6 +13,7 @@
     <Description>This library aims to implement different mathematical optimization algorithms, such as regular and conjugate gradient descent.</Description>
     <Copyright>Copyright © Markus Mayer 2015-2021</Copyright>
     <Authors>Markus Mayer</Authors>
+    <PackageId>widemeadows.Optimization</PackageId>
     <PackageTags>optimization;nonlinear;gradient descent</PackageTags>
     <PackageLicenseExpression>EUPL-1.1</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/sunsided/optimization</RepositoryUrl>
