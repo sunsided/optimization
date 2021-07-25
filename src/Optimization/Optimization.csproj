@@ -14,7 +14,7 @@
     <Copyright>Copyright © Markus Mayer 2015-2021</Copyright>
     <Authors>Markus Mayer</Authors>
     <PackageTags>optimization;nonlinear;gradient descent</PackageTags>
-    <PackageLicenseUrl>https://github.com/sunsided/optimization/blob/main/LICENSE.md</PackageLicenseUrl>
+    <PackageLicenseExpression>EUPL-1.1</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/sunsided/optimization</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
