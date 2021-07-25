@@ -20,6 +20,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SourceLink.Embed.AllSourceFiles" Version="[2.8.3,3.0.0)" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="[4.15.0,5.0.0)" />
   </ItemGroup>
 
